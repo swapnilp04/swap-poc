@@ -1,29 +1,38 @@
+## SETUP PROJECT
 
-## REGISTER
+```
+  Setup golang in mac use the following link. https://jimkang.medium.com/install-go-on-mac-with-homebrew-5fa421fc55f5
+  git clone git@github.com:meetme2meat/swap-poc.git
+  go mod tidy
+  go run cmd/main.go
+```
+
+
+#### REGISTER
 ```
 curl -v -H 'Content-Type: application/json' http://localhost:8080/register  -u "swapnil:mastahey" -d '{"username": "swap", "password": "admin123", "confirm_password": "admin123"}'
 >> {"message":"user created successfully","user":{"id":1,"username":"swap"}}
 ```
 
-## LOGIN
+#### LOGIN
 ```
 curl -v -H 'Content-Type: application/json' http://localhost:8080/login  -d '{"username": "swap", "password": "admin123"}'
 
 {"message":"user loggedin successfully","token":"9848e3be-ba4b-11ed-b3a6-a660aea45daa"}
 ```
 
-## UPDATE PASSWORD
+#### UPDATE PASSWORD
 ```
 curl -v -XPUT -H 'Content-Type: application/json' http://localhost:8080/updateUser  -H 'token: 9848e3be-ba4b-11ed-b3a6-a660aea45daa' -d '{"password": "admin123", "confirm_password": "admin123"}'
 ```
 
-## LOGOUT 
+#### LOGOUT 
 ```
 curl -XDELETE -H 'Content-Type: application/json' http://localhost:8080/logout -H 'token: 0c145db4-ba5b-11ed-aadf-a660aea45daa'
 >> {"message":"user logged out"}
 ```
 
-## CREATE STUDENT
+#### CREATE STUDENT
 
 ```
 curl -XPOST -H 'Content-Type: application/json' http://localhost:8080/students -H 'token: 9160540c-ba5e-11ed-a389-a660aea45daa' -d '{"first_name": "Student One", "last_name": "Student Last", "age": 11, "content_number": 8888888888}'
@@ -31,20 +40,20 @@ curl -XPOST -H 'Content-Type: application/json' http://localhost:8080/students -
 >> {"message":"student created","student":{"id":2,"first_name":"Student Second","last_name":"Student Second","age":11,"phone_number":0}}
 ```
 
-## UPDATE STUDENT
+#### UPDATE STUDENT
 ``` 
 curl -XPUT -H 'Content-Type: application/json' http://localhost:8080/students/2 -H 'token: 9160540c-ba5e-11ed-a389-a660aea45daa' -d '{"first_name": "Student First2"}'
 >> {"message":"student updated","student":{"id":1,"first_name":"Student First1","last_name":"Student Last","age":10,"phone_number":0}}
 ```
 
 
-## DELETE STUDENT
+#### DELETE STUDENT
 ```
 curl  -XDELETE -H 'Content-Type: application/json' http://localhost:8080/students/2 -H 'token: 9160540c-ba5e-11ed-a389-a660aea45daa' 
 >>> {"message":"student deleted successfully"}
 ```
 
-## ALL
+#### ALL STUDENT
 ```
 curl -XGET -H 'Content-Type: application/json' http://localhost:8080/students -H 'token: 9160540c-ba5e-11ed-a389-a660aea45daa'
 

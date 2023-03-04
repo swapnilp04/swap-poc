@@ -1,0 +1,115 @@
+package handlers
+
+import (
+	"fmt"
+	"net/http"
+	"strconv"
+	"swapnil-ex/models"
+	"swapnil-ex/swapErr"
+
+	"github.com/labstack/echo/v4"
+)
+
+func GetStudents(c echo.Context) error {
+	// Get all users
+	s := &models.Student{}
+	students, err := s.All()
+	if err != nil {
+		fmt.Println("s.ALL(GetStudents)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, students)
+}
+
+func GetStudent(c echo.Context) error {
+	// Get a single user by ID
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	s := &models.Student{ID: newId}
+	err = s.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, s)
+}
+
+func CreateStudent(c echo.Context) error {
+	studentData := make(map[string]interface{})
+	if err := c.Bind(&studentData); err != nil {
+		fmt.Println("c.Bind()", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	fmt.Printf("students %+v\n", studentData)
+	student := models.NewStudent(studentData)
+	if err := student.Validate(); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
+	}
+
+	err := student.Create()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "student created", "student": student})
+}
+
+func UpdateStudent(c echo.Context) error {
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	studentData := make(map[string]interface{})
+
+	if err := c.Bind(&studentData); err != nil {
+		fmt.Println("c.Bind()", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	s := &models.Student{ID: newId}
+	if err := s.Find(); err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	s.Assign(studentData)
+	if err := s.Update(); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "student updated", "student": s})
+}
+
+func DeleteStudent(c echo.Context) error {
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	s := &models.Student{ID: newId}
+	if err := s.Find(); err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	if err := s.Delete(); err != nil {
+		fmt.Println("s.Delete(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	// Delete a user by ID
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "student deleted successfully"})
+}

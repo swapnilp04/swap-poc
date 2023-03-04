@@ -2,6 +2,7 @@
 
 ```
   Setup golang in mac use the following link. https://jimkang.medium.com/install-go-on-mac-with-homebrew-5fa421fc55f5
+  
   git clone git@github.com:meetme2meat/swap-poc.git
   go mod tidy
   go run cmd/main.go

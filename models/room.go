@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"swapnil-ex/models/db"
 	"time"
+	"gorm.io/gorm"
 )
 
 type HostelRoom struct {
@@ -11,6 +12,8 @@ type HostelRoom struct {
 	Name     		string `json:"name"`
 	NoOfStudents      		int `json:"no_of_students"`
 	CreatedAt time.Time
+	UpdatedAt time.Time
+  DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateHostelRoom() {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"swapnil-ex/models/db"
 	"time"
+	"gorm.io/gorm"
 )
 
 type Standard struct {
@@ -11,6 +12,8 @@ type Standard struct {
 	Name     			string `json:"name"`
 	Std       		int64 `json:int64`
 	CreatedAt time.Time
+	UpdatedAt time.Time
+  DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateStandard() {

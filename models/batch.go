@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"swapnil-ex/models/db"
 	"time"
+	"gorm.io/gorm"
 )
 
 type Batch struct {
@@ -11,6 +12,8 @@ type Batch struct {
 	Name     		string `json:"name"`
 	Year      		int `json:"year"`
 	CreatedAt time.Time
+	UpdatedAt time.Time
+  DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateBatch() {

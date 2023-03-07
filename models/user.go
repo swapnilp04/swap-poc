@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"swapnil-ex/models/db"
 	"swapnil-ex/swapErr"
-
+	
+	"gorm.io/gorm"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/scrypt"
 	"time"
@@ -18,6 +19,8 @@ type User struct {
 	Password        string `json:"-"`
 	ConfirmPassword string `json:"-" gorm:"-"`
 	CreatedAt time.Time
+	UpdatedAt time.Time
+  DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateUser() {

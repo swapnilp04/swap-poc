@@ -4,17 +4,20 @@ import (
 	"fmt"
 	"swapnil-ex/models/db"
 	"time"
+	"gorm.io/gorm"
 )
 
 type BatchStandardStudent struct {
-	ID            	int    `json:"id"`
+	ID            int    `json:"id"`
 	BatchId       int
 	Batch 				Batch
-	StandardId       int
-	standard 			Standard
-	StudentId int
-	Student Student
-	CreatedAt time.Time
+	StandardId    int
+	gstandard 			Standard
+	StudentId 		int
+	Student 			Student
+	CreatedAt 		time.Time
+	UpdatedAt time.Time
+  DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateBatchStandardStudent() {

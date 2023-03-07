@@ -29,39 +29,39 @@ func (hr *HostelRoom) Validate() error {
 	return nil
 }
 
-func (h *HostelRoom) Assign(hostelRoomData map[string]interface{}) {
+func (hr *HostelRoom) Assign(hostelRoomData map[string]interface{}) {
 	fmt.Printf("%+v\n", hostelRoomData)
 	if name, ok := hostelRoomData["name"]; ok {
-		h.Name = name.(string)
+		hr.Name = name.(string)
 	}
 
 	if noOfStudents, ok := hostelRoomData["no_of_students"]; ok {
-		h.NoOfStudents = int(noOfStudents.(int64))
+		hr.NoOfStudents = int(noOfStudents.(int64))
 	}
 }
 
-func (h *HostelRoom) All() ([]HostelRoom, error) {
+func (hr *HostelRoom) All() ([]HostelRoom, error) {
 	var hostelRooms []HostelRoom
 	err := db.Driver.Find(&hostelRooms).Error
 	return hostelRooms, err
 }
 
-func (h *HostelRoom) Find() error {
-	err := db.Driver.First(h, "ID = ?", h.ID).Error
+func (hr *HostelRoom) Find() error {
+	err := db.Driver.First(hr, "ID = ?", hr.ID).Error
 	return err
 }
 
-func (h *HostelRoom) Create() error {
-	err := db.Driver.Create(h).Error
+func (hr *HostelRoom) Create() error {
+	err := db.Driver.Create(hr).Error
 	return err
 }
 
-func (h *HostelRoom) Update() error {
-	err := db.Driver.Save(h).Error
+func (hr *HostelRoom) Update() error {
+	err := db.Driver.Save(hr).Error
 	return err
 }
 
-func (h *HostelRoom) Delete() error {
-	err := db.Driver.Delete(h).Error
+func (hr *HostelRoom) Delete() error {
+	err := db.Driver.Delete(hr).Error
 	return err
 }

@@ -6,11 +6,13 @@ import (
 )
 
 type Student struct {
-	ID            int    `json:"id"`
-	FirstName     string `json:"first_name"`
-	LastName      string `json:"last_name"`
-	Age           int    `json:"age"`
-	ContactNumber int64  `json:"phone_number" gorm:"phone_number"`
+	ID            		int    `json:"id"`
+	FirstName     		string `json:"first_name"`
+	LastName      		string `json:"last_name"`
+	Age           		int    `json:"age"`
+	ContactNumber 		int64  `json:"phone_number" gorm:"phone_number"`
+	BatchStandardId 	uint 	 `json:batch_standard_id`
+	BatchStandard BatchStandard
 }
 
 func migrateStudent() {

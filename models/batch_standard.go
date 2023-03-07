@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"swapnil-ex/models/db"
+	"time"
 )
 
 type BatchStandard struct {
@@ -11,6 +12,7 @@ type BatchStandard struct {
 	Batch 				Batch
 	StandardId       int
 	standard 			Standard
+	CreatedAt time.Time
 }
 
 func migrateBatchStandard() {

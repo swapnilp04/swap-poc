@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"swapnil-ex/models/db"
+	"time"
 )
 
 type HostelStudent struct {
@@ -11,6 +12,7 @@ type HostelStudent struct {
 	Rooms      		int `json:"rooms"`
 	Rector      	string `json:"rector"`	
 	ContactNumber 	int64  `json:"contact_number" gorm:"contact_number"`
+	CreatedAt time.Time
 }
 
 func migrateHostelStudent() {

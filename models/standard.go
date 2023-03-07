@@ -3,12 +3,14 @@ package models
 import (
 	"fmt"
 	"swapnil-ex/models/db"
+	"time"
 )
 
 type Standard struct {
 	ID           	int    `json:"id"`
 	Name     			string `json:"name"`
 	Std       		int64 `json:int64`
+	CreatedAt time.Time
 }
 
 func migrateStandard() {

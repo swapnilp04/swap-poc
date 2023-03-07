@@ -8,6 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/scrypt"
+	"time"
 )
 
 type User struct {
@@ -16,6 +17,7 @@ type User struct {
 	Salt            string `json:"-"`
 	Password        string `json:"-"`
 	ConfirmPassword string `json:"-" gorm:"-"`
+	CreatedAt time.Time
 }
 
 func migrateUser() {

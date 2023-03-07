@@ -3,12 +3,14 @@ package models
 import (
 	"fmt"
 	"swapnil-ex/models/db"
+	"time"
 )
 
 type Batch struct {
 	ID            	int    `json:"id"`
 	Name     		string `json:"name"`
 	Year      		int `json:"year"`
+	CreatedAt time.Time
 }
 
 func migrateBatch() {

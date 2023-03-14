@@ -18,9 +18,9 @@ type User struct {
 	Salt            string `json:"-"`
 	Password        string `json:"-"`
 	ConfirmPassword string `json:"-" gorm:"-"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-  DeletedAt gorm.DeletedAt `gorm:"index"`
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
+  DeletedAt 			gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateUser() {

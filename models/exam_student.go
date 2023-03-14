@@ -12,7 +12,7 @@ type ExamStudent struct {
 	Name     				string `json:"name"`
 	HostelId				int `json:"hostel_id"`
 	RoomId      		int `json:"room_id"`
-	ContactNumber  string `json:"contact_number"`
+	ContactNumber  	string `json:"contact_number"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

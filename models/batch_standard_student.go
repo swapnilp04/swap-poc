@@ -12,12 +12,12 @@ type BatchStandardStudent struct {
 	BatchId       int
 	Batch 				Batch
 	StandardId    int
-	gstandard 			Standard
+	gstandard 		Standard
 	StudentId 		int
 	Student 			Student
 	CreatedAt 		time.Time
-	UpdatedAt time.Time
-  DeletedAt gorm.DeletedAt `gorm:"index"`
+	UpdatedAt 		time.Time
+  DeletedAt 		gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateBatchStandardStudent() {

@@ -9,11 +9,11 @@ import (
 
 type Batch struct {
 	ID            	int    `json:"id"`
-	Name     		string `json:"name"`
-	Year      		int `json:"year"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-  DeletedAt gorm.DeletedAt `gorm:"index"`
+	Name     				string `json:"name"`
+	Year      			int `json:"year"`
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
+  DeletedAt 			gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateBatch() {

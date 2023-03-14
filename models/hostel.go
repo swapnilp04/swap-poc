@@ -9,13 +9,13 @@ import (
 
 type Hostel struct {
 	ID            	int    `json:"id"`
-	Name     		string `json:"name"`
-	Rooms      		int `json:"rooms"`
-	Rector      	string `json:"rector"`	
+	Name     				string `json:"name"`
+	Rooms      			int `json:"rooms"`
+	Rector      		string `json:"rector"`	
 	ContactNumber 	int64  `json:"contact_number" gorm:"contact_number"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-  DeletedAt gorm.DeletedAt `gorm:"index"`
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
+  DeletedAt 			gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateHostel() {

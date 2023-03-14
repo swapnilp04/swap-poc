@@ -9,13 +9,13 @@ import (
 
 type BatchStandard struct {
 	ID            	int    `json:"id"`
-	BatchId       int
-	Batch 				Batch
+	BatchId       	int
+	Batch 					Batch
 	StandardId       int
-	standard 			Standard
-	CreatedAt time.Time
-	UpdatedAt time.Time
-  DeletedAt gorm.DeletedAt `gorm:"index"`
+	standard 				Standard
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
+  DeletedAt 			gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateBatchStandard() {

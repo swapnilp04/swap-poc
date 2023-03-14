@@ -9,16 +9,17 @@ import (
 
 type HostelRoom struct {
 	ID            	int    `json:"id"`
-	Name     		string `json:"name"`
-	NoOfStudents      		int `json:"no_of_students"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-  DeletedAt gorm.DeletedAt `gorm:"index"`
+	Name     				string `json:"name"`
+	NoOfStudents    int `json:"no_of_students"`
+	Rate     				int64 `json:"rate"` 
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
+  DeletedAt 			gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateHostelRoom() {
 	fmt.Println("migrating student..")
-	err := db.Driver.AutoMigrate(&Hostel{})
+	err := db.Driver.AutoMigrate(&HostelRoom{})
 	if err != nil {
 		panic("failed to migrate database")
 	}
@@ -42,6 +43,10 @@ func (hr *HostelRoom) Assign(hostelRoomData map[string]interface{}) {
 
 	if noOfStudents, ok := hostelRoomData["no_of_students"]; ok {
 		hr.NoOfStudents = int(noOfStudents.(int64))
+	}
+
+	if rate, ok := hostelRoomData["rate"]; ok {
+		hr.Rate = int64(rate.(float64))
 	}
 }
 

@@ -9,13 +9,13 @@ import (
 
 type HostelStudent struct {
 	ID            	int    `json:"id"`
-	Name     		string `json:"name"`
-	Rooms      		int `json:"rooms"`
-	Rector      	string `json:"rector"`	
-	ContactNumber 	int64  `json:"contact_number" gorm:"contact_number"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-  DeletedAt gorm.DeletedAt `gorm:"index"`
+	Name     				string `json:"name"`
+	HostelId				int `json:"hostel_id"`
+	RoomId      		int `json:"room_id"`
+	ContactNumber  string `json:"contact_number"`
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
+  DeletedAt 			gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateHostelStudent() {
@@ -42,17 +42,16 @@ func (hs *HostelStudent) Assign(hostelStudentData map[string]interface{}) {
 		hs.Name = name.(string)
 	}
 
-	if rooms, ok := hostelStudentData["rooms"]; ok {
-		hs.Rooms = int(rooms.(int64))
+	if room_id, ok := hostelStudentData["room_id"]; ok {
+		hs.RoomId = int(room_id.(int64))
 	}
 
-	if rector, ok := hostelStudentData["rector"]; ok {
-		hs.Rector = rector.(string)
+	if hostel_id, ok := hostelStudentData["hostel_id"]; ok {
+		hs.HostelId = int(hostel_id.(int64))
 	}
-
 
 	if contactNumber, ok := hostelStudentData["content_number"]; ok {
-		hs.ContactNumber = int64(contactNumber.(float64))
+		hs.ContactNumber = contactNumber.(string)
 	}
 }
 

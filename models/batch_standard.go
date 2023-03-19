@@ -11,7 +11,7 @@ type BatchStandard struct {
 	ID            	int    `json:"id"`
 	BatchId       	int
 	Batch 					Batch
-	StandardId       int
+	StandardId      uint
 	standard 				Standard
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time

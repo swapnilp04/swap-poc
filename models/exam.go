@@ -10,8 +10,13 @@ import (
 type Exam struct {
 	ID            	int    `json:"id"`
 	Name     				string `json:"name"`
-	HostelId				int `json:"hostel_id"`
-	RoomId      		int `json:"room_id"`
+	BatchStandardId	int `json:"batch_standard_id"`
+	StandardId      uint `json:"standard_id"`
+	ExamType				String `json:"exam_type"`
+	ExamMarks				int `json:"exam_marks"`
+	ExamTime 				int `json:"exam_time"`
+	ExamDate				time.Time
+	ExamStatus 			string `json:"exam_status"`
 	ContactNumber  	string `json:"contact_number"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time

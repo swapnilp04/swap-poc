@@ -11,6 +11,7 @@ type Batch struct {
 	ID            	int    `json:"id"`
 	Name     				string `json:"name"`
 	Year      			int `json:"year"`
+	Transactions  	[]Transaction
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

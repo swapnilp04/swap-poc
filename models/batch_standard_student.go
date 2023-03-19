@@ -13,7 +13,7 @@ type BatchStandardStudent struct {
 	Batch 				Batch
 	StandardId    int
 	gstandard 		Standard
-	StudentId 		int
+	StudentId			uint `json:"student_id"`
 	Student 			Student
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time

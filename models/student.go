@@ -8,14 +8,22 @@ import (
 )
 
 type Student struct {
-	ID            		int    `json:"id"`
-	FirstName     		string `json:"first_name"`
-	LastName      		string `json:"last_name"`
-	Age           		int    `json:"age"`
-	ContactNumber 		int64  `json:"phone_number" gorm:"phone_number"`
-	CreatedAt 				time.Time
-	UpdatedAt 				time.Time
-  DeletedAt 				gorm.DeletedAt `gorm:"index"`
+	ID            						int    `json:"id"`
+	Inil     									string `json:"inil"`
+	FirstName     						string `json:"first_name"`
+	MiddleName     						string `json:"middle_name"`
+	LastName      						string `json:"last_name"`
+	Age           						int    `json:"age"`
+	ParentName								string `json:"parent_name"`
+	ParentOccupation					string `json:"parent_occupation"`
+	ContactNumber 						int64  `json:"phone_number" gorm:"phone_number"`
+	BatchStandardStudents  		[]BatchStandardStudent
+	Transactions  						[]Transaction
+	HostelStudent 						HostelStudent
+	HostelStudentTransactions []HostelStudentTransaction
+	CreatedAt 								time.Time
+	UpdatedAt 								time.Time
+  DeletedAt 								gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateStudent() {

@@ -12,12 +12,13 @@ type Exam struct {
 	Name     				string `json:"name"`
 	BatchStandardId	int `json:"batch_standard_id"`
 	StandardId      uint `json:"standard_id"`
-	ExamType				String `json:"exam_type"`
+	ExamType				string `json:"exam_type"`
 	ExamMarks				int `json:"exam_marks"`
 	ExamTime 				int `json:"exam_time"`
 	ExamDate				time.Time
 	ExamStatus 			string `json:"exam_status"`
 	ContactNumber  	string `json:"contact_number"`
+	ExamStudents 		[]ExamStudent
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

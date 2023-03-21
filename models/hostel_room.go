@@ -8,10 +8,10 @@ import (
 )
 
 type HostelRoom struct {
-	ID            	int    `json:"id"`
-	Name     				string `json:"name"`
-	NoOfStudents    int `json:"no_of_students"`
-	Rate     				int64 `json:"rate"` 
+	ID            	int    	`json:"id"`
+	Name     				string 	`json:"name"`
+	NoOfStudents    int 		`json:"no_of_students"`
+	Rate     				int64 	`json:"rate"` 
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

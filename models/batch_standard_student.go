@@ -15,6 +15,7 @@ type BatchStandardStudent struct {
 	gstandard 		Standard
 	StudentId			uint `json:"student_id"`
 	Student 			Student
+	Fee 					float64 `json:"fee"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
   DeletedAt 		gorm.DeletedAt `gorm:"index"`
@@ -49,7 +50,7 @@ func (bs *BatchStandardStudent) Assign(batchStandardStudentData map[string]inter
 	}
 
 	if student_id, ok := batchStandardStudentData["student_id"]; ok {
-		bs.StudentId = int(student_id.(int64))
+		bs.StudentId = uint(student_id.(int64))
 	}
 
 }

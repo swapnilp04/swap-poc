@@ -35,6 +35,12 @@ func (b *Batch) Validate() error {
 	return nil
 }
 
+// func (b *Batch) transactions() ([]Transaction, error) {
+// 	var transactions []Transaction
+// 	err := db.Driver.Where("batch_id = ?", b.ID).Find(&transactions).Error
+// 	return transactions, err
+//}
+
 func (b *Batch) Assign(batchData map[string]interface{}) {
 	fmt.Printf("%+v\n", batchData)
 	if name, ok := batchData["name"]; ok {

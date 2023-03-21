@@ -4,4 +4,5 @@ func init() {
 	migrateUser()
 	migrateSession()
 	migrateStudent()
+	migrateBatch()
 }

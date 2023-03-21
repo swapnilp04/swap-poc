@@ -10,10 +10,12 @@ import (
 type ExamStudent struct {
 	ID            	int    `json:"id"`
 	Name     				string `json:"name"`
-	HostelId				int `json:"hostel_id"`
-	RoomId      		int `json:"room_id"`
-	ContactNumber  	string `json:"contact_number"`
 	StudentId				uint `json:"student_id"`
+	Student 				Student
+	ExamId					uint `json:"exam_id"`
+	Exam  					Exam
+	Marks     			float32 `json:"marks"`
+	Rank						int16 `json:"rank"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"errors"
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
@@ -17,10 +18,12 @@ type Student struct {
 	ParentName								string `json:"parent_name"`
 	ParentOccupation					string `json:"parent_occupation"`
 	ContactNumber 						int64  `json:"phone_number" gorm:"phone_number"`
-	BatchStandardStudents  		[]BatchStandardStudent
+	Status 										string `json:"status"`
+	/*BatchStandardStudents  		[]BatchStandardStudent
 	Transactions  						[]Transaction
 	HostelStudent 						HostelStudent
 	HostelStudentTransactions []HostelStudentTransaction
+	ExamStudents							[]ExamStudent*/
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
   DeletedAt 								gorm.DeletedAt `gorm:"index"`
@@ -41,6 +44,19 @@ func NewStudent(studentData map[string]interface{}) *Student {
 }
 
 func (s *Student) Validate() error {
+	return nil
+}
+
+func (s *Student) AssignClass() error {
+	
+	if s.Status == "Admission" {
+		return nil
+	} else {
+		return errors.New("Already assigned Class")
+	}
+}
+
+func (s *Student) RemoveFromClass() error {
 	return nil
 }
 

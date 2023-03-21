@@ -8,16 +8,18 @@ import (
 )
 
 type Transaction struct {
-	ID            	int    `json:"id"`
-	Name     				string `json:"name"`
-	HostelId				int `json:"hostel_id"`
-	RoomId      		int `json:"room_id"`
-	ContactNumber  	string `json:"contact_number"`
-	StudentId				uint `json:"student_id"`
-	BatchId				uint `json:"batch_id"`
-	CreatedAt 			time.Time
-	UpdatedAt 			time.Time
-  DeletedAt 			gorm.DeletedAt `gorm:"index"`
+	ID            					int    `json:"id"`
+	Name     								string `json:"name"`
+	HostelId								int `json:"hostel_id"`
+	BatchId								int `json:"batch_id"`
+	RoomId      						int `json:"room_id"`
+	StudentId								uint `json:"student_id"`
+	BatchStandardStudentId	uint `json:"batch_standard_student_id"`
+	PaidBy 									string `json:"paid_by"`
+	PaymentMode 						string `json:"payment_mode"`
+	CreatedAt 							time.Time
+	UpdatedAt 							time.Time
+  DeletedAt 							gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateTransaction() {

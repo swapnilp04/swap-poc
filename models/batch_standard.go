@@ -9,10 +9,11 @@ import (
 
 type BatchStandard struct {
 	ID            	int    `json:"id"`
-	BatchId       	int
+	BatchId       	int `json:"batch_id"`
 	Batch 					Batch
-	StandardId      uint
-	standard 				Standard
+	StandardId      uint `json:"standard_id"`
+	Standard 				Standard
+	Fee							float32 `json:"fee"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -43,7 +44,7 @@ func (bs *BatchStandard) Assign(batchStandardData map[string]interface{}) {
 	}
 
 	if standard_id, ok := batchStandardData["standard_id"]; ok {
-		bs.StandardId = int(standard_id.(int64))
+		bs.StandardId = uint(standard_id.(int))
 	}
 
 }

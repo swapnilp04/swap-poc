@@ -31,7 +31,7 @@ func GetStudent(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
 	}
 
-	s := &models.Student{ID: newId}
+	s := &models.Student{ID: uint(newId)}
 	err = s.Find()
 	if err != nil {
 		fmt.Println("s.Find(GetStudent)", err)
@@ -77,7 +77,7 @@ func UpdateStudent(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
 	}
 
-	s := &models.Student{ID: newId}
+	s := &models.Student{ID: uint(newId)}
 	if err := s.Find(); err != nil {
 		fmt.Println("s.Find(GetStudent)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
@@ -99,7 +99,7 @@ func DeleteStudent(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
 	}
 
-	s := &models.Student{ID: newId}
+	s := &models.Student{ID: uint(newId)}
 	if err := s.Find(); err != nil {
 		fmt.Println("s.Find(GetStudent)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})

@@ -8,10 +8,10 @@ import (
 )
 
 type HostelStudent struct {
-	ID            	int    `json:"id"`
+	ID            	uint    `json:"id"`
 	Name     				string `json:"name"`
-	HostelId				int `json:"hostel_id"`
-	RoomId      		int `json:"room_id"`
+	HostelId				uint `json:"hostel_id"`
+	RoomId      		uint `json:"room_id"`
 	ContactNumber  	string `json:"contact_number"`
 	StudentId				uint `json:"student_id"`
 	CreatedAt 			time.Time
@@ -44,11 +44,11 @@ func (hs *HostelStudent) Assign(hostelStudentData map[string]interface{}) {
 	}
 
 	if room_id, ok := hostelStudentData["room_id"]; ok {
-		hs.RoomId = int(room_id.(int64))
+		hs.RoomId = uint(room_id.(int64))
 	}
 
 	if hostel_id, ok := hostelStudentData["hostel_id"]; ok {
-		hs.HostelId = int(hostel_id.(int64))
+		hs.HostelId = uint(hostel_id.(int64))
 	}
 
 	if contactNumber, ok := hostelStudentData["content_number"]; ok {

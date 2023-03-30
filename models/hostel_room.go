@@ -8,7 +8,7 @@ import (
 )
 
 type HostelRoom struct {
-	ID            	int    	`json:"id"`
+	ID            	uint    	`json:"id"`
 	Name     				string 	`json:"name"`
 	NoOfStudents    int 		`json:"no_of_students"`
 	Rate     				int64 	`json:"rate"` 

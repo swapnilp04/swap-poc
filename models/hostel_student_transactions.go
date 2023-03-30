@@ -13,7 +13,7 @@ type HostelStudentTransaction struct {
 	HostelId				int `json:"hostel_id"`
 	RoomId      		int `json:"room_id"`
 	ContactNumber  	string `json:"contact_number"`
-	Studentd  			uint `json:"student_id"`
+	StudentId  			uint `json:"student_id"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

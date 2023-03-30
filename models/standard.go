@@ -39,6 +39,10 @@ func (s *Standard) Assign(standardData map[string]interface{}) {
 	if name, ok := standardData["name"]; ok {
 		s.Name = name.(string)
 	}
+
+	if std, ok := standardData["std"]; ok {
+		s.Std = int64(std.(int))
+	}
 }
 
 func (s *Standard) All() ([]Standard, error) {

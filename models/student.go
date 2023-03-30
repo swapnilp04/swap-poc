@@ -9,7 +9,7 @@ import (
 )
 
 type Student struct {
-	ID            						int    `json:"id"`
+	ID            						uint    `json:"id"`
 	Inil     									string `json:"inil"`
 	FirstName     						string `json:"first_name"`
 	MiddleName     						string `json:"middle_name"`
@@ -19,11 +19,11 @@ type Student struct {
 	ParentOccupation					string `json:"parent_occupation"`
 	ContactNumber 						int64  `json:"phone_number" gorm:"phone_number"`
 	Status 										string `json:"status"`
-	/*BatchStandardStudents  		[]BatchStandardStudent
+	BatchStandardStudents  		[]BatchStandardStudent
 	Transactions  						[]Transaction
 	HostelStudent 						HostelStudent
 	HostelStudentTransactions []HostelStudentTransaction
-	ExamStudents							[]ExamStudent*/
+	ExamStudents							[]ExamStudent
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
   DeletedAt 								gorm.DeletedAt `gorm:"index"`
@@ -58,6 +58,16 @@ func (s *Student) AssignClass() error {
 
 func (s *Student) RemoveFromClass() error {
 	return nil
+}
+
+func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
+	var hostelStudent = HostelStudent{StudentId: s.ID, HostelId: h.ID, RoomId: hr.ID}
+	err := db.Driver.Find(&hostelStudent).Error
+	
+	if err != nil {
+		err = hostelStudent.Create()
+	}
+	return err
 }
 
 func (s *Student) Assign(studentData map[string]interface{}) {

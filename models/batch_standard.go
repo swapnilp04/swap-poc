@@ -74,5 +74,10 @@ func (bs *BatchStandard) Update() error {
 
 func (bs *BatchStandard) Delete() error {
 	err := db.Driver.Delete(bs).Error
+	db.Commit()
 	return err
+}
+
+func (bs *BatchStandard) HasFeeAssigned() bool {
+	return bs.Fee > 0.0
 }

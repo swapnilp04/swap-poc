@@ -51,6 +51,7 @@ func (u *User) ValidPassword(password string) error {
 
 func (u *User) Save() error {
 	err := db.Driver.Save(u).Error
+	db.Commit()
 	return err
 }
 

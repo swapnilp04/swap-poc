@@ -92,16 +92,19 @@ func (s *Student) Find() error {
 
 func (s *Student) Create() error {
 	err := db.Driver.Create(s).Error
+	db.Commit()
 	return err
 }
 
 func (s *Student) Update() error {
 	err := db.Driver.Save(s).Error
+	db.Commit()
 	return err
 }
 
 func (s *Student) Delete() error {
 	err := db.Driver.Delete(s).Error
+	db.Commit()
 	return err
 }
 

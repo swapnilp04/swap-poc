@@ -69,12 +69,11 @@ func (b *Batch) Create() error {
 			bsErr := bs.Create()
 			if bsErr != nil {
 				// uncommit 
-				break;
+				return db.Rollback()
 			}
 		}
 	} else {
-		// uncommit 
-		// return block 
+		return db.Rollback()
 	}
 	db.Commit()
 	return err
@@ -88,6 +87,6 @@ func (b *Batch) Update() error {
 
 func (b *Batch) Delete() error {
 	err := db.Driver.Delete(b).Error
-	_ := db.Commit()
+	db.Commit()
 	return err
 }

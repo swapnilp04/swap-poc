@@ -68,15 +68,18 @@ func (bs *BatchStandardStudent) Find() error {
 
 func (bs *BatchStandardStudent) Create() error {
 	err := db.Driver.Create(bs).Error
+	db.Commit()
 	return err
 }
 
 func (bs *BatchStandardStudent) Update() error {
 	err := db.Driver.Save(bs).Error
+	db.Commit()
 	return err
 }
 
 func (bs *BatchStandardStudent) Delete() error {
 	err := db.Driver.Delete(bs).Error
+	db.Commit()
 	return err
 }

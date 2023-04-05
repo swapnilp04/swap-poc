@@ -25,6 +25,10 @@ func Commit() error{
 	return Driver.Commit().Error
 }
 
+func Rollback () error{
+	return Driver.Rollback().Error
+}
+
 
 func Close() {
 }

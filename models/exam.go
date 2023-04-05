@@ -62,15 +62,18 @@ func (t *Exam) Find() error {
 
 func (t *Exam) Create() error {
 	err := db.Driver.Create(t).Error
+	db.Commit()
 	return err
 }
 
 func (t *Exam) Update() error {
 	err := db.Driver.Save(t).Error
+	db.Commit()
 	return err
 }
 
 func (t *Exam) Delete() error {
 	err := db.Driver.Delete(t).Error
+	db.Commit()
 	return err
 }

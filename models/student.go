@@ -116,7 +116,8 @@ func (s *Student) GetBatchStandardStudents() []BatchStandardStudent {
 }
 
 func (s *Student) RemoveBatchStandard(batchStandard *BatchStandard) error {
-	if s.GetBalance > 0.0 {
+	balance := s.GetBalance()
+	if balance > 0.0 {
 		return errors.New("Please Clear Balance first")
 	}
 
@@ -125,8 +126,7 @@ func (s *Student) RemoveBatchStandard(batchStandard *BatchStandard) error {
 	if err != nil {
 		return err
 	}
-	batchStandardStudent.DeletedAt = Time.Now
-	return batchStandardStudent.Update()
+	return batchStandardStudent.Delete()
 }
 
 func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
@@ -189,8 +189,8 @@ func (s *Student) TotalCridits() float64 {
 	return total	
 }
 
-func (bs *BatchStandardStudent) GetBalance() float64 {
-	transactions, err := bs.GetTransactions()
+func (s *Student) GetBalance() float64 {
+	transactions, err := s.GetTransactions()
 	var total = 0.0
 	if err == nil {
 		for _, transaction := range transactions {

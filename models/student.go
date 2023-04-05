@@ -22,7 +22,6 @@ type Student struct {
 	BatchStandardStudents  		[]BatchStandardStudent
 	Transactions  						[]Transaction
 	HostelStudent 						HostelStudent
-	HostelStudentTransactions []HostelStudentTransaction
 	ExamStudents							[]ExamStudent
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time

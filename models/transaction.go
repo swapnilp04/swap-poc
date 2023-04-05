@@ -11,6 +11,7 @@ type Transaction struct {
 	ID            					int    `json:"id"`
 	Name     								string `json:"name"`
 	StudentId								uint `json:"student_id"`
+	HostelStudentId					uint `json:"hostel_student_id"`
 	TransactionCategoryId   uint `json:"transaction_category_id"`
 	BatchStandardStudentId	uint `json:"batch_standard_student_id"`
 	PaidBy 									string `json:"paid_by"`

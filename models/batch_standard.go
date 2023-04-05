@@ -99,5 +99,3 @@ func (bs *BatchStandard) GetTransactionCategory() (*TransactionCategory, error) 
 	err := db.Driver.First(tc).Error
 	return tc, err
 }
-
-

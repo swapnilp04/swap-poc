@@ -12,7 +12,7 @@ type BatchStandardStudent struct {
 	BatchId       		int
 	Batch 						Batch
 	StandardId    		int
-	gstandard 				Standard
+	Standard 					Standard
 	StudentId					uint `json:"student_id"`
 	BatchStandardId 	uint `json:batch_standard_id""`
 	BatchStandard     BatchStandard
@@ -135,5 +135,3 @@ func (bs *BatchStandardStudent) TotalCridits() float64 {
 	}
 	return total	
 }
-
-

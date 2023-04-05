@@ -55,10 +55,6 @@ func (s *Student) AssignClass() error {
 	}
 }
 
-func (s *Student) RemoveFromClass() error {
-	return nil
-}
-
 func (s *Student) Assign(studentData map[string]interface{}) {
 	fmt.Printf("%+v\n", studentData)
 	if firstName, ok := studentData["first_name"]; ok {
@@ -115,12 +111,39 @@ func (s *Student) ConfirmedStatus() bool {
 	return s.Status == "Confirmed"
 }
 
+func (s *Student) GetBatchStandardStudents() []BatchStandardStudent {
+	return s.BatchStandardStudents
+}
 
-func (s *Student) AssignBatchStudent() error {
+func (s *Student) RemoveBatchStandard(batchStandard *BatchStandard) error {
+	if s.GetBalance > 0.0 {
+		return errors.New("Please Clear Balance first")
+	}
+
+	batchStandardStudent := &BatchStandardStudent{StudentId: s.ID, BatchStandardId: batchStandard.ID}
+	err := db.Driver.Find(batchStandardStudent).Error
+	if err != nil {
+		return err
+	}
+	batchStandardStudent.DeletedAt = Time.Now
+	return batchStandardStudent.Update()
+}
+
+func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 	//check student already assign to batch standard
 	//if assign remove from current batch standard before this check transaction 
 	// after that assign new batch standard
-	return nil
+	batchStandardStudents := s.GetBatchStandardStudents()
+	if len(batchStandardStudents) > 0 {
+		return errors.New("Already assigned to Class")
+	} else {
+		batchStandardStudent := &BatchStandardStudent{}
+		batchStandardStudentData := map[string]interface{}{"BatchId": batchStandard.ID, "StandardId": batchStandard.StandardId, "StudentId": s.ID, 
+			"Fee": batchStandard.Fee}
+		batchStandardStudent.Assign(batchStandardStudentData)
+		return batchStandardStudent.Create()
+	}
+	
 } 
 
 func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
@@ -164,4 +187,19 @@ func (s *Student) TotalCridits() float64 {
 		}
 	}
 	return total	
+}
+
+func (bs *BatchStandardStudent) GetBalance() float64 {
+	transactions, err := bs.GetTransactions()
+	var total = 0.0
+	if err == nil {
+		for _, transaction := range transactions {
+			if transaction.TransactionType == "debit" {
+				total = total + transaction.Amount
+			} else {
+				total = total - transaction.Amount
+			}
+		}
+	}
+	return total		
 }

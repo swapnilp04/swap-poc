@@ -8,11 +8,13 @@ import (
 )
 
 type TransactionCategory struct {
-	ID            					int    `json:"id"`
+	ID            					uint    `json:"id"`
 	Name     								string `json:"name"`
-	HostelId								int `json:"hostel_id"`
-	BatchId									int `json:"batch_id"`
-	RoomId      						int `json:"room_id"`
+	HostelId								uint `json:"hostel_id"`
+	BatchId									uint `json:"batch_id"`
+	BatchStandardId         uint `json:"batch_standard_id"`
+	RoomId      						uint `json:"room_id"`
+	Transactions  					[]Transaction
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`

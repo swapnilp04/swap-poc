@@ -62,6 +62,11 @@ func (bs *BatchStandard) Find() error {
 
 func (bs *BatchStandard) Create() error {
 	err := db.Driver.Create(bs).Error
+	if err != nil {
+		return err
+	} else {
+		err = bs.createTransactionCategory()
+	}
 	db.Commit()
 	return err
 }
@@ -80,4 +85,17 @@ func (bs *BatchStandard) Delete() error {
 
 func (bs *BatchStandard) HasFeeAssigned() bool {
 	return bs.Fee > 0.0
+}
+
+func (bs *BatchStandard) createTransactionCategory() error {
+	var transactionCatetoryData = map[string]interface{}{"name": "BatchStandard", "batch_id": bs.BatchId, "batch_standard_id": bs.ID}
+	transactionCategory := NewTransactionCategory(transactionCatetoryData)
+	err := transactionCategory.Create()
+	return err
+}
+
+func (bs *BatchStandard) getCategory() (*TransactionCategory, error) {
+	tc := &TransactionCategory{Name: "BatchStandard", BatchId: bs.BatchId, BatchStandardId: bs.ID}
+	err := db.Driver.First(tc).Error
+	return tc, err
 }

@@ -116,6 +116,14 @@ func (s *Student) ConfirmedStatus() bool {
 	return s.Status == "Confirmed"
 }
 
+
+func (s *Student) AssignBatchStudent() error {
+	//check student already assign to batch standard
+	//if assign remove from current batch standard before this check transaction 
+	// after that assign new batch standard
+	return nil
+} 
+
 func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
 	var hostelStudent = HostelStudent{StudentId: s.ID, HostelId: h.ID, RoomId: hr.ID}
 	err := db.Driver.Find(&hostelStudent).Error

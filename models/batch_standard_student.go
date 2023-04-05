@@ -83,3 +83,7 @@ func (bs *BatchStandardStudent) Delete() error {
 	db.Commit()
 	return err
 }
+
+//func (bs *BatchStandardStudent) GetTransactions() ([]Transaction. error) {
+		
+//}

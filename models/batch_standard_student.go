@@ -86,9 +86,9 @@ func (bs *BatchStandardStudent) Delete() error {
 	return err
 }
 
-func (bs *BatchStandardStudent) GetTransactions() ([]Transaction. error) {
+func (bs *BatchStandardStudent) GetTransactions() ([]Transaction, error) {
 	batchStandard := bs.BatchStandard
-	transactionCategory := batchStandard.GetTransactionCategory()
+	transactionCategory, _ := batchStandard.GetTransactionCategory()
 	transactions := []Transaction{}
 	err := db.Driver.Where("TransactionCategoryId = ? AND StudentId = ? AND BatchStandardStudentId = ? AND IsCleared = ?", 
 		transactionCategory.ID, bs.StandardId, bs.ID, true).Find(transactions).Error
@@ -99,7 +99,7 @@ func (bs *BatchStandardStudent) TotalDebits() float64 {
 	transactions, err := bs.GetTransactions()
 	var total = 0.0
 	if err == nil {
-		for _ transaction := range transactions {
+		for _, transaction := range transactions {
 			if transaction.TransactionType == "debit" {
 				total = total + transaction.Amount
 			}
@@ -112,7 +112,7 @@ func (bs *BatchStandardStudent) TotalCridits() float64 {
 	transactions, err := bs.GetTransactions()
 	var total = 0.0
 	if err == nil {
-		for _ transaction := range transactions {
+		for _, transaction := range transactions {
 			if transaction.TransactionType == "credit" {
 				total = total + transaction.Amount
 			}

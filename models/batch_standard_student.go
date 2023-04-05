@@ -70,6 +70,7 @@ func (bs *BatchStandardStudent) Find() error {
 
 func (bs *BatchStandardStudent) Create() error {
 	err := db.Driver.Create(bs).Error
+	err = bs.AddTransaction()
 	db.Commit()
 	return err
 }
@@ -83,6 +84,20 @@ func (bs *BatchStandardStudent) Update() error {
 func (bs *BatchStandardStudent) Delete() error {
 	err := db.Driver.Delete(bs).Error
 	db.Commit()
+	return err
+}
+
+func (bs *BatchStandardStudent) AddTransaction() error{
+	transaction := &Transaction{}
+	transactionCategory, err := bs.BatchStandard.GetTransactionCategory()
+	if err == nil {
+		return err
+	}
+	transactionData := map[string]interface{}{"Name": "New Adminission", "StudentId": bs.StudentId, 
+		"TransactionCategoryId": transactionCategory.ID, "BatchStandardStudentId": bs.ID, "IsCleared": true, "TransactionType": "debit", 
+		"Amount": bs.BatchStandard.Fee}
+	transaction.Assign(transactionData)
+	err = transaction.Create()
 	return err
 }
 

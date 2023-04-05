@@ -133,3 +133,36 @@ func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
 	}
 	return err
 }
+
+func (s *Student) GetTransactions() ([]Transaction, error) {
+	transactions := []Transaction{}
+	err := db.Driver.Where("StudentId = ? AND IsCleared = ?", 
+		s.ID, true).Find(transactions).Error
+	return transactions, err
+}
+
+func (s *Student) TotalDebits() float64 {
+	transactions, err := s.GetTransactions()
+	var total = 0.0
+	if err == nil {
+		for _, transaction := range transactions {
+			if transaction.TransactionType == "debit" {
+				total = total + transaction.Amount
+			}
+		}
+	}
+	return total
+}
+
+func (s *Student) TotalCridits() float64 {
+	transactions, err := s.GetTransactions()
+	var total = 0.0
+	if err == nil {
+		for _, transaction := range transactions {
+			if transaction.TransactionType == "credit" {
+				total = total + transaction.Amount
+			}
+		}
+	}
+	return total	
+}

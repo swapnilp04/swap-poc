@@ -8,7 +8,7 @@ import (
 )
 
 type Standard struct {
-	ID           	int    `json:"id"`
+	ID           	uint    `json:"id"`
 	Name     			string `json:"name"`
 	Std       		int64 `json:int64`
 	CreatedAt 		time.Time

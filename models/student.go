@@ -60,16 +60,6 @@ func (s *Student) RemoveFromClass() error {
 	return nil
 }
 
-func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
-	var hostelStudent = HostelStudent{StudentId: s.ID, HostelId: h.ID, RoomId: hr.ID}
-	err := db.Driver.Find(&hostelStudent).Error
-	
-	if err != nil {
-		err = hostelStudent.Create()
-	}
-	return err
-}
-
 func (s *Student) Assign(studentData map[string]interface{}) {
 	fmt.Printf("%+v\n", studentData)
 	if firstName, ok := studentData["first_name"]; ok {
@@ -112,5 +102,23 @@ func (s *Student) Update() error {
 
 func (s *Student) Delete() error {
 	err := db.Driver.Delete(s).Error
+	return err
+}
+
+func (s *Student) AdmissionStatus() bool {
+	return s.Status == "Admission"
+}
+
+func (s *Student) ConfirmedStatus() bool {
+	return s.Status == "Confirmed"
+}
+
+func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
+	var hostelStudent = HostelStudent{StudentId: s.ID, HostelId: h.ID, RoomId: hr.ID}
+	err := db.Driver.Find(&hostelStudent).Error
+	
+	if err != nil {
+		err = hostelStudent.Create()
+	}
 	return err
 }

@@ -16,6 +16,7 @@ type Hostel struct {
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
+  HostelRooms			[]HostelRoom
 }
 
 func migrateHostel() {

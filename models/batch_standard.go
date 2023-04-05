@@ -8,8 +8,8 @@ import (
 )
 
 type BatchStandard struct {
-	ID            	int    `json:"id"`
-	BatchId       	int `json:"batch_id"`
+	ID            	uint    `json:"id"`
+	BatchId       	uint `json:"batch_id"`
 	Batch 					Batch
 	StandardId      uint `json:"standard_id"`
 	Standard 				Standard
@@ -40,7 +40,7 @@ func (bs *BatchStandard) Validate() error {
 func (bs *BatchStandard) Assign(batchStandardData map[string]interface{}) {
 	fmt.Printf("%+v\n", batchStandardData)
 	if batch_id, ok := batchStandardData["batch_id"]; ok {
-		bs.BatchId = int(batch_id.(int64))
+		bs.BatchId = uint(batch_id.(int64))
 	}
 
 	if standard_id, ok := batchStandardData["standard_id"]; ok {
@@ -62,11 +62,13 @@ func (bs *BatchStandard) Find() error {
 
 func (bs *BatchStandard) Create() error {
 	err := db.Driver.Create(bs).Error
+	db.Commit()
 	return err
 }
 
 func (bs *BatchStandard) Update() error {
 	err := db.Driver.Save(bs).Error
+	db.Commit()
 	return err
 }
 

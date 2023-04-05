@@ -8,10 +8,9 @@ import (
 )
 
 type Batch struct {
-	ID            	int    `json:"id"`
+	ID            	uint    `json:"id"`
 	Name     				string `json:"name"`
 	Year      			int `json:"year"`
-	Transactions  	[]Transaction
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -58,16 +57,37 @@ func (b *Batch) Find() error {
 }
 
 func (b *Batch) Create() error {
+	//transaction block
 	err := db.Driver.Create(b).Error
+	s := &Standard{}
+	stds, stdErr := s.All()
+	if stdErr == nil {
+		for _, std := range stds {
+			bs := &BatchStandard{}
+			bs.BatchId = b.ID
+			bs.StandardId = std.ID
+			bsErr := bs.Create()
+			if bsErr != nil {
+				// uncommit 
+				break;
+			}
+		}
+	} else {
+		// uncommit 
+		// return block 
+	}
+	db.Commit()
 	return err
 }
 
 func (b *Batch) Update() error {
 	err := db.Driver.Save(b).Error
+	db.Commit()
 	return err
 }
 
 func (b *Batch) Delete() error {
 	err := db.Driver.Delete(b).Error
+	_ := db.Commit()
 	return err
 }

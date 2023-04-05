@@ -94,8 +94,10 @@ func (bs *BatchStandard) createTransactionCategory() error {
 	return err
 }
 
-func (bs *BatchStandard) getCategory() (*TransactionCategory, error) {
+func (bs *BatchStandard) GetTransactionCategory() (*TransactionCategory, error) {
 	tc := &TransactionCategory{Name: "BatchStandard", BatchId: bs.BatchId, BatchStandardId: bs.ID}
 	err := db.Driver.First(tc).Error
 	return tc, err
 }
+
+

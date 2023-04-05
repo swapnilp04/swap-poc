@@ -11,11 +11,13 @@ type Transaction struct {
 	ID            					int    `json:"id"`
 	Name     								string `json:"name"`
 	StudentId								uint `json:"student_id"`
-	transactionCategoryId   uint `json:"transaction_category_id"`
+	TransactionCategoryId   uint `json:"transaction_category_id"`
 	BatchStandardStudentId	uint `json:"batch_standard_student_id"`
 	PaidBy 									string `json:"paid_by"`
 	PaymentMode 						string `json:"payment_mode"`
 	IsCleared 							bool `json:"is_cleared"`
+	TransactionType         string `json:"transaction_type"`
+	Amount       						float64 `json:"amount"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`

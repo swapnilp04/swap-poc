@@ -8,17 +8,19 @@ import (
 )
 
 type BatchStandardStudent struct {
-	ID            int    `json:"id"`
-	BatchId       int
-	Batch 				Batch
-	StandardId    int
-	gstandard 		Standard
-	StudentId			uint `json:"student_id"`
-	Student 			Student
-	Fee 					float64 `json:"fee"`
-	CreatedAt 		time.Time
-	UpdatedAt 		time.Time
-  DeletedAt 		gorm.DeletedAt `gorm:"index"`
+	ID            		int    `json:"id"`
+	BatchId       		int
+	Batch 						Batch
+	StandardId    		int
+	gstandard 				Standard
+	StudentId					uint `json:"student_id"`
+	BatchStandardId 	uint `json:batch_standard_id""`
+	BatchStandard     BatchStandard
+	Student 					Student
+	Fee 							float64 `json:"fee"`
+	CreatedAt 				time.Time
+	UpdatedAt 				time.Time
+  DeletedAt 				gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateBatchStandardStudent() {
@@ -84,6 +86,39 @@ func (bs *BatchStandardStudent) Delete() error {
 	return err
 }
 
-//func (bs *BatchStandardStudent) GetTransactions() ([]Transaction. error) {
-		
-//}
+func (bs *BatchStandardStudent) GetTransactions() ([]Transaction. error) {
+	batchStandard := bs.BatchStandard
+	transactionCategory := batchStandard.GetTransactionCategory()
+	transactions := []Transaction{}
+	err := db.Driver.Where("TransactionCategoryId = ? AND StudentId = ? AND BatchStandardStudentId = ? AND IsCleared = ?", 
+		transactionCategory.ID, bs.StandardId, bs.ID, true).Find(transactions).Error
+	return transactions, err
+}
+
+func (bs *BatchStandardStudent) TotalDebits() float64 {
+	transactions, err := bs.GetTransactions()
+	var total = 0.0
+	if err == nil {
+		for _ transaction := range transactions {
+			if transaction.TransactionType == "debit" {
+				total = total + transaction.Amount
+			}
+		}
+	}
+	return total
+}
+
+func (bs *BatchStandardStudent) TotalCridits() float64 {
+	transactions, err := bs.GetTransactions()
+	var total = 0.0
+	if err == nil {
+		for _ transaction := range transactions {
+			if transaction.TransactionType == "credit" {
+				total = total + transaction.Amount
+			}
+		}
+	}
+	return total	
+}
+
+

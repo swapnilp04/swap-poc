@@ -10,7 +10,7 @@ import (
 type TransactionCategory struct {
 	ID            					uint    `json:"id"`
 	Name     								string `json:"name"`
-	HostelId								uint `json:"hostel_id"`
+	HostelID								uint `json:"hostel_id"`
 	BatchId									uint `json:"batch_id"`
 	BatchStandardId         uint `json:"batch_standard_id"`
 	RoomId      						uint `json:"room_id"`

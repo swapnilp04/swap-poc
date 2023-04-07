@@ -10,10 +10,11 @@ import (
 type HostelStudent struct {
 	ID            	uint    `json:"id"`
 	Name     				string `json:"name"`
-	HostelId				uint `json:"hostel_id"`
-	RoomId      		uint `json:"room_id"`
+	HostelID				uint `json:"hostel_id"`
+	HostelRoomID    uint `json:"hostel_room_id"`
 	ContactNumber  	string `json:"contact_number"`
 	StudentId				uint `json:"student_id"`
+	Hostel 					Hostel
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -43,12 +44,12 @@ func (hs *HostelStudent) Assign(hostelStudentData map[string]interface{}) {
 		hs.Name = name.(string)
 	}
 
-	if room_id, ok := hostelStudentData["room_id"]; ok {
-		hs.RoomId = uint(room_id.(int64))
+	if hostel_room_id, ok := hostelStudentData["hostel_room_id"]; ok {
+		hs.HostelRoomID = uint(hostel_room_id.(int64))
 	}
 
 	if hostel_id, ok := hostelStudentData["hostel_id"]; ok {
-		hs.HostelId = uint(hostel_id.(int64))
+		hs.HostelID = uint(hostel_id.(int64))
 	}
 
 	if contactNumber, ok := hostelStudentData["content_number"]; ok {
@@ -83,4 +84,19 @@ func (hs *HostelStudent) Delete() error {
 	err := db.Driver.Delete(hs).Error
 	db.Commit()
 	return err
+}
+
+func (hs *HostelStudent) AddTransaction() error {
+	transaction := &Transaction{}
+	 transactionCategory, err := hs.Hostel.GetTransactionCategory()
+	 if err == nil {
+	 	return err
+	 }
+	 transactionData := map[string]interface{}{"Name": "New Adminission", "StudentId": hs.StudentId, "HostelStudentID": hs.ID, 
+	 	"TransactionCategoryId": transactionCategory.ID, "IsCleared": true, "TransactionType": "debit", 
+	 	"Amount": hs.Hostel.Rate}
+	 transaction.Assign(transactionData)
+	 err = transaction.Create()
+	
+	return nil
 }

@@ -11,7 +11,8 @@ type HostelRoom struct {
 	ID            	uint    	`json:"id"`
 	Name     				string 	`json:"name"`
 	NoOfStudents    int 		`json:"no_of_students"`
-	Rate     				int64 	`json:"rate"` 
+	Rate     				int64 	`json:"rate"`
+	HostelID        uint `json:"hostel_id"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

@@ -147,10 +147,10 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 } 
 
 func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
-	var hostelStudent = HostelStudent{StudentId: s.ID, HostelId: h.ID, RoomId: hr.ID}
+	var hostelStudent = HostelStudent{StudentId: s.ID, HostelID: h.ID, HostelRoomID: hr.ID}
 	err := db.Driver.Find(&hostelStudent).Error
 	
-	if err != nil {
+	if err == nil {
 		err = hostelStudent.Create()
 	}
 	return err

@@ -13,6 +13,7 @@ type Hostel struct {
 	Rooms      			int `json:"rooms"`
 	Rector      		string `json:"rector"`	
 	ContactNumber 	int64  `json:"contact_number" gorm:"contact_number"`
+	Rate     				int64 	`json:"rate"` 
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -84,4 +85,17 @@ func (h *Hostel) Delete() error {
 	err := db.Driver.Delete(h).Error
 	db.Commit()
 	return err
+}
+
+func (h *Hostel) createTransactionCategory() error {
+	var transactionCatetoryData = map[string]interface{}{"name": "Hostel", "HostelID": h.ID}
+	transactionCategory := NewTransactionCategory(transactionCatetoryData)
+	err := transactionCategory.Create()
+	return err
+}
+
+func (h *Hostel) GetTransactionCategory() (*TransactionCategory, error) {
+	tc := &TransactionCategory{Name: "Hostel", HostelID: h.ID}
+	err := db.Driver.First(tc).Error
+	return tc, err
 }

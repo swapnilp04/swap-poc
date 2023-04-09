@@ -5,6 +5,7 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"swapnil-ex/swapErr"
 )
 
 type Transaction struct {
@@ -17,8 +18,10 @@ type Transaction struct {
 	PaidBy 									string `json:"paid_by"`
 	PaymentMode 						string `json:"payment_mode"`
 	IsCleared 							bool `json:"is_cleared"`
+	IsChecked 							bool `json:"is_checked"`
 	TransactionType         string `json:"transaction_type"`
 	Amount       						float64 `json:"amount"`
+	RecieptUrl  						string `json:"receipt_url"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`
@@ -76,4 +79,14 @@ func (t *Transaction) Delete() error {
 	err := db.Driver.Delete(t).Error
 	db.Commit()
 	return err
+}
+
+func (t *Transaction) CheckedTransaction() error {
+		if t.IsChecked != true {
+			t.IsChecked = true
+			err := t.Update()
+			return err
+		} else {
+			return swapErr.ErrAlreadyChecked
+		}
 }

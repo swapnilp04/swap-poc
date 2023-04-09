@@ -158,8 +158,7 @@ func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
 
 func (s *Student) GetTransactions() ([]Transaction, error) {
 	transactions := []Transaction{}
-	err := db.Driver.Where("StudentId = ? AND IsCleared = ?", 
-		s.ID, true).Find(transactions).Error
+	err := db.Driver.Where("StudentId = ?", s.ID).Find(transactions).Error
 	return transactions, err
 }
 
@@ -203,3 +202,33 @@ func (s *Student) GetBalance() float64 {
 	}
 	return total		
 }
+
+func (s *Student) PayCash(amount float64, parentName string ) error {
+	transaction := &Transaction{}
+	
+	transactionData := map[string]interface{}{"Name": "Pay fee", "StudentId": s.ID, 
+		"IsCleared": true, "TransactionType": "cridit", "PaidBy": parentName, "PaymentMode": "Cash",
+		"Amount": amount}
+	transaction.Assign(transactionData)
+	err := transaction.Create()
+
+	return err
+}
+
+func (s *Student) PayCheque(amount float64, chequeNo string, bankName string, date string) error {
+	transaction := &Transaction{}
+
+	transactionData := map[string]interface{}{"Name": "Pay fee", "StudentId": s.ID, 
+		"IsCleared": true, "TransactionType": "cridit", 
+		"Amount": amount}
+	transaction.Assign(transactionData)
+	err := transaction.Create()
+	if err == nil {
+		cheque := &Cheque{}
+		chequeData := map[string]interface{}{"BankName": bankName, "Amount": amount, "TransactionID": transaction.ID, "IsCleared": false, "Date": date}
+		cheque.Assign(chequeData)
+		err = cheque.Create()
+	}
+	return err
+}
+

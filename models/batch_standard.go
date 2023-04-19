@@ -67,19 +67,16 @@ func (bs *BatchStandard) Create() error {
 	} else {
 		err = bs.createTransactionCategory()
 	}
-	db.Commit()
 	return err
 }
 
 func (bs *BatchStandard) Update() error {
 	err := db.Driver.Save(bs).Error
-	db.Commit()
 	return err
 }
 
 func (bs *BatchStandard) Delete() error {
 	err := db.Driver.Delete(bs).Error
-	db.Commit()
 	return err
 }
 

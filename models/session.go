@@ -24,7 +24,6 @@ func migrateSession() {
 
 func (s *Session) Save() error {
 	err := db.Driver.Save(s).Error
-	db.Commit()
 	return err
 }
 
@@ -39,6 +38,5 @@ func (s *Session) Valid() bool {
 
 func (s *Session) Destroy() error {
 	err := db.Driver.Delete(s).Error
-	db.Commit()
 	return err
 }

@@ -58,18 +58,15 @@ func (s *Standard) Find() error {
 
 func (s *Standard) Create() error {
 	err := db.Driver.Create(s).Error
-	db.Commit()
 	return err
 }
 
 func (s *Standard) Update() error {
 	err := db.Driver.Save(s).Error
-	db.Commit()
 	return err
 }
 
 func (s *Standard) Delete() error {
 	err := db.Driver.Delete(s).Error
-	db.Commit()
 	return err
 }

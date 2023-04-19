@@ -19,10 +19,7 @@ type Student struct {
 	ParentOccupation					string `json:"parent_occupation"`
 	ContactNumber 						int64  `json:"phone_number" gorm:"phone_number"`
 	Status 										string `json:"status"`
-	BatchStandardStudents  		[]BatchStandardStudent
-	Transactions  						[]Transaction
-	HostelStudent 						HostelStudent
-	ExamStudents							[]ExamStudent
+	BatchStandardStudents     []BatchStandardStudent
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
   DeletedAt 								gorm.DeletedAt `gorm:"index"`
@@ -87,19 +84,16 @@ func (s *Student) Find() error {
 
 func (s *Student) Create() error {
 	err := db.Driver.Create(s).Error
-	db.Commit()
 	return err
 }
 
 func (s *Student) Update() error {
 	err := db.Driver.Save(s).Error
-	db.Commit()
 	return err
 }
 
 func (s *Student) Delete() error {
 	err := db.Driver.Delete(s).Error
-	db.Commit()
 	return err
 }
 

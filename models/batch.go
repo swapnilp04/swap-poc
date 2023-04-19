@@ -69,24 +69,21 @@ func (b *Batch) Create() error {
 			bsErr := bs.Create()
 			if bsErr != nil {
 				// uncommit 
-				return db.Rollback()
+				//return db.Rollback()
 			}
 		}
 	} else {
-		return db.Rollback()
+		//return db.Rollback()
 	}
-	db.Commit()
 	return err
 }
 
 func (b *Batch) Update() error {
 	err := db.Driver.Save(b).Error
-	db.Commit()
 	return err
 }
 
 func (b *Batch) Delete() error {
 	err := db.Driver.Delete(b).Error
-	db.Commit()
 	return err
 }

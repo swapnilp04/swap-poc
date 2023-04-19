@@ -70,19 +70,16 @@ func (hs *HostelStudent) Find() error {
 
 func (hs *HostelStudent) Create() error {
 	err := db.Driver.Create(hs).Error
-	db.Commit()
 	return err
 }
 
 func (hs *HostelStudent) Update() error {
 	err := db.Driver.Save(hs).Error
-	db.Commit()
 	return err
 }
 
 func (hs *HostelStudent) Delete() error {
 	err := db.Driver.Delete(hs).Error
-	db.Commit()
 	return err
 }
 

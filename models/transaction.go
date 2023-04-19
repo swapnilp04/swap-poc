@@ -65,19 +65,16 @@ func (t *Transaction) Find() error {
 
 func (t *Transaction) Create() error {
 	err := db.Driver.Create(t).Error
-	db.Commit()
 	return err
 }
 
 func (t *Transaction) Update() error {
 	err := db.Driver.Save(t).Error
-	db.Commit()
 	return err
 }
 
 func (t *Transaction) Delete() error {
 	err := db.Driver.Delete(t).Error
-	db.Commit()
 	return err
 }
 

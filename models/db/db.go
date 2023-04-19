@@ -6,29 +6,19 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var Driver, tx *gorm.DB
+var Driver *gorm.DB
 
 
 func init() {
 	var err error
-	tx, err = gorm.Open(sqlite.Open("swapnil.db"), &gorm.Config{
+	Driver, err = gorm.Open(sqlite.Open("swapnil.db"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {
 		panic(err)
 	}
-	Driver = tx.Begin()
 }
-
-func Commit() error{
-	return Driver.Commit().Error
-}
-
-func Rollback () error{
-	return Driver.Rollback().Error
-}
-
 
 func Close() {
 }

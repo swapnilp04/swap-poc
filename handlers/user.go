@@ -76,11 +76,11 @@ func Register(c echo.Context) error {
 
 func Login(c echo.Context) error {
 	var loginData map[string]string
+
 	if err := c.Bind(&loginData); err != nil {
 		fmt.Println("c.Bind()", err)
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
 	}
-
 	if _, ok := loginData["username"]; !ok {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrInvalidUser.Error()})
 	}
@@ -88,7 +88,7 @@ func Login(c echo.Context) error {
 	if _, ok := loginData["password"]; !ok {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrInvalidUser.Error()})
 	}
-
+	
 	user := &models.User{}
 	err := user.FindUserByUsername(loginData["username"])
 	if err != nil {

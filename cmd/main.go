@@ -5,15 +5,27 @@ import (
 	"swapnil-ex/models/db"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"net/http"
+
 )
 
 func main() {
 
 	defer db.Close()
 
+
+
+
+
+
 	e := echo.New()
 
 	// e.Use(middleware.Recover())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:4200", "https://labstack.net", "*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 
 	e.POST("/register", handlers.Register, handlers.OnlySwapnil())
 	e.POST("/login", handlers.Login)

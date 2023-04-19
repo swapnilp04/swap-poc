@@ -64,18 +64,15 @@ func (hr *HostelRoom) Find() error {
 
 func (hr *HostelRoom) Create() error {
 	err := db.Driver.Create(hr).Error
-	db.Commit()
 	return err
 }
 
 func (hr *HostelRoom) Update() error {
 	err := db.Driver.Save(hr).Error
-	db.Commit()
 	return err
 }
 
 func (hr *HostelRoom) Delete() error {
 	err := db.Driver.Delete(hr).Error
-	db.Commit()
 	return err
 }

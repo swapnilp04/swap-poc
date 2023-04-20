@@ -6,20 +6,22 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type Student struct {
 	ID            						uint    `json:"id"`
 	Inil     									string `json:"inil"`
-	FirstName     						string `json:"first_name"`
-	MiddleName     						string `json:"middle_name"`
-	LastName      						string `json:"last_name"`
-	Age           						int    `json:"age"`
-	ParentName								string `json:"parent_name"`
-	ParentOccupation					string `json:"parent_occupation"`
-	ContactNumber 						int64  `json:"phone_number" gorm:"phone_number"`
+	FirstName     						string `json:"first_name" validate:"nonzero"`
+	MiddleName     						string `json:"middle_name" validate:"nonzero"`
+	LastName      						string `json:"last_name" validate:"nonzero"`
+	Age           						int    `json:"age" validate:"min=15"`
+	ParentName								string `json:"parent_name" validate:"nonzero"`
+	ParentOccupation					string `json:"parent_occupation" validate:"nonzero"`
+	ContactNumber 						string  `json:"contact_number" gorm:"contact_number" validate:"nonzero,min=10,max=12"`
+	WhNumber									string  `json:"wh_number" gorm:"wh_number,min=10,max=12"`
 	Status 										string `json:"status"`
-	BatchStandardStudents     []BatchStandardStudent
+	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
   DeletedAt 								gorm.DeletedAt `gorm:"index"`
@@ -40,7 +42,11 @@ func NewStudent(studentData map[string]interface{}) *Student {
 }
 
 func (s *Student) Validate() error {
+	if errs := validator.Validate(s); errs != nil {
+	return errs
+	} else {
 	return nil
+	}
 }
 
 func (s *Student) AssignClass() error {
@@ -58,6 +64,10 @@ func (s *Student) Assign(studentData map[string]interface{}) {
 		s.FirstName = firstName.(string)
 	}
 
+	if middleName, ok := studentData["middle_name"]; ok {
+		s.MiddleName = middleName.(string)
+	}
+
 	if lastName, ok := studentData["last_name"]; ok {
 		s.LastName = lastName.(string)
 	}
@@ -65,9 +75,18 @@ func (s *Student) Assign(studentData map[string]interface{}) {
 	if age, ok := studentData["age"]; ok {
 		s.Age = int(age.(float64))
 	}
+	if parentName, ok := studentData["parent_name"]; ok {
+		s.ParentName = parentName.(string)
+	}
+	if parentOccupation, ok := studentData["parent_occupation"]; ok {
+		s.ParentOccupation = parentOccupation.(string)
+	}
+	if contactNumber, ok := studentData["contact_number"]; ok {
+		s.ContactNumber = contactNumber.(string)
+	}
 
-	if contactNumber, ok := studentData["content_number"]; ok {
-		s.ContactNumber = int64(contactNumber.(float64))
+	if whNumber, ok := studentData["wh_number"]; ok {
+		s.WhNumber = whNumber.(string)
 	}
 }
 

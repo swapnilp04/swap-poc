@@ -169,6 +169,13 @@ func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
 	return err
 }
 
+func (s *Student) GetStudentHostel() (HostelStudent, error) {
+	var hostelStudent = HostelStudent{}
+	err := db.Driver.Find(&hostelStudent).Error
+	
+	return hostelStudent, err
+}
+
 func (s *Student) GetTransactions() ([]Transaction, error) {
 	transactions := []Transaction{}
 	err := db.Driver.Where("StudentId = ?", s.ID).Find(transactions).Error

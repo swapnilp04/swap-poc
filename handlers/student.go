@@ -113,3 +113,28 @@ func DeleteStudent(c echo.Context) error {
 	// Delete a user by ID
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "student deleted successfully"})
 }
+
+func GetStudentHostel(c echo.Context) error {
+	// Get a single user by ID
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	s := &models.Student{ID: uint(newId)}
+	err = s.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	hostelStudent, errHostel := s.GetStudentHostel()
+	if errHostel != nil {
+		fmt.Println("s.Find(GetStudentHostel)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, hostelStudent)
+}

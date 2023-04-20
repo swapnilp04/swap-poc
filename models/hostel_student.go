@@ -15,6 +15,7 @@ type HostelStudent struct {
 	ContactNumber  	string `json:"contact_number"`
 	StudentId				uint `json:"student_id"`
 	Hostel 					Hostel
+	HostelRoom      HostelRoom
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

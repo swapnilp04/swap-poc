@@ -10,7 +10,7 @@ import (
 type Standard struct {
 	ID           	uint    `json:"id"`
 	Name     			string `json:"name"`
-	Std       		int64 `json:int64`
+	Std       		int `json:"std"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
   DeletedAt 		gorm.DeletedAt `gorm:"index"`
@@ -41,7 +41,7 @@ func (s *Standard) Assign(standardData map[string]interface{}) {
 	}
 
 	if std, ok := standardData["std"]; ok {
-		s.Std = int64(std.(int))
+		s.Std = int(std.(float64))
 	}
 }
 

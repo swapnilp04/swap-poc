@@ -38,5 +38,12 @@ func main() {
 	e.PUT("/students/:id", handlers.UpdateStudent, handlers.IsLoggedIn)
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn)
 
+	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
+	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)
+	e.POST("/standards", handlers.CreateStandard, handlers.IsLoggedIn)
+	e.PUT("/standards/:id", handlers.UpdateStandard, handlers.IsLoggedIn)
+	e.DELETE("/standards/:id", handlers.DeleteStandard, handlers.IsLoggedIn)
+
+
 	e.Logger.Fatal(e.Start(":8080"))
 }

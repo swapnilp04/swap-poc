@@ -50,6 +50,8 @@ func main() {
 
 	e.GET("/hostels/:hostel_id/hostel_rooms", handlers.GetHostelRooms, handlers.IsLoggedIn)
 	e.POST("/hostels/:hostel_id/hostel_rooms", handlers.CreateHostelRoom, handlers.IsLoggedIn)
+	e.GET("/hostels/:hostel_id/hostel_rooms/:id", handlers.GetHostelRoom, handlers.IsLoggedIn)
+	e.PUT("/hostels/:hostel_id/hostel_rooms/:id", handlers.UpdateHostelRoom, handlers.IsLoggedIn)
 
 
 	e.Logger.Fatal(e.Start(":8080"))

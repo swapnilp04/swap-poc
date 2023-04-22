@@ -38,8 +38,21 @@ func GetHostelRoom(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	hostelRoom := &models.HostelRoom{ID: uint(newId), HostelID: hostel.ID}
+	err = hostelRoom.Find()
 
-	return c.JSON(http.StatusOK, hostel)
+	if err != nil {
+		fmt.Println("s.Find(GetHostelRoom)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, hostelRoom)
 }
 
 func CreateHostelRoom(c echo.Context) error {
@@ -72,6 +85,13 @@ func CreateHostelRoom(c echo.Context) error {
 }
 
 func UpdateHostelRoom(c echo.Context) error {
+
+	hostel, errHostel := GetHostelForRoom(c)
+	if errHostel != nil {
+		fmt.Println("s.Find(GetHostelRoom)", errHostel)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
 	id := c.Param("id")
 	newId, err := strconv.Atoi(id)
 	if err != nil {
@@ -93,10 +113,11 @@ func UpdateHostelRoom(c echo.Context) error {
 	}
 
 	s.Assign(hostelRoomData)
+	s.HostelID = hostel.ID
+
 	if err := s.Update(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
-
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "HostelRoom updated", "hostelRoom": s})
 }
 

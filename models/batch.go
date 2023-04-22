@@ -41,7 +41,7 @@ func (b *Batch) Assign(batchData map[string]interface{}) {
 	}
 
 	if year, ok := batchData["year"]; ok {
-		b.Year = int(year.(int64))
+		b.Year = int(year.(float64))
 	}
 }
 

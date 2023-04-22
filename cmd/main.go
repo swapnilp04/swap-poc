@@ -37,12 +37,16 @@ func main() {
 	e.POST("/students", handlers.CreateStudent, handlers.IsLoggedIn)
 	e.PUT("/students/:id", handlers.UpdateStudent, handlers.IsLoggedIn)
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn)
-
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)
 	e.POST("/standards", handlers.CreateStandard, handlers.IsLoggedIn)
 	e.PUT("/standards/:id", handlers.UpdateStandard, handlers.IsLoggedIn)
 	e.DELETE("/standards/:id", handlers.DeleteStandard, handlers.IsLoggedIn)
+	e.GET("/batchs", handlers.GetBatchs, handlers.IsLoggedIn)
+	e.GET("/batchs/:id", handlers.GetBatch, handlers.IsLoggedIn)
+	e.POST("/batchs", handlers.CreateBatch, handlers.IsLoggedIn)
+	e.PUT("/batchs/:id", handlers.UpdateBatch, handlers.IsLoggedIn)
+	e.DELETE("/batchs/:id", handlers.DeleteBatch, handlers.IsLoggedIn)
 
 
 	e.Logger.Fatal(e.Start(":8080"))

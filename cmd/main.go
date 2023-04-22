@@ -14,11 +14,6 @@ func main() {
 
 	defer db.Close()
 
-
-
-
-
-
 	e := echo.New()
 
 	// e.Use(middleware.Recover())
@@ -53,6 +48,8 @@ func main() {
 	e.PUT("/hostels/:id", handlers.UpdateHostel, handlers.IsLoggedIn)
 	e.DELETE("/hostels/:id", handlers.DeleteHostel, handlers.IsLoggedIn)
 
+	e.GET("/hostels/:hostel_id/hostel_rooms", handlers.GetHostelRooms, handlers.IsLoggedIn)
+	e.POST("/hostels/:hostel_id/hostel_rooms", handlers.CreateHostelRoom, handlers.IsLoggedIn)
 
 
 	e.Logger.Fatal(e.Start(":8080"))

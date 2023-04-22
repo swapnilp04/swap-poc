@@ -17,7 +17,6 @@ type Hostel struct {
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
-  HostelRooms			[]HostelRoom
 }
 
 func migrateHostel() {
@@ -36,6 +35,12 @@ func NewHostel(hostelData map[string]interface{}) *Hostel {
 
 func (s *Hostel) Validate() error {
 	return nil
+}
+
+func (s *Hostel) HostelRooms() ([]HostelRoom, error){
+	var hostelRooms []HostelRoom
+	err := db.Driver.Where("hostel_id = ?", s.ID).Find(&hostelRooms).Error
+	return hostelRooms, err
 }
 
 func (h *Hostel) Assign(hostelData map[string]interface{}) {

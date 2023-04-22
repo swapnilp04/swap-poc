@@ -45,7 +45,7 @@ func (h *Hostel) Assign(hostelData map[string]interface{}) {
 	}
 
 	if rooms, ok := hostelData["rooms"]; ok {
-		h.Rooms = int(rooms.(int64))
+		h.Rooms = int(rooms.(float64))
 	}
 
 	if rector, ok := hostelData["rector"]; ok {

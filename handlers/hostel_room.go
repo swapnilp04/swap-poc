@@ -55,6 +55,33 @@ func GetHostelRoom(c echo.Context) error {
 	return c.JSON(http.StatusOK, hostelRoom)
 }
 
+func GetHostelRoomStudents(c echo.Context) error {
+	hostel, errHostel := GetHostelForRoom(c)
+	if errHostel != nil {
+		fmt.Println("s.Find(GetHostelRoom)", errHostel)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	hostelRoom := &models.HostelRoom{ID: uint(newId), HostelID: hostel.ID}
+	err = hostelRoom.Find()
+
+	if err != nil {
+		fmt.Println("s.Find(GetHostelRoom)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	hostelRoomStudents, err := hostelRoom.GetHostelRoomStudents()
+	if err != nil {
+		fmt.Println("s.Find(GetHostelRoomStudents)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, hostelRoomStudents)
+}
+
 func CreateHostelRoom(c echo.Context) error {
 	hostel, errHostel := GetHostelForRoom(c)
 	if errHostel != nil {

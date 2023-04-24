@@ -76,3 +76,9 @@ func (hr *HostelRoom) Delete() error {
 	err := db.Driver.Delete(hr).Error
 	return err
 }
+
+func (hr *HostelRoom) GetHostelRoomStudents() ([]HostelStudent, error) {
+	var hostelStudents []HostelStudent
+	err := db.Driver.Where("hostel_id = ? and hostel_room_id = ?", hr.HostelID, hr.ID).Find(&hostelStudents).Error
+	return hostelStudents, err	
+}

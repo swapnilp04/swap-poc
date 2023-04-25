@@ -32,6 +32,8 @@ func main() {
 	e.POST("/students", handlers.CreateStudent, handlers.IsLoggedIn)
 	e.PUT("/students/:id", handlers.UpdateStudent, handlers.IsLoggedIn)
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn)
+	e.POST("/students/:id/assign_hostel", handlers.AssignStudentHostel, handlers.IsLoggedIn)
+
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)
 	e.POST("/standards", handlers.CreateStandard, handlers.IsLoggedIn)

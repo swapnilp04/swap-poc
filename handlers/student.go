@@ -133,11 +133,53 @@ func GetStudentHostel(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-	hostelStudent, errHostel := s.GetStudentHostel()
-	if errHostel != nil {
+	hostelStudent, err := s.GetStudentHostel()
+	if err != nil {
 		fmt.Println("s.Find(GetStudentHostel)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
 	return c.JSON(http.StatusOK, hostelStudent)
+}
+
+func AssignStudentHostel(c echo.Context) error {
+	studentHostelData := make(map[string]interface{})
+	if err := c.Bind(&studentHostelData); err != nil {
+		fmt.Println("c.Bind()", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	s := &models.Student{ID: uint(newId)}
+	err = s.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	hostel := &models.Hostel{ID: uint(studentHostelData["hostel_id"].(float64))}
+	err = hostel.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetHostel)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	hostelRoom := &models.HostelRoom{ID: uint(studentHostelData["hostel_room_id"].(float64))}
+	err = hostelRoom.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetHostelRoom)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	err = s.AssignHostel(hostel, hostelRoom)
+	if err != nil {
+		fmt.Println("s.Find(AssignHostelStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Student assigned to hostel", "student": s})
 }

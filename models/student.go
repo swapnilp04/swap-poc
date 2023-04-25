@@ -171,7 +171,7 @@ func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
 
 func (s *Student) GetStudentHostel() (HostelStudent, error) {
 	var hostelStudent = HostelStudent{}
-	err := db.Driver.Where("student_id = ?", s.ID).First(&hostelStudent).Error
+	err := db.Driver.Where("student_id = ?", s.ID).Preload("Hostel").Preload("HostelRoom").First(&hostelStudent).Error
 	
 	return hostelStudent, err
 }

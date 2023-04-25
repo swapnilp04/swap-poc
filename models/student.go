@@ -161,7 +161,7 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 
 func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
 	var hostelStudent = HostelStudent{StudentId: s.ID, HostelID: h.ID, HostelRoomID: hr.ID}
-	err := db.Driver.Where("student_id = ? and hostel_id = ? and hostel_room_id = ?",s.ID, h.ID, hr.ID).First(&hostelStudent).Error
+	err := db.Driver.Where("student_id = ?",s.ID).First(&hostelStudent).Error
 	
 	if err != nil {
 		err = hostelStudent.Create()

@@ -13,7 +13,7 @@ type BatchStandard struct {
 	Batch 					Batch
 	StandardId      uint `json:"standard_id"`
 	Standard 				Standard
-	Fee							float32 `json:"fee"`
+	Fee							float64 `json:"fee"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -27,9 +27,10 @@ func migrateBatchStandard() {
 	}
 }
 
-func NewBatchStandard(batchStandardData map[string]interface{}) *BatchStandard {
+func NewBatchStandard(batchStandardData map[string]interface{}, batch *Batch) *BatchStandard {
 	batchStandard := &BatchStandard{}
-	batchStandard.Assign(batchStandardData)
+	batchStandard.Assign(batchStandardData, batch)
+	batchStandard.BatchId = batch.ID
 	return batchStandard
 }
 
@@ -37,22 +38,28 @@ func (bs *BatchStandard) Validate() error {
 	return nil
 }
 
-func (bs *BatchStandard) Assign(batchStandardData map[string]interface{}) {
-	fmt.Printf("%+v\n", batchStandardData)
-	if batch_id, ok := batchStandardData["batch_id"]; ok {
-		bs.BatchId = uint(batch_id.(int64))
-	}
-
+func (bs *BatchStandard) Assign(batchStandardData map[string]interface{}, batch *Batch) {
+	bs.BatchId = batch.ID
 	if standard_id, ok := batchStandardData["standard_id"]; ok {
-		bs.StandardId = uint(standard_id.(int))
+		bs.StandardId = uint(standard_id.(float64))
 	}
 
+	if fee, ok := batchStandardData["fee"]; ok {
+		bs.Fee = fee.(float64)
+	}
 }
 
-func (bs *BatchStandard) All() ([]BatchStandard, error) {
+func (bs *BatchStandard) All(batchId uint) ([]BatchStandard, error) {
 	var batchStandards []BatchStandard
-	err := db.Driver.Find(&batchStandards).Error
+	err := db.Driver.Where("batch_id = ?", batchId).Preload("Standard").Find(&batchStandards).Error
 	return batchStandards, err
+}
+
+func (bs *BatchStandard) AllIds(batchId uint) ([]uint, error) {
+	//var batchStandards []BatchStandard
+	var ids []uint
+	db.Driver.Where("batch_id = ?", batchId).Model(&BatchStandard{}).Pluck("StandardId", &ids)
+	return ids, nil
 }
 
 func (bs *BatchStandard) Find() error {
@@ -65,7 +72,7 @@ func (bs *BatchStandard) Create() error {
 	if err != nil {
 		return err
 	} else {
-		err = bs.createTransactionCategory()
+		//err = bs.createTransactionCategory()
 	}
 	return err
 }

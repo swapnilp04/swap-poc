@@ -51,6 +51,17 @@ func (s *Standard) All() ([]Standard, error) {
 	return standards, err
 }
 
+func (s *Standard) AllExcept(standardIds []uint) ([]Standard, error) {
+	var standards []Standard
+	var err error
+	if(len(standardIds) > 0) {
+		err = db.Driver.Where("id not in (?)", standardIds).Find(&standards).Error	
+	} else {
+		err = db.Driver.Find(&standards).Error	
+	}
+	return standards, err
+}
+
 func (s *Standard) Find() error {
 	err := db.Driver.First(s, "ID = ?", s.ID).Error
 	return err

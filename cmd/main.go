@@ -40,11 +40,16 @@ func main() {
 	e.POST("/standards", handlers.CreateStandard, handlers.IsLoggedIn)
 	e.PUT("/standards/:id", handlers.UpdateStandard, handlers.IsLoggedIn)
 	e.DELETE("/standards/:id", handlers.DeleteStandard, handlers.IsLoggedIn)
+	
 	e.GET("/batchs", handlers.GetBatchs, handlers.IsLoggedIn)
 	e.GET("/batchs/:id", handlers.GetBatch, handlers.IsLoggedIn)
 	e.POST("/batchs", handlers.CreateBatch, handlers.IsLoggedIn)
 	e.PUT("/batchs/:id", handlers.UpdateBatch, handlers.IsLoggedIn)
 	e.DELETE("/batchs/:id", handlers.DeleteBatch, handlers.IsLoggedIn)
+	e.GET("/batchs/:batch_id/standards", handlers.GetBatchStandards, handlers.IsLoggedIn)
+	e.GET("/batchs/:batch_id/unassigned_standards", handlers.GetBatchUnassignedStandards, handlers.IsLoggedIn)
+	e.POST("/batchs/:batch_id/batch-standards", handlers.CreateBatchStandard, handlers.IsLoggedIn)
+
 	e.GET("/hostels", handlers.GetHostels, handlers.IsLoggedIn)
 	e.GET("/hostels/:id", handlers.GetHostel, handlers.IsLoggedIn)
 	e.POST("/hostels", handlers.CreateHostel, handlers.IsLoggedIn)

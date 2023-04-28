@@ -5,6 +5,7 @@ func init() {
 	migrateSession()
 	migrateStudent()
 	migrateBatch()
+	migrateBatchStandard()
 	migrateHostel()
 	migrateHostelRoom()
 	migrateHostelStudent()

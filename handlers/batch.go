@@ -112,3 +112,6 @@ func DeleteBatch(c echo.Context) error {
 	// Delete a user by ID
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Batch deleted successfully"})
 }
+
+
+

@@ -39,12 +39,19 @@ func CreateBatchStandard(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
 	}
 
-	err = batchStandard.Create()
+	err = batchStandard.CheckExists()
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+		err = batchStandard.Create()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+		}
+		
+		return c.JSON(http.StatusOK, map[string]interface{}{"message": "batch Standard created", "batch_standard": batchStandard})	
+	} else {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "batch Standard created", "batch_standard": batchStandard})
+	
 }
 
 func UpdateBatchStandard(c echo.Context) error {

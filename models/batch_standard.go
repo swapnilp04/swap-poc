@@ -77,6 +77,11 @@ func (bs *BatchStandard) Create() error {
 	return err
 }
 
+func (bs *BatchStandard) CheckExists() error {
+	err := db.Driver.Where("batch_id = ? and standard_id = ?", bs.BatchId, bs.StandardId).First(&BatchStandard{}).Error
+	return err
+}
+
 func (bs *BatchStandard) Update() error {
 	err := db.Driver.Save(bs).Error
 	return err

@@ -29,7 +29,13 @@ func migrateBatchStandard() {
 
 func NewBatchStandard(batchStandardData map[string]interface{}, batch *Batch) *BatchStandard {
 	batchStandard := &BatchStandard{}
-	batchStandard.Assign(batchStandardData, batch)
+	if standard_id, ok := batchStandardData["standard_id"]; ok {
+		StandardId := uint(standard_id.(float64))
+		db.Driver.Where("batch_id = ? and standard_id = ?", batch.ID, StandardId).FirstOrInit(&batchStandard)
+		batchStandard.StandardId = StandardId
+	}
+
+	batchStandard.Assign(batchStandardData)
 	batchStandard.BatchId = batch.ID
 	return batchStandard
 }
@@ -38,12 +44,7 @@ func (bs *BatchStandard) Validate() error {
 	return nil
 }
 
-func (bs *BatchStandard) Assign(batchStandardData map[string]interface{}, batch *Batch) {
-	bs.BatchId = batch.ID
-	if standard_id, ok := batchStandardData["standard_id"]; ok {
-		bs.StandardId = uint(standard_id.(float64))
-	}
-
+func (bs *BatchStandard) Assign(batchStandardData map[string]interface{}) {
 	if fee, ok := batchStandardData["fee"]; ok {
 		bs.Fee = fee.(float64)
 	}
@@ -68,17 +69,12 @@ func (bs *BatchStandard) Find() error {
 }
 
 func (bs *BatchStandard) Create() error {
-	err := db.Driver.Create(bs).Error
+	err := db.Driver.Save(bs).Error
 	if err != nil {
 		return err
 	} else {
 		//err = bs.createTransactionCategory()
 	}
-	return err
-}
-
-func (bs *BatchStandard) CheckExists() error {
-	err := db.Driver.Where("batch_id = ? and standard_id = ?", bs.BatchId, bs.StandardId).First(&BatchStandard{}).Error
 	return err
 }
 

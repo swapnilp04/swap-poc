@@ -49,6 +49,8 @@ func main() {
 	e.GET("/batchs/:batch_id/standards", handlers.GetBatchStandards, handlers.IsLoggedIn)
 	e.GET("/batchs/:batch_id/unassigned_standards", handlers.GetBatchUnassignedStandards, handlers.IsLoggedIn)
 	e.POST("/batchs/:batch_id/batch-standards", handlers.CreateBatchStandard, handlers.IsLoggedIn)
+	e.GET("/batchs/:batch_id/batch-standards/:id", handlers.GetBatchStandard, handlers.IsLoggedIn)
+	e.PUT("/batchs/:batch_id/batch-standards/:id", handlers.UpdateBatchStandard, handlers.IsLoggedIn)
 
 	e.GET("/hostels", handlers.GetHostels, handlers.IsLoggedIn)
 	e.GET("/hostels/:id", handlers.GetHostel, handlers.IsLoggedIn)

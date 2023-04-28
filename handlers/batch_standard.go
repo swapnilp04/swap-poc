@@ -10,6 +10,38 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func GetBatchStandard(c echo.Context) error {
+	// Get a single user by ID
+	batchId := c.Param("batch_id")
+	newBatchId, err := strconv.Atoi(batchId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	b := &models.Batch{ID: uint(newBatchId)}
+	err = b.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	batchStandardId := c.Param("id")
+	newBatchStandardId, err := strconv.Atoi(batchStandardId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	batchStandard := &models.BatchStandard{ID: uint(newBatchStandardId)}
+	err = batchStandard.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandard)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, batchStandard)
+}
 
 func CreateBatchStandard(c echo.Context) error {
 	batchId := c.Param("batch_id")
@@ -39,22 +71,34 @@ func CreateBatchStandard(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
 	}
 
-	err = batchStandard.CheckExists()
+	err = batchStandard.Create()
 	if err != nil {
-		err = batchStandard.Create()
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
-		}
-		
-		return c.JSON(http.StatusOK, map[string]interface{}{"message": "batch Standard created", "batch_standard": batchStandard})	
-	} else {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
-
-	
+		
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "batch Standard created", "batch_standard": batchStandard})	
 }
 
 func UpdateBatchStandard(c echo.Context) error {
+	batchId := c.Param("batch_id")
+	newBatchId, err := strconv.Atoi(batchId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+	b := &models.Batch{ID: uint(newBatchId)}
+	if err := b.Find(); err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+
+	batchStandardData := make(map[string]interface{})
+	if err := c.Bind(&batchStandardData); err != nil {
+		fmt.Println("c.Bind()", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+	
 	id := c.Param("id")
 	newId, err := strconv.Atoi(id)
 	if err != nil {
@@ -62,25 +106,18 @@ func UpdateBatchStandard(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
 	}
 
-	batchData := make(map[string]interface{})
-
-	if err := c.Bind(&batchData); err != nil {
-		fmt.Println("c.Bind()", err)
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
-	}
-
-	s := &models.Batch{ID: uint(newId)}
-	if err := s.Find(); err != nil {
-		fmt.Println("s.Find(GetBatch)", err)
+	bs := &models.BatchStandard{ID: uint(newId)}
+	if err := bs.Find(); err != nil {
+		fmt.Println("s.Find(GetBatchStandard)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-	s.Assign(batchData)
-	if err := s.Update(); err != nil {
+	bs.Assign(batchStandardData)
+	if err := bs.Update(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Batch updated", "batch": s})
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Batch Standard updated", "batch_standard": bs})
 }
 
 func DeleteBatchStandard(c echo.Context) error {

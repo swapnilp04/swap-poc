@@ -137,9 +137,7 @@ func GetBatchUnassignedStandards(c echo.Context) error {
 	}
 
 	bs := &models.BatchStandard{}
-	fmt.Println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 	standardIds, err := bs.AllIds(b.ID)
-	fmt.Println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 	if err != nil {
 		fmt.Println("s.ALL(GetBatchStandardIds)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})

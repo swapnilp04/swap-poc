@@ -21,6 +21,8 @@ type Student struct {
 	ContactNumber 						string  `json:"contact_number" gorm:"contact_number" validate:"nonzero,min=10,max=12"`
 	WhNumber									string  `json:"wh_number" gorm:"wh_number,min=10,max=12"`
 	Status 										string `json:"status"`
+	Town 											string `json:"town"`
+	HasHostel									bool `json:"has_hostel" gorm:"default:false"`
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
@@ -88,6 +90,10 @@ func (s *Student) Assign(studentData map[string]interface{}) {
 	if whNumber, ok := studentData["wh_number"]; ok {
 		s.WhNumber = whNumber.(string)
 	}
+
+	if town, ok := studentData["town"]; ok {
+		s.Town = town.(string)
+	}
 }
 
 func (s *Student) All() ([]Student, error) {
@@ -151,9 +157,13 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 		return errors.New("Already assigned to Class")
 	} else {
 		batchStandardStudent := &BatchStandardStudent{}
-		batchStandardStudentData := map[string]interface{}{"BatchId": batchStandard.ID, "StandardId": batchStandard.StandardId, "StudentId": s.ID, 
-			"Fee": batchStandard.Fee}
-		batchStandardStudent.Assign(batchStandardStudentData)
+		
+		batchStandardStudent.BatchId = batchStandard.ID
+		batchStandardStudent.StandardId = batchStandard.StandardId
+		batchStandardStudent.StudentId = s.ID
+		batchStandardStudent.BatchStandardId = batchStandard.ID
+		batchStandardStudent.Fee = batchStandard.Fee
+		
 		return batchStandardStudent.Create()
 	}
 	
@@ -165,6 +175,10 @@ func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
 	
 	if err != nil {
 		err = hostelStudent.Create()
+		if err == nil {
+			s.HasHostel = true
+			s.Update()
+		}
 	}
 	return err
 }
@@ -175,6 +189,8 @@ func (s *Student) ChangeHostel(h *Hostel, hr *HostelRoom) error {
 	if err == nil {
 		hostelStudent.HostelID = h.ID
 		hostelStudent.HostelRoomID = hr.ID
+		s.HasHostel = true
+		s.Update()
 		return hostelStudent.Update()
 	}
 	return err

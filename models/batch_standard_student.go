@@ -8,13 +8,13 @@ import (
 )
 
 type BatchStandardStudent struct {
-	ID            		int    `json:"id"`
-	BatchId       		int
-	Batch 						Batch
-	StandardId    		int
-	Standard 					Standard
+	ID            		uint `json:"id"`
+	BatchId       		uint `json:"batch_id"`
+	StandardId    		uint `json:"standard_id"`
 	StudentId					uint `json:"student_id"`
 	BatchStandardId 	uint `json:batch_standard_id""`
+	Standard 					Standard
+	Batch 						Batch
 	BatchStandard     BatchStandard
 	Student 					Student
 	Fee 							float64 `json:"fee"`
@@ -31,35 +31,39 @@ func migrateBatchStandardStudent() {
 	}
 }
 
-func NewBatchStandardStudent(batchStandardStudentData map[string]interface{}) *BatchStandardStudent {
+func NewBatchStandardStudent(batchStandardStudentData map[string]interface{}, student *Student) *BatchStandardStudent {
 	batchStandardStudent := &BatchStandardStudent{}
-	batchStandardStudent.Assign(batchStandardStudentData)
+	batchStandardStudent.Assign(batchStandardStudentData, student)
 	return batchStandardStudent
+}
+
+func GetBatchStandardId(batchStandardStudentData map[string]interface{}) uint {
+	if batch_standard_id, ok := batchStandardStudentData["batch_standard_id"]; ok {
+		return uint(batch_standard_id.(float64))
+	}	
+	return 0
 }
 
 func (bs *BatchStandardStudent) Validate() error {
 	return nil
 }
 
-func (bs *BatchStandardStudent) Assign(batchStandardStudentData map[string]interface{}) {
-	fmt.Printf("%+v\n", batchStandardStudentData)
+func (bs *BatchStandardStudent) Assign(batchStandardStudentData map[string]interface{}, student *Student) {
 	if batch_id, ok := batchStandardStudentData["batch_id"]; ok {
-		bs.BatchId = int(batch_id.(int64))
+		bs.BatchId = uint(batch_id.(float64))
 	}
 
 	if standard_id, ok := batchStandardStudentData["standard_id"]; ok {
-		bs.StandardId = int(standard_id.(int64))
+		bs.StandardId = uint(standard_id.(float64))
 	}
-
-	if student_id, ok := batchStandardStudentData["student_id"]; ok {
-		bs.StudentId = uint(student_id.(int64))
-	}
-
+	// if student_id, ok := batchStandardStudentData["student_id"]; ok {
+	// 	bs.StudentId = uint(student_id.(float64))
+	// }
 }
 
-func (bs *BatchStandardStudent) All() ([]BatchStandardStudent, error) {
+func (bs *BatchStandardStudent) All(studentId uint) ([]BatchStandardStudent, error) {
 	var batchStandardStudents []BatchStandardStudent
-	err := db.Driver.Find(&batchStandardStudents).Error
+	err := db.Driver.Where("student_id = ?", studentId).Find(&batchStandardStudents).Error
 	return batchStandardStudents, err
 }
 
@@ -69,8 +73,9 @@ func (bs *BatchStandardStudent) Find() error {
 }
 
 func (bs *BatchStandardStudent) Create() error {
-	err := db.Driver.Create(bs).Error
-	err = bs.AddTransaction()
+	err := db.Driver.Where(BatchStandardStudent{StudentId: bs.StudentId, BatchStandardId: bs.BatchStandardId}).
+	Assign(BatchStandardStudent{StandardId: bs.StandardId, BatchId: bs.BatchId}).FirstOrCreate(bs).Error
+	//err = bs.AddTransaction()
 	return err
 }
 

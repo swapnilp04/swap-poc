@@ -12,4 +12,5 @@ func init() {
 	migrateStandard()
 	migrateBatch()
 	migrateHostelStudent()
+	migrateBatchStandardStudent()
 }

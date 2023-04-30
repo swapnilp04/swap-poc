@@ -26,14 +26,19 @@ func main() {
 	e.POST("/login", handlers.Login)
 	e.PUT("/updateUser", handlers.UpdateUser, handlers.IsLoggedIn)
 	e.DELETE("/logout", handlers.Logout, handlers.IsLoggedIn)
+	
 	e.GET("/students", handlers.GetStudents, handlers.IsLoggedIn)
 	e.GET("/students/:id", handlers.GetStudent, handlers.IsLoggedIn)
-	e.GET("/students/:id/hostel", handlers.GetStudentHostel, handlers.IsLoggedIn)
 	e.POST("/students", handlers.CreateStudent, handlers.IsLoggedIn)
 	e.PUT("/students/:id", handlers.UpdateStudent, handlers.IsLoggedIn)
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn)
+	
+	e.GET("/students/:id/hostel", handlers.GetStudentHostel, handlers.IsLoggedIn)
 	e.POST("/students/:id/assign_hostel", handlers.AssignStudentHostel, handlers.IsLoggedIn)
 	e.PUT("/students/:id/change_hostel", handlers.ChangeStudentHostel, handlers.IsLoggedIn)
+	
+	e.GET("/students/:student_id/batch_standards", handlers.GetBatchStandardStudents, handlers.IsLoggedIn)
+	e.POST("/students/:student_id/batch_standards", handlers.CreateStudentBatchStandard, handlers.IsLoggedIn)
 
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)
@@ -46,6 +51,7 @@ func main() {
 	e.POST("/batchs", handlers.CreateBatch, handlers.IsLoggedIn)
 	e.PUT("/batchs/:id", handlers.UpdateBatch, handlers.IsLoggedIn)
 	e.DELETE("/batchs/:id", handlers.DeleteBatch, handlers.IsLoggedIn)
+	
 	e.GET("/batchs/:batch_id/standards", handlers.GetBatchStandards, handlers.IsLoggedIn)
 	e.GET("/batchs/:batch_id/unassigned_standards", handlers.GetBatchUnassignedStandards, handlers.IsLoggedIn)
 	e.POST("/batchs/:batch_id/batch-standards", handlers.CreateBatchStandard, handlers.IsLoggedIn)

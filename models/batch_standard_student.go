@@ -63,7 +63,7 @@ func (bs *BatchStandardStudent) Assign(batchStandardStudentData map[string]inter
 
 func (bs *BatchStandardStudent) All(studentId uint) ([]BatchStandardStudent, error) {
 	var batchStandardStudents []BatchStandardStudent
-	err := db.Driver.Where("student_id = ?", studentId).Find(&batchStandardStudents).Error
+	err := db.Driver.Preload("Standard").Preload("Batch").Where("student_id = ?", studentId).Find(&batchStandardStudents).Error
 	return batchStandardStudents, err
 }
 

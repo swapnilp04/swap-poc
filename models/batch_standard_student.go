@@ -75,8 +75,15 @@ func (bs *BatchStandardStudent) Find() error {
 func (bs *BatchStandardStudent) Create() error {
 	err := db.Driver.Where(BatchStandardStudent{StudentId: bs.StudentId, BatchStandardId: bs.BatchStandardId}).
 	Assign(BatchStandardStudent{StandardId: bs.StandardId, BatchId: bs.BatchId}).FirstOrCreate(bs).Error
+	bs.updateCount()
 	//err = bs.AddTransaction()
 	return err
+}
+
+func (bs *BatchStandardStudent) updateCount() {
+	var count int64
+	db.Driver.Model(&BatchStandardStudent{}).Where("batch_standard_id = ?", bs.BatchStandardId).Count(&count)
+	db.Driver.Model(&BatchStandard{}).Where("id = ?", bs.BatchStandardId).Update("students_count", count)
 }
 
 func (bs *BatchStandardStudent) Update() error {

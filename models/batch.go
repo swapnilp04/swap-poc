@@ -11,6 +11,7 @@ type Batch struct {
 	ID            	uint    `json:"id"`
 	Name     				string `json:"name"`
 	Year      			int `json:"year"`
+	StandardsCount  int64 `json:"standards_count"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

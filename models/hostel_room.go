@@ -13,6 +13,7 @@ type HostelRoom struct {
 	NoOfStudents    int 		`json:"no_of_students"`
 	Rate     				int64 	`json:"rate"`
 	HostelID        uint `json:"hostel_id"`
+	HostelStudentsCount int64 `json:"hostel_students_count"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -64,7 +65,14 @@ func (hr *HostelRoom) Find() error {
 
 func (hr *HostelRoom) Create() error {
 	err := db.Driver.Create(hr).Error
+	hr.updateCount()
 	return err
+}
+
+func (hr *HostelRoom) updateCount() {
+	var count int64
+	db.Driver.Model(&HostelRoom{}).Where("hostel_id = ?", hr.HostelID).Count(&count)
+	db.Driver.Model(&Hostel{}).Where("id = ?", hr.HostelID).Update("hostel_rooms_count", count)
 }
 
 func (hr *HostelRoom) Update() error {

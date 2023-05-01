@@ -72,7 +72,17 @@ func (hs *HostelStudent) Find() error {
 
 func (hs *HostelStudent) Create() error {
 	err := db.Driver.Create(hs).Error
+	hs.updateCount()
 	return err
+}
+
+func (hs *HostelStudent) updateCount() {
+	var count int64
+	db.Driver.Model(&HostelStudent{}).Where("hostel_id = ?", hs.HostelID).Count(&count)
+	db.Driver.Model(&Hostel{}).Where("id = ?", hs.HostelID).Update("hostel_students_count", count)
+
+	db.Driver.Model(&HostelStudent{}).Where("hostel_room_id = ?", hs.HostelRoomID).Count(&count)
+	db.Driver.Model(&HostelRoom{}).Where("id = ?", hs.HostelRoomID).Update("hostel_students_count", count)
 }
 
 func (hs *HostelStudent) Update() error {

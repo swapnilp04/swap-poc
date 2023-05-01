@@ -14,6 +14,8 @@ type Hostel struct {
 	Rector      		string `json:"rector"`	
 	ContactNumber 	int64  `json:"contact_number" gorm:"contact_number"`
 	Rate     				int64 	`json:"rate"` 
+	HostelRoomsCount int64 `json:"hostel_rooms_count"`
+	HostelStudentsCount int64 `json:"hostel_students_count"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

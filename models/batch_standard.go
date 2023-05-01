@@ -5,15 +5,17 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type BatchStandard struct {
 	ID            	uint    `json:"id"`
-	BatchId       	uint `json:"batch_id"`
+	BatchId       	uint `json:"batch_id"  validate:"nonzero"`
 	Batch 					Batch
-	StandardId      uint `json:"standard_id"`
+	StandardId      uint `json:"standard_id" validate:"nonzero"`
 	Standard 				Standard
-	Fee							float64 `json:"fee"`
+	Fee							float64 `json:"fee"  validate:"nonzero"`
+	StudentsCount 	int64 `json:"students_count"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -41,7 +43,11 @@ func NewBatchStandard(batchStandardData map[string]interface{}, batch *Batch) *B
 }
 
 func (bs *BatchStandard) Validate() error {
+	if errs := validator.Validate(bs); errs != nil {
+	return errs
+	} else {
 	return nil
+	}
 }
 
 func (bs *BatchStandard) Assign(batchStandardData map[string]interface{}) {
@@ -70,12 +76,19 @@ func (bs *BatchStandard) Find() error {
 
 func (bs *BatchStandard) Create() error {
 	err := db.Driver.Save(bs).Error
+	bs.updateCount()
 	if err != nil {
 		return err
 	} else {
 		//err = bs.createTransactionCategory()
 	}
 	return err
+}
+
+func (bs *BatchStandard) updateCount() {
+	var count int64
+	db.Driver.Model(&BatchStandard{}).Where("standard_id = ?", bs.StandardId).Count(&count)
+	db.Driver.Model(&Batch{}).Where("id = ?", bs.BatchId).Update("standards_count", count)
 }
 
 func (bs *BatchStandard) Update() error {

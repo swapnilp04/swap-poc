@@ -73,9 +73,9 @@ func (t *Transaction) Assign(transactionData map[string]interface{}) {
 	}
 }
 
-func (t *Transaction) All() ([]Transaction, error) {
+func (t *Transaction) All(studentId int) ([]Transaction, error) {
 	var transactions []Transaction
-	err := db.Driver.Find(&transactions).Error
+	err := db.Driver.Where("student_id = ?", studentId).Find(&transactions).Error
 	return transactions, err
 }
 

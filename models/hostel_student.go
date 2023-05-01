@@ -10,8 +10,8 @@ import (
 type HostelStudent struct {
 	ID            	uint    `json:"id"`
 	Name     				string `json:"name"`
-	HostelID				uint `json:"hostel_id"`
-	HostelRoomID    uint `json:"hostel_room_id"`
+	HostelId				uint `json:"hostel_id"`
+	HostelRoomId    uint `json:"hostel_room_id"`
 	ContactNumber  	string `json:"contact_number"`
 	StudentId				uint `json:"student_id"`
 	Hostel 					Hostel
@@ -47,11 +47,11 @@ func (hs *HostelStudent) Assign(hostelStudentData map[string]interface{}) {
 	}
 
 	if hostel_room_id, ok := hostelStudentData["hostel_room_id"]; ok {
-		hs.HostelRoomID = uint(hostel_room_id.(int64))
+		hs.HostelRoomId = uint(hostel_room_id.(int64))
 	}
 
 	if hostel_id, ok := hostelStudentData["hostel_id"]; ok {
-		hs.HostelID = uint(hostel_id.(int64))
+		hs.HostelId = uint(hostel_id.(int64))
 	}
 
 	if contactNumber, ok := hostelStudentData["content_number"]; ok {
@@ -73,16 +73,21 @@ func (hs *HostelStudent) Find() error {
 func (hs *HostelStudent) Create() error {
 	err := db.Driver.Create(hs).Error
 	hs.updateCount()
+	if err != nil {
+		return err
+	} else {
+		err = hs.AddTransaction()
+	}
 	return err
 }
 
 func (hs *HostelStudent) updateCount() {
 	var count int64
-	db.Driver.Model(&HostelStudent{}).Where("hostel_id = ?", hs.HostelID).Count(&count)
-	db.Driver.Model(&Hostel{}).Where("id = ?", hs.HostelID).Update("hostel_students_count", count)
+	db.Driver.Model(&HostelStudent{}).Where("hostel_id = ?", hs.HostelId).Count(&count)
+	db.Driver.Model(&Hostel{}).Where("id = ?", hs.HostelId).Update("hostel_students_count", count)
 
-	db.Driver.Model(&HostelStudent{}).Where("hostel_room_id = ?", hs.HostelRoomID).Count(&count)
-	db.Driver.Model(&HostelRoom{}).Where("id = ?", hs.HostelRoomID).Update("hostel_students_count", count)
+	db.Driver.Model(&HostelStudent{}).Where("hostel_room_id = ?", hs.HostelRoomId).Count(&count)
+	db.Driver.Model(&HostelRoom{}).Where("id = ?", hs.HostelRoomId).Update("hostel_students_count", count)
 }
 
 func (hs *HostelStudent) Update() error {
@@ -96,16 +101,22 @@ func (hs *HostelStudent) Delete() error {
 }
 
 func (hs *HostelStudent) AddTransaction() error {
-	transaction := &Transaction{}
-	 transactionCategory, err := hs.Hostel.GetTransactionCategory()
-	 if err == nil {
+	hostel := &Hostel{ID: hs.HostelId}
+	err := hostel.Find()
+	if err != nil {
+		return err
+	}
+
+	transactionCategory, err := hostel.GetTransactionCategory()
+	if err != nil {
 	 	return err
-	 }
-	 transactionData := map[string]interface{}{"Name": "New Adminission", "StudentId": hs.StudentId, "HostelStudentID": hs.ID, 
-	 	"TransactionCategoryId": transactionCategory.ID, "IsCleared": true, "TransactionType": "debit", 
-	 	"Amount": hs.Hostel.Rate}
-	 transaction.Assign(transactionData)
-	 err = transaction.Create()
+	}
+	transactionData := map[string]interface{}{"name": "New Hostel Adminission", "student_id": hs.StudentId, "hostel_student_id": hs.ID, 
+	 	"transaction_category_id": transactionCategory.ID, "is_cleared": true, "transaction_type": "debit", 
+	 	"amount": hostel.Rate}
 	
-	return nil
+	transaction := NewTransaction(transactionData)
+	err = transaction.Create()
+	
+	return err
 }

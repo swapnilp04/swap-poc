@@ -170,7 +170,7 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 } 
 
 func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
-	var hostelStudent = HostelStudent{StudentId: s.ID, HostelID: h.ID, HostelRoomID: hr.ID}
+	var hostelStudent = HostelStudent{StudentId: s.ID, HostelId: h.ID, HostelRoomId: hr.ID}
 	err := db.Driver.Where("student_id = ?",s.ID).First(&hostelStudent).Error
 	
 	if err != nil {
@@ -187,8 +187,8 @@ func (s *Student) ChangeHostel(h *Hostel, hr *HostelRoom) error {
 	var hostelStudent = HostelStudent{StudentId: s.ID}
 	err := db.Driver.Where("student_id = ?",s.ID).First(&hostelStudent).Error
 	if err == nil {
-		hostelStudent.HostelID = h.ID
-		hostelStudent.HostelRoomID = hr.ID
+		hostelStudent.HostelId = h.ID
+		hostelStudent.HostelRoomId = hr.ID
 		s.HasHostel = true
 		s.Update()
 		return hostelStudent.Update()

@@ -10,10 +10,9 @@ import (
 type TransactionCategory struct {
 	ID            					uint    `json:"id"`
 	Name     								string `json:"name"`
-	HostelID								uint `json:"hostel_id"`
+	HostelId								uint `json:"hostel_id"`
 	BatchId									uint `json:"batch_id"`
 	BatchStandardId         uint `json:"batch_standard_id"`
-	HostelRoomId      			uint `json:"hostel_room_id"`
 	Transactions  					[]Transaction
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -53,7 +52,7 @@ func (t *TransactionCategory) Assign(transactionCategoryData map[string]interfac
 	}
 
 	if hostelId, ok := transactionCategoryData["hostel_id"]; ok {
-		t.HostelID = hostelId.(uint)
+		t.HostelId = hostelId.(uint)
 	}
 }
 

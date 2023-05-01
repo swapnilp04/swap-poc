@@ -13,7 +13,7 @@ type Hostel struct {
 	Rooms      			int `json:"rooms"`
 	Rector      		string `json:"rector"`	
 	ContactNumber 	int64  `json:"contact_number" gorm:"contact_number"`
-	Rate     				int64 	`json:"rate"` 
+	Rate     				float64 	`json:"rate"` 
 	HostelRoomsCount int64 `json:"hostel_rooms_count"`
 	HostelStudentsCount int64 `json:"hostel_students_count"`
 	CreatedAt 			time.Time
@@ -55,6 +55,10 @@ func (h *Hostel) Assign(hostelData map[string]interface{}) {
 		h.Rooms = int(rooms.(float64))
 	}
 
+	if rate, ok := hostelData["rate"]; ok {
+		h.Rate = rate.(float64)
+	}
+
 	if rector, ok := hostelData["rector"]; ok {
 		h.Rector = rector.(string)
 	}
@@ -78,6 +82,11 @@ func (h *Hostel) Find() error {
 
 func (h *Hostel) Create() error {
 	err := db.Driver.Create(h).Error
+	if err != nil {
+		return err
+	} else {
+		err = h.createTransactionCategory()
+	}
 	return err
 }
 
@@ -92,14 +101,14 @@ func (h *Hostel) Delete() error {
 }
 
 func (h *Hostel) createTransactionCategory() error {
-	var transactionCatetoryData = map[string]interface{}{"name": "Hostel", "HostelID": h.ID}
+	var transactionCatetoryData = map[string]interface{}{"name": "Hostel", "hostel_id": h.ID}
 	transactionCategory := NewTransactionCategory(transactionCatetoryData)
 	err := transactionCategory.Create()
 	return err
 }
 
 func (h *Hostel) GetTransactionCategory() (*TransactionCategory, error) {
-	tc := &TransactionCategory{Name: "Hostel", HostelID: h.ID}
-	err := db.Driver.First(tc).Error
+	tc := &TransactionCategory{Name: "Hostel", HostelId: h.ID}
+	err := db.Driver.Where("name like ? and hostel_id = ?", "Hostel", h.ID).First(tc).Error
 	return tc, err
 }

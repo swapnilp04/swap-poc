@@ -13,7 +13,7 @@ type TransactionCategory struct {
 	HostelID								uint `json:"hostel_id"`
 	BatchId									uint `json:"batch_id"`
 	BatchStandardId         uint `json:"batch_standard_id"`
-	RoomId      						uint `json:"room_id"`
+	HostelRoomId      			uint `json:"hostel_room_id"`
 	Transactions  					[]Transaction
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -42,6 +42,18 @@ func (t *TransactionCategory) Assign(transactionCategoryData map[string]interfac
 	fmt.Printf("%+v\n", transactionCategoryData)
 	if name, ok := transactionCategoryData["name"]; ok {
 		t.Name = name.(string)
+	}
+
+	if batchId, ok := transactionCategoryData["batch_id"]; ok {
+		t.BatchId = batchId.(uint)
+	}
+
+	if batchStandardId, ok := transactionCategoryData["batch_standard_id"]; ok {
+		t.BatchStandardId = batchStandardId.(uint)
+	}
+
+	if hostelId, ok := transactionCategoryData["hostel_id"]; ok {
+		t.HostelID = hostelId.(uint)
 	}
 }
 

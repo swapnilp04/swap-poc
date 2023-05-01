@@ -80,7 +80,7 @@ func (bs *BatchStandard) Create() error {
 	if err != nil {
 		return err
 	} else {
-		//err = bs.createTransactionCategory()
+		err = bs.createTransactionCategory()
 	}
 	return err
 }
@@ -113,7 +113,7 @@ func (bs *BatchStandard) createTransactionCategory() error {
 }
 
 func (bs *BatchStandard) GetTransactionCategory() (*TransactionCategory, error) {
-	tc := &TransactionCategory{Name: "BatchStandard", BatchId: bs.BatchId, BatchStandardId: bs.ID}
-	err := db.Driver.First(tc).Error
+	tc := &TransactionCategory{}
+	err := db.Driver.Where("name like ? and batch_id = ? and batch_standard_id = ?", "BatchStandard", bs.BatchId, bs.ID).First(tc).Error
 	return tc, err
 }

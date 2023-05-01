@@ -72,11 +72,11 @@ func (bs *BatchStandardStudent) Find() error {
 	return err
 }
 
-func (bs *BatchStandardStudent) Create() error {
-	err := db.Driver.Where(BatchStandardStudent{StudentId: bs.StudentId, BatchStandardId: bs.BatchStandardId}).
-	Assign(BatchStandardStudent{StandardId: bs.StandardId, BatchId: bs.BatchId}).FirstOrCreate(bs).Error
-	bs.updateCount()
-	//err = bs.AddTransaction()
+func (bss *BatchStandardStudent) Create() error {
+	err := db.Driver.Where(BatchStandardStudent{StudentId: bss.StudentId, BatchStandardId: bss.BatchStandardId}).
+	Assign(BatchStandardStudent{StandardId: bss.StandardId, BatchId: bss.BatchId}).FirstOrCreate(bss).Error
+	bss.updateCount()
+	err = bss.AddTransaction()
 	return err
 }
 
@@ -96,15 +96,21 @@ func (bs *BatchStandardStudent) Delete() error {
 	return err
 }
 
-func (bs *BatchStandardStudent) AddTransaction() error{
+func (bss *BatchStandardStudent) AddTransaction() error{
 	transaction := &Transaction{}
-	transactionCategory, err := bs.BatchStandard.GetTransactionCategory()
-	if err == nil {
+	batchStandard := &BatchStandard{ID: bss.BatchStandardId}
+	err := batchStandard.Find()
+	if err != nil {
 		return err
 	}
-	transactionData := map[string]interface{}{"Name": "New Adminission", "StudentId": bs.StudentId, 
-		"TransactionCategoryId": transactionCategory.ID, "BatchStandardStudentId": bs.ID, "IsCleared": true, "TransactionType": "debit", 
-		"Amount": bs.BatchStandard.Fee}
+	transactionCategory, err := batchStandard.GetTransactionCategory()
+	if err != nil {
+		return err
+	}
+
+	transactionData := map[string]interface{}{"name": "New Adminission", "student_id": bss.StudentId, 
+		"transaction_category_id": transactionCategory.ID, "batch_standard_student_id": bss.ID, "is_cleared": true, "transaction_type": "debit", 
+		"amount": batchStandard.Fee}
 	transaction.Assign(transactionData)
 	err = transaction.Create()
 	return err

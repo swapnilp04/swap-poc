@@ -158,7 +158,7 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 	} else {
 		batchStandardStudent := &BatchStandardStudent{}
 		
-		batchStandardStudent.BatchId = batchStandard.ID
+		batchStandardStudent.BatchId = batchStandard.BatchId
 		batchStandardStudent.StandardId = batchStandard.StandardId
 		batchStandardStudent.StudentId = s.ID
 		batchStandardStudent.BatchStandardId = batchStandard.ID

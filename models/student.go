@@ -135,7 +135,8 @@ func (s *Student) GetBatchStandardStudents() []BatchStandardStudent {
 }
 
 func (s *Student) RemoveBatchStandard(batchStandard *BatchStandard) error {
-	balance := s.GetBalance()
+	totalDebits, totalCredits := s.GetBalance()
+	balance := totalCredits - totalDebits
 	if balance > 0.0 {
 		return errors.New("Please Clear Balance first")
 	}
@@ -205,7 +206,7 @@ func (s *Student) GetStudentHostel() (HostelStudent, error) {
 
 func (s *Student) GetTransactions() ([]Transaction, error) {
 	transactions := []Transaction{}
-	err := db.Driver.Where("StudentId = ?", s.ID).Find(transactions).Error
+	err := db.Driver.Where("student_id = ?", s.ID).Find(&transactions).Error
 	return transactions, err
 }
 
@@ -232,50 +233,21 @@ func (s *Student) TotalCridits() float64 {
 			}
 		}
 	}
-	return total	
+	return total
 }
 
-func (s *Student) GetBalance() float64 {
+func (s *Student) GetBalance() (float64, float64) {
 	transactions, err := s.GetTransactions()
-	var total = 0.0
+	var totalDebits = 0.0
+	var totalCredits = 0.0
 	if err == nil {
 		for _, transaction := range transactions {
 			if transaction.TransactionType == "debit" {
-				total = total + transaction.Amount
+				totalDebits = totalDebits + transaction.Amount
 			} else {
-				total = total - transaction.Amount
+				totalCredits = totalCredits + transaction.Amount
 			}
 		}
 	}
-	return total		
+	return totalDebits, totalCredits
 }
-
-func (s *Student) PayCash(amount float64, parentName string ) error {
-	transaction := &Transaction{}
-	
-	transactionData := map[string]interface{}{"Name": "Pay fee", "StudentId": s.ID, 
-		"IsCleared": true, "TransactionType": "cridit", "PaidBy": parentName, "PaymentMode": "Cash",
-		"Amount": amount}
-	transaction.Assign(transactionData)
-	err := transaction.Create()
-
-	return err
-}
-
-func (s *Student) PayCheque(amount float64, chequeNo string, bankName string, date string) error {
-	transaction := &Transaction{}
-
-	transactionData := map[string]interface{}{"Name": "Pay fee", "StudentId": s.ID, 
-		"IsCleared": true, "TransactionType": "cridit", 
-		"Amount": amount}
-	transaction.Assign(transactionData)
-	err := transaction.Create()
-	if err == nil {
-		cheque := &Cheque{}
-		chequeData := map[string]interface{}{"BankName": bankName, "Amount": amount, "TransactionID": transaction.ID, "IsCleared": false, "Date": date}
-		cheque.Assign(chequeData)
-		err = cheque.Create()
-	}
-	return err
-}
-

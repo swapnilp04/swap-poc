@@ -12,7 +12,7 @@ type Cheque struct {
 	BankName     						string `json:"bank_name"`
 	IsCleared 							bool `json:"is_cleared"`
 	Amount       						float64 `json:"amount"`
-	TransactionID 					uint `json:"transaction_id"`
+	TransactionId 					uint `json:"transaction_id"`
 	Date  									time.Time
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -21,7 +21,7 @@ type Cheque struct {
 
 
 func migrateCheque() {
-	fmt.Println("migrating Transaction..")
+	fmt.Println("migrating Cheque..")
 	err := db.Driver.AutoMigrate(&Cheque{})
 	if err != nil {
 		panic("failed to migrate database")
@@ -43,6 +43,18 @@ func (c *Cheque) Assign(chequeData map[string]interface{}) {
 	if bankName, ok := chequeData["bank_name"]; ok {
 		c.BankName = bankName.(string)
 	}
+
+	if isCleared, ok := chequeData["is_cleared"]; ok {
+		c.IsCleared = isCleared.(bool)
+	}	
+
+	if amount, ok := chequeData["amount"]; ok {
+		c.Amount = amount.(float64)
+	}	
+
+	if date, ok := chequeData["date"]; ok {
+		c.Date, _ = time.Parse("2006-01-02T15:04:05.999999999Z", date.(string))
+	}	
 }
 
 func (c *Cheque) All() ([]Cheque, error) {

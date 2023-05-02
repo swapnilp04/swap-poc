@@ -108,8 +108,8 @@ func (bss *BatchStandardStudent) AddTransaction() error{
 		return err
 	}
 
-	transactionData := map[string]interface{}{"name": "New Adminission", "student_id": bss.StudentId, 
-		"transaction_category_id": transactionCategory.ID, "batch_standard_student_id": bss.ID, "is_cleared": true, "transaction_type": "debit", 
+	transactionData := map[string]interface{}{"name": "New Adminission", "student_id": float64(bss.StudentId), 
+		"transaction_category_id": float64(transactionCategory.ID), "batch_standard_student_id": float64(bss.ID), "is_cleared": true, "transaction_type": "debit", 
 		"amount": batchStandard.Fee}
 	transaction.Assign(transactionData)
 	err = transaction.Create()

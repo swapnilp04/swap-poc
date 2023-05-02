@@ -41,6 +41,7 @@ func main() {
 	e.POST("/students/:student_id/batch_standards", handlers.CreateStudentBatchStandard, handlers.IsLoggedIn)
 
 	e.GET("/students/:student_id/transactions", handlers.GetStudentTransactions, handlers.IsLoggedIn)
+	e.POST("/students/:student_id/transactions", handlers.PayStudentFee, handlers.IsLoggedIn)
 
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)

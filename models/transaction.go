@@ -12,14 +12,14 @@ type Transaction struct {
 	ID            					uint    `json:"id"`
 	Name     								string `json:"name"`
 	StudentId								uint `json:"student_id"`
-	HostelStudentID					uint `json:"hostel_student_id"`
+	HostelStudentId					uint `json:"hostel_student_id"`
 	TransactionCategoryId   uint `json:"transaction_category_id"`
 	BatchStandardStudentId	uint `json:"batch_standard_student_id"`
 	PaidBy 									string `json:"paid_by"`
 	PaymentMode 						string `json:"payment_mode"`
-	IsCleared 							bool `json:"is_cleared"`
-	IsChecked 							bool `json:"is_checked"`
-	TransactionType         string `json:"transaction_type" "default:'debit'"`
+	IsCleared 							bool `json:"is_cleared" gorm:"default:false"`
+	IsChecked 							bool `json:"is_checked" gorm:"default:false"`
+	TransactionType         string `json:"transaction_type" gorm:"default:'debit'"`
 	Amount       						float64 `json:"amount"`
 	RecieptUrl  						string `json:"receipt_url"`
 	CreatedAt 							time.Time
@@ -51,23 +51,29 @@ func (t *Transaction) Assign(transactionData map[string]interface{}) {
 		t.Name = name.(string)
 	}
 	if studentId, ok := transactionData["student_id"]; ok {
-		t.StudentId = studentId.(uint)
+		t.StudentId = uint(studentId.(float64))
 	}
 	if hostelStudentId, ok := transactionData["hostel_student_id"]; ok {
-		t.HostelStudentID = hostelStudentId.(uint)
+		t.HostelStudentId = uint(hostelStudentId.(float64))
 	}
 	if transactionCategoryId, ok := transactionData["transaction_category_id"]; ok {
-		t.TransactionCategoryId = transactionCategoryId.(uint)
+		t.TransactionCategoryId = uint(transactionCategoryId.(float64))
 	}
 	if batchStandardStudentId, ok := transactionData["batch_standard_student_id"]; ok {
-		t.BatchStandardStudentId = batchStandardStudentId.(uint)
+		t.BatchStandardStudentId = uint(batchStandardStudentId.(float64))
 	}
 	if isCleared, ok := transactionData["is_cleared"]; ok {
 		t.IsCleared = isCleared.(bool)
 	}
+
+	if paymentMode, ok := transactionData["payment_mode"]; ok {
+		t.PaymentMode = paymentMode.(string)
+	}
+
 	if transactionType, ok := transactionData["transaction_type"]; ok {
 		t.TransactionType = transactionType.(string)
 	}
+
 	if amount, ok := transactionData["amount"]; ok {
 		t.Amount = amount.(float64)
 	}

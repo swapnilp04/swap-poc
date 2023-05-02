@@ -15,4 +15,5 @@ func init() {
 	migrateBatchStandardStudent()
 	migrateTransactionCategory()
 	migrateTransaction()
+	migrateCheque()
 }

@@ -50,7 +50,8 @@ func CreateStandard(c echo.Context) error {
 	fmt.Printf("standards %+v\n", standardData)
 	standard := models.NewStandard(standardData)
 	if err := standard.Validate(); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
 	}
 
 	err := standard.Create()

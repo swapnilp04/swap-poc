@@ -36,8 +36,8 @@ func NewHostel(hostelData map[string]interface{}) *Hostel {
 	return hostel
 }
 
-func (s *Hostel) Validate() error {
-	if errs := validator.Validate(s); errs != nil {
+func (h *Hostel) Validate() error {
+	if errs := validator.Validate(h); errs != nil {
 		return errs
 	} else {
 		return nil

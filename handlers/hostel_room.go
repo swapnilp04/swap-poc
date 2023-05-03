@@ -100,7 +100,8 @@ func CreateHostelRoom(c echo.Context) error {
 	hostelRoom := models.NewHostelRoom(hostelRoomData)
 	hostelRoom.HostelID = hostel.ID
 	if err := hostelRoom.Validate(); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
 	}
 
 	err := hostelRoom.Create()

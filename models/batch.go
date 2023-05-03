@@ -5,12 +5,13 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type Batch struct {
 	ID            	uint    `json:"id"`
-	Name     				string `json:"name"`
-	Year      			int `json:"year"`
+	Name     				string `json:"name" validate:"nonzero"`
+	Year      			int `json:"year" validate:"nonzero"`
 	StandardsCount  int64 `json:"standards_count"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
@@ -32,7 +33,11 @@ func NewBatch(batchData map[string]interface{}) *Batch {
 }
 
 func (b *Batch) Validate() error {
-	return nil
+	if errs := validator.Validate(b); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (b *Batch) Assign(batchData map[string]interface{}) {

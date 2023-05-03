@@ -6,21 +6,22 @@ import (
 	"time"
 	"gorm.io/gorm"
 	"swapnil-ex/swapErr"
+	"gopkg.in/validator.v2"
 )
 
 type Transaction struct {
 	ID            					uint    `json:"id"`
-	Name     								string `json:"name"`
-	StudentId								uint `json:"student_id"`
+	Name     								string `json:"name" validate:"nonzero"`
+	StudentId								uint `json:"student_id" validate:"nonzero"`
 	HostelStudentId					uint `json:"hostel_student_id"`
-	TransactionCategoryId   uint `json:"transaction_category_id"`
+	TransactionCategoryId   uint `json:"transaction_category_id" validate:"nonzero"`
 	BatchStandardStudentId	uint `json:"batch_standard_student_id"`
-	PaidBy 									string `json:"paid_by"`
-	PaymentMode 						string `json:"payment_mode"`
+	PaidBy 									string `json:"paid_by" validate:"nonzero"`
+	PaymentMode 						string `json:"payment_mode" validate:"nonzero"`
 	IsCleared 							bool `json:"is_cleared" gorm:"default:false"`
 	IsChecked 							bool `json:"is_checked" gorm:"default:false"`
-	TransactionType         string `json:"transaction_type" gorm:"default:'debit'"`
-	Amount       						float64 `json:"amount"`
+	TransactionType         string `json:"transaction_type" gorm:"default:'debit'" validate:"nonzero"`
+	Amount       						float64 `json:"amount" validate:"nonzero"`
 	RecieptUrl  						string `json:"receipt_url"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -42,7 +43,11 @@ func NewTransaction(transactionData map[string]interface{}) *Transaction {
 }
 
 func (t *Transaction) Validate() error {
-	return nil
+	if errs := validator.Validate(t); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (t *Transaction) Assign(transactionData map[string]interface{}) {

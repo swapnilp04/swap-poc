@@ -5,11 +5,12 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type TransactionCategory struct {
 	ID            					uint    `json:"id"`
-	Name     								string `json:"name"`
+	Name     								string `json:"name" validate:"nonzero"`
 	HostelId								uint `json:"hostel_id"`
 	BatchId									uint `json:"batch_id"`
 	BatchStandardId         uint `json:"batch_standard_id"`
@@ -34,7 +35,11 @@ func NewTransactionCategory(transactionCategoryData map[string]interface{}) *Tra
 }
 
 func (t *TransactionCategory) Validate() error {
-	return nil
+	if errs := validator.Validate(t); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (t *TransactionCategory) Assign(transactionCategoryData map[string]interface{}) {

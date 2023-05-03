@@ -5,19 +5,20 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type BatchStandardStudent struct {
 	ID            		uint `json:"id"`
-	BatchId       		uint `json:"batch_id"`
-	StandardId    		uint `json:"standard_id"`
-	StudentId					uint `json:"student_id"`
-	BatchStandardId 	uint `json:batch_standard_id""`
+	BatchId       		uint `json:"batch_id" validate:"nonzero"`
+	StandardId    		uint `json:"standard_id" validate:"nonzero"`
+	StudentId					uint `json:"student_id" validate:"nonzero"`
+	BatchStandardId 	uint `json:"batch_standard_id" validate:"nonzero"`
 	Standard 					Standard
 	Batch 						Batch
 	BatchStandard     BatchStandard
 	Student 					Student
-	Fee 							float64 `json:"fee"`
+	Fee 							float64 `json:"fee" validate:"nonzero"`
 	CreatedAt 				time.Time
 	UpdatedAt 				time.Time
   DeletedAt 				gorm.DeletedAt `gorm:"index"`
@@ -44,8 +45,12 @@ func GetBatchStandardId(batchStandardStudentData map[string]interface{}) uint {
 	return 0
 }
 
-func (bs *BatchStandardStudent) Validate() error {
-	return nil
+func (bss *BatchStandardStudent) Validate() error {
+	if errs := validator.Validate(bss); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (bs *BatchStandardStudent) Assign(batchStandardStudentData map[string]interface{}, student *Student) {

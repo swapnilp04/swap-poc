@@ -68,7 +68,8 @@ func CreateBatchStandard(c echo.Context) error {
 	fmt.Printf("batchs %+v\n", batchStandardData)
 	batchStandard := models.NewBatchStandard(batchStandardData, batch)
 	if err := batchStandard.Validate(); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
 	}
 
 	err = batchStandard.Create()

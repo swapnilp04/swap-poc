@@ -5,14 +5,15 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type Cheque struct {
 	ID            					uint    `json:"id"`
-	BankName     						string `json:"bank_name"`
+	BankName     						string `json:"bank_name" validate:"nonzero"`
 	IsCleared 							bool `json:"is_cleared"`
-	Amount       						float64 `json:"amount"`
-	TransactionId 					uint `json:"transaction_id"`
+	Amount       						float64 `json:"amount" validate:"nonzero"`
+	TransactionId 					uint `json:"transaction_id" validate:"nonzero"`
 	Date  									time.Time
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -35,7 +36,11 @@ func NewCheque(chequeData map[string]interface{}) *Cheque {
 }
 
 func (c *Cheque) Validate() error {
-	return nil
+	if errs := validator.Validate(c); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (c *Cheque) Assign(chequeData map[string]interface{}) {

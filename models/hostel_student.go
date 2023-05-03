@@ -5,15 +5,16 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type HostelStudent struct {
 	ID            	uint    `json:"id"`
 	Name     				string `json:"name"`
-	HostelId				uint `json:"hostel_id"`
-	HostelRoomId    uint `json:"hostel_room_id"`
-	ContactNumber  	string `json:"contact_number"`
-	StudentId				uint `json:"student_id"`
+	HostelId				uint `json:"hostel_id"  validate:"nonzero"`
+	HostelRoomId    uint `json:"hostel_room_id"  validate:"nonzero"`
+	ContactNumber  	string `json:"contact_number"  validate:"nonzero"`
+	StudentId				uint `json:"student_id"  validate:"nonzero"`
 	Hostel 					Hostel
 	HostelRoom      HostelRoom
 	Student  				Student
@@ -37,7 +38,11 @@ func NewHostelStudent(hostelStudentData map[string]interface{}) *HostelStudent {
 }
 
 func (hs *HostelStudent) Validate() error {
-	return nil
+	if errs := validator.Validate(hs); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (hs *HostelStudent) Assign(hostelStudentData map[string]interface{}) {

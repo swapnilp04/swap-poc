@@ -5,12 +5,13 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type Standard struct {
 	ID           	uint    `json:"id"`
-	Name     			string `json:"name"`
-	Std       		int `json:"std"`
+	Name     			string `json:"name" validate:"nonzero"`
+	Std       		int `json:"std" validate:"nonzero"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
   DeletedAt 		gorm.DeletedAt `gorm:"index"`
@@ -31,7 +32,11 @@ func NewStandard(standardData map[string]interface{}) *Standard {
 }
 
 func (s *Standard) Validate() error {
-	return nil
+	if errs := validator.Validate(s); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (s *Standard) Assign(standardData map[string]interface{}) {

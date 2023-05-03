@@ -45,14 +45,13 @@ func NewStudent(studentData map[string]interface{}) *Student {
 
 func (s *Student) Validate() error {
 	if errs := validator.Validate(s); errs != nil {
-	return errs
+		return errs
 	} else {
-	return nil
+		return nil
 	}
 }
 
-func (s *Student) AssignClass() error {
-	
+func (s *Student) AssignClass() error {	
 	if s.Status == "Admission" {
 		return nil
 	} else {

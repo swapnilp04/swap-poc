@@ -9,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"encoding/json"
 )
 
 type CustomContext struct {
@@ -52,3 +53,11 @@ func OnlySwapnil() echo.MiddlewareFunc {
 		return false, nil
 	})
 }
+
+func MarshalFormError(err error) map[string][]string {
+	val, _ := json.Marshal(err)
+  m := make(map[string][]string)
+  json.Unmarshal(val, &m)
+  return m
+}
+

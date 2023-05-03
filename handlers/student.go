@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"swapnil-ex/models"
 	"swapnil-ex/swapErr"
-
 	"github.com/labstack/echo/v4"
 )
 
@@ -51,11 +50,13 @@ func CreateStudent(c echo.Context) error {
 	fmt.Printf("students %+v\n", studentData)
 	student := models.NewStudent(studentData)
 	if err := student.Validate(); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
 	}
 
 	err := student.Create()
 	if err != nil {
+		
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
 

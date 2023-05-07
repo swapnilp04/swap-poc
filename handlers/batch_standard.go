@@ -51,6 +51,13 @@ func CreateBatchStandard(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
 	}
 
+	// standardId := c.Param("standard_id")
+	// newStandardId, err := strconv.Atoi(standardId)
+	// if err != nil {
+	// 	fmt.Println("strconv.Atoi failed", err)
+	// 	return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	// }
+
 	batchStandardData := make(map[string]interface{})
 	if err := c.Bind(&batchStandardData); err != nil {
 		fmt.Println("c.Bind()", err)
@@ -63,14 +70,18 @@ func CreateBatchStandard(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-
+	// standard := &models.Standard{ID: uint(newStandardId)}
+	// if err := standard.Find(); err != nil {
+	// 	fmt.Println("s.Find(GetBatch)", err)
+	// 	return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	// }
 
 	fmt.Printf("batchs %+v\n", batchStandardData)
 	batchStandard := models.NewBatchStandard(batchStandardData, batch)
-	if err := batchStandard.Validate(); err != nil {
-		formErr := MarshalFormError(err)	
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
-	}
+	// if err := batchStandard.Validate(); err != nil {
+	// 	formErr := MarshalFormError(err)	
+	// 	return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
+	// }
 
 	err = batchStandard.Create()
 	if err != nil {

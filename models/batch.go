@@ -65,22 +65,6 @@ func (b *Batch) Find() error {
 func (b *Batch) Create() error {
 	//transaction block
 	err := db.Driver.Create(b).Error
-	s := &Standard{}
-	stds, stdErr := s.All()
-	if stdErr == nil {
-		for _, std := range stds {
-			bs := &BatchStandard{}
-			bs.BatchId = b.ID
-			bs.StandardId = std.ID
-			bsErr := bs.Create()
-			if bsErr != nil {
-				// uncommit 
-				//return db.Rollback()
-			}
-		}
-	} else {
-		//return db.Rollback()
-	}
 	return err
 }
 

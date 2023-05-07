@@ -10,9 +10,9 @@ import (
 
 type BatchStandard struct {
 	ID            	uint    `json:"id"`
-	BatchId       	uint `json:"batch_id"  validate:"nonzero"`
+	BatchId       	uint `json:"batch_id"`
 	Batch 					Batch
-	StandardId      uint `json:"standard_id" validate:"nonzero"`
+	StandardId      uint `json:"standard_id"`
 	Standard 				Standard
 	Fee							float64 `json:"fee"  validate:"nonzero"`
 	StudentsCount 	int64 `json:"students_count"`

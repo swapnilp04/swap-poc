@@ -15,7 +15,7 @@ type Student struct {
 	FirstName     						string `json:"first_name" validate:"nonzero"`
 	MiddleName     						string `json:"middle_name" validate:"nonzero"`
 	LastName      						string `json:"last_name" validate:"nonzero"`
-	Age           						int    `json:"age" validate:"min=15"`
+	BirthDate  								time.Time `json:"birth_date"`
 	ParentName								string `json:"parent_name" validate:"nonzero"`
 	ParentOccupation					string `json:"parent_occupation" validate:"nonzero"`
 	ContactNumber 						string  `json:"contact_number" gorm:"contact_number" validate:"nonzero,min=10,max=12"`
@@ -73,9 +73,10 @@ func (s *Student) Assign(studentData map[string]interface{}) {
 		s.LastName = lastName.(string)
 	}
 
-	if age, ok := studentData["age"]; ok {
-		s.Age = int(age.(float64))
-	}
+	if birthDate, ok := studentData["birth_date"]; ok {
+		s.BirthDate, _ = time.Parse("2006-01-02T15:04:05.999999999Z", birthDate.(string))
+	}	
+
 	if parentName, ok := studentData["parent_name"]; ok {
 		s.ParentName = parentName.(string)
 	}

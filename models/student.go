@@ -7,6 +7,7 @@ import (
 	"time"
 	"gorm.io/gorm"
 	"gopkg.in/validator.v2"
+	"strings"
 )
 
 type Student struct {
@@ -96,10 +97,28 @@ func (s *Student) Assign(studentData map[string]interface{}) {
 	}
 }
 
-func (s *Student) All() ([]Student, error) {
+func (s *Student) All(page int, search string) ([]Student, error) {
 	var students []Student
-	err := db.Driver.Find(&students).Error
+	query := db.Driver.Limit(10).Offset((page - 1) * 10)
+	search = strings.Trim(search, " ")
+	if len([]rune(search)) > 0 {
+		search = "%" + search + "%"
+		query = query.Where("first_name like ? or middle_name like ? or last_name like ?", search, search, search)
+	}
+	err := query.Find(&students).Error
 	return students, err
+}
+
+func (s *Student) Count(search string) (int64, error) {
+	var count int64
+	query := db.Driver.Model(&Student{})
+	search = strings.Trim(search, " ")
+	if len([]rune(search)) > 0 {
+		search = "%" + search + "%"
+		query = query.Where("first_name like ? or middle_name like ? or last_name like ?", search, search, search)
+	}
+	err := query.Count(&count).Error
+	return count, err
 }
 
 func (s *Student) Find() error {

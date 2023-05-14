@@ -12,13 +12,27 @@ import (
 func GetStudents(c echo.Context) error {
 	// Get all users
 	s := &models.Student{}
-	students, err := s.All()
+
+	page := c.QueryParam("page")
+	newPage, err := strconv.Atoi(page)
+	if err != nil {
+		newPage = 1
+	}
+
+	search := c.QueryParam("search")
+
+	students, err := s.All(int(newPage), search)
 	if err != nil {
 		fmt.Println("s.ALL(GetStudents)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-	return c.JSON(http.StatusOK, students)
+	count, err := s.Count(search)
+	if err != nil {
+		fmt.Println("s.ALL(GetStudents)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{"students": students, "total": count})
 }
 
 func GetStudent(c echo.Context) error {

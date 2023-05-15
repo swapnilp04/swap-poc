@@ -91,9 +91,14 @@ func CreateStudentBatchStandard(c echo.Context) error {
 
 	err = student.AssignBatchStandard(batchStandard)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrAlreadyHasClass.Error()})
 	}
 		
+	err = student.SaveBalance()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "batch Standard Student created", "batch_standard": batchStandard})	
 }
 

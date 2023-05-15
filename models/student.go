@@ -24,6 +24,7 @@ type Student struct {
 	Status 										string `json:"status"`
 	Town 											string `json:"town" validate:"nonzero"`
 	HasHostel									bool `json:"has_hostel" gorm:"default:false"`
+	Balance 									float64 `json:"balance" gorm:"default:0.0"`
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
@@ -150,7 +151,9 @@ func (s *Student) ConfirmedStatus() bool {
 }
 
 func (s *Student) GetBatchStandardStudents() []BatchStandardStudent {
-	return s.BatchStandardStudents
+	var batchStandardStudents []BatchStandardStudent
+	_ = db.Driver.Where("student_id = ?", s.ID).Find(&batchStandardStudents).Error
+	return batchStandardStudents
 }
 
 func (s *Student) RemoveBatchStandard(batchStandard *BatchStandard) error {
@@ -198,6 +201,7 @@ func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom) error {
 		if err == nil {
 			s.HasHostel = true
 			s.Update()
+			s.SaveBalance()
 		}
 	}
 	return err
@@ -253,6 +257,12 @@ func (s *Student) TotalCridits() float64 {
 		}
 	}
 	return total
+}
+
+func (s *Student) SaveBalance() error{
+	debits, credits := s.GetBalance()
+	s.Balance =  credits - debits
+	return s.Update()
 }
 
 func (s *Student) GetBalance() (float64, float64) {

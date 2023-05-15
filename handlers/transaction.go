@@ -92,12 +92,13 @@ func PayStudentFee(c echo.Context) error {
 	}
 
 	transaction := models.NewTransaction(transactionData)
+	transaction.TransactionType = "cridit"
+	transaction.Name = "Pay Fee" 
 	if err := transaction.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
 	}
-	transaction.TransactionType = "cridit"
-	transaction.Name = "Pay Fee" 
+	
 	err = transaction.Create()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
@@ -116,5 +117,10 @@ func PayStudentFee(c echo.Context) error {
 		}
 	}
 
+	err = student.SaveBalance()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+	
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Transaction created", "transaction": transaction})
 }

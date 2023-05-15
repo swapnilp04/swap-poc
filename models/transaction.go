@@ -14,7 +14,7 @@ type Transaction struct {
 	Name     								string `json:"name" validate:"nonzero"`
 	StudentId								uint `json:"student_id" validate:"nonzero"`
 	HostelStudentId					uint `json:"hostel_student_id"`
-	TransactionCategoryId   uint `json:"transaction_category_id" validate:"nonzero"`
+	TransactionCategoryId   uint `json:"transaction_category_id"`
 	BatchStandardStudentId	uint `json:"batch_standard_student_id"`
 	PaidBy 									string `json:"paid_by" validate:"nonzero"`
 	PaymentMode 						string `json:"payment_mode" validate:"nonzero"`
@@ -73,6 +73,10 @@ func (t *Transaction) Assign(transactionData map[string]interface{}) {
 
 	if paymentMode, ok := transactionData["payment_mode"]; ok {
 		t.PaymentMode = paymentMode.(string)
+	}
+
+	if paidBy, ok := transactionData["paid_by"]; ok {
+		t.PaidBy = paidBy.(string)
 	}
 
 	if transactionType, ok := transactionData["transaction_type"]; ok {

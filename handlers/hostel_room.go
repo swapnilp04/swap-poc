@@ -99,6 +99,7 @@ func CreateHostelRoom(c echo.Context) error {
 	fmt.Printf("hostelRooms %+v\n", hostelRoomData)
 	hostelRoom := models.NewHostelRoom(hostelRoomData)
 	hostelRoom.HostelID = hostel.ID
+	hostelRoom.Rate = hostel.Rate
 	if err := hostelRoom.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})

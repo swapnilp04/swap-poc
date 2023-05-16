@@ -10,6 +10,37 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func GetTransactions(c echo.Context) error {
+	t := &models.Transaction{}
+	s := &models.Student{}
+	page := c.QueryParam("page")
+	newPage, err := strconv.Atoi(page)
+	if err != nil {
+		newPage = 1
+	}
+
+	search := c.QueryParam("search")
+
+	err, ids := s.SearchIds(search)
+	if err != nil {
+		fmt.Println("s.ALL(SearchStudents)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	transactions, err := t.AllStudents(int(newPage), ids)
+	if err != nil {
+		fmt.Println("s.ALL(GetTransactions)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	count, err := t.Count(ids)
+	if err != nil {
+		fmt.Println("s.ALL(GetTransactions)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{"transactions": transactions, "total": count})
+}
+
 func GetStudentTransactions(c echo.Context) error {
 	// Get student
 	studentId := c.Param("student_id")
@@ -91,7 +122,7 @@ func PayStudentFee(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
 	}
 
-	transaction := models.NewTransaction(transactionData)
+	transaction := models.NewTransaction(transactionData, *student)
 	transaction.TransactionType = "cridit"
 	transaction.Name = "Pay Fee" 
 	if err := transaction.Validate(); err != nil {
@@ -106,13 +137,15 @@ func PayStudentFee(c echo.Context) error {
 
 	if transaction.PaymentMode == "Cheque" {
 		cheque := models.NewCheque(transactionData["Cheque"].(map[string]interface{}))
-		if err := cheque.Validate(); err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
-		}
 		cheque.TransactionId = transaction.ID
 		cheque.Amount = transaction.Amount
+		if err := cheque.Validate(); err != nil {
+			transaction.Delete()
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
+		}
 		err = cheque.Create()
 		if err != nil {
+			transaction.Delete()
 			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 		}
 	}
@@ -121,6 +154,6 @@ func PayStudentFee(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
-	
+
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Transaction created", "transaction": transaction})
 }

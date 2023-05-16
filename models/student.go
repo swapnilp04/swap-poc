@@ -104,7 +104,7 @@ func (s *Student) All(page int, search string) ([]Student, error) {
 	search = strings.Trim(search, " ")
 	if len([]rune(search)) > 0 {
 		search = "%" + search + "%"
-		query = query.Where("first_name like ? or middle_name like ? or last_name like ?", search, search, search)
+		query = query.Where("first_name like ? or middle_name like ? or last_name like ? OR contact_number like ?", search, search, search, search)
 	}
 	err := query.Find(&students).Error
 	return students, err
@@ -116,10 +116,22 @@ func (s *Student) Count(search string) (int64, error) {
 	search = strings.Trim(search, " ")
 	if len([]rune(search)) > 0 {
 		search = "%" + search + "%"
-		query = query.Where("first_name like ? or middle_name like ? or last_name like ?", search, search, search)
+		query = query.Where("first_name like ? or middle_name like ? or last_name like ? OR contact_number like ?", search, search, search, search)
 	}
 	err := query.Count(&count).Error
 	return count, err
+}
+
+func (s *Student) SearchIds(search string) (error, []uint){
+	var ids []uint
+	query := db.Driver.Model(&Student{})
+	search = strings.Trim(search, " ")
+	if len([]rune(search)) > 0 {
+		search = "%" + search + "%"
+		query = query.Where("first_name like ? or middle_name like ? or last_name like ? OR contact_number like ? ", search, search, search, search)
+	}
+	err := query.Pluck("id", &ids).Error
+	return err, ids
 }
 
 func (s *Student) Find() error {

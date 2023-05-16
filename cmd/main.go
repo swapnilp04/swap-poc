@@ -74,6 +74,8 @@ func main() {
 	e.PUT("/hostels/:hostel_id/hostel_rooms/:id", handlers.UpdateHostelRoom, handlers.IsLoggedIn)
 	e.GET("/hostels/:hostel_id/hostel_rooms/:id/students", handlers.GetHostelRoomStudents, handlers.IsLoggedIn)
 
+	e.GET("/accounts/transactions", handlers.GetTransactions, handlers.IsLoggedIn)
+
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

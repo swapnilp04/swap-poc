@@ -12,7 +12,7 @@ type HostelRoom struct {
 	ID            	uint    	`json:"id"`
 	Name     				string 	`json:"name" validate:"nonzero"`
 	NoOfStudents    int 		`json:"no_of_students"`
-	Rate     				int64 	`json:"rate" validate:"nonzero"`
+	Rate     				float64 	`json:"rate" validate:"nonzero"`
 	HostelID        uint `json:"hostel_id" validate:"nonzero"`
 	HostelStudentsCount int64 `json:"hostel_students_count"`
 	CreatedAt 			time.Time
@@ -53,7 +53,7 @@ func (hr *HostelRoom) Assign(hostelRoomData map[string]interface{}) {
 	}
 
 	if rate, ok := hostelRoomData["rate"]; ok {
-		hr.Rate = int64(rate.(float64))
+		hr.Rate = rate.(float64)
 	}
 }
 

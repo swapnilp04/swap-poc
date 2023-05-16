@@ -119,8 +119,13 @@ func (hs *HostelStudent) AddTransaction() error {
 	transactionData := map[string]interface{}{"name": "New Hostel Adminission", "student_id": float64(hs.StudentId), 
 		"hostel_student_id": float64(hs.ID), "transaction_category_id": float64(transactionCategory.ID),
 		"is_cleared": true, "transaction_type": "debit", "amount": hostel.Rate}
-	
-	transaction := NewTransaction(transactionData)
+
+	student := &Student{ID: hs.StudentId}
+	err = student.Find()
+	if err != nil {
+		return err
+	}	
+	transaction := NewTransaction(transactionData, *student)
 	err = transaction.Create()
 	
 	return err

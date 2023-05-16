@@ -23,6 +23,7 @@ type Transaction struct {
 	TransactionType         string `json:"transaction_type" gorm:"default:'debit'" validate:"nonzero"`
 	Amount       						float64 `json:"amount" validate:"nonzero"`
 	RecieptUrl  						string `json:"receipt_url"`
+	Student 								Student
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`
@@ -36,8 +37,8 @@ func migrateTransaction() {
 	}
 }
 
-func NewTransaction(transactionData map[string]interface{}) *Transaction {
-	transaction := &Transaction{}
+func NewTransaction(transactionData map[string]interface{}, student Student) *Transaction {
+	transaction := &Transaction{Student: student}
 	transaction.Assign(transactionData)
 	return transaction
 }
@@ -86,6 +87,28 @@ func (t *Transaction) Assign(transactionData map[string]interface{}) {
 	if amount, ok := transactionData["amount"]; ok {
 		t.Amount = amount.(float64)
 	}
+}
+
+
+
+func (t *Transaction) AllStudents(page int, ids []uint) ([]Transaction, error) {
+	var transactions []Transaction
+	query := db.Driver.Preload("Student")
+	if len(ids) > 0 {	
+		query = query.Where("student_id in (?)", ids)
+	}
+	err := query.Limit(10).Offset((page - 1) * 10).Order("id desc").Find(&transactions).Error
+	return transactions, err
+}
+
+func (t *Transaction) Count(ids []uint) (int64, error) {
+	var count int64
+	query := db.Driver.Model(&Transaction{})
+	if len(ids) > 0 {	
+		query = query.Where("student_id in (?)", ids)
+	}
+	err := query.Count(&count).Error
+	return count, err
 }
 
 func (t *Transaction) All(studentId int) ([]Transaction, error) {

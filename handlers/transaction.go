@@ -129,8 +129,8 @@ func PayStudentFee(c echo.Context) error {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
 	}
-	
 	err = transaction.Create()
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}

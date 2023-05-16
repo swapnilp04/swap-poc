@@ -62,7 +62,6 @@ func (s *Student) AssignClass() error {
 }
 
 func (s *Student) Assign(studentData map[string]interface{}) {
-	fmt.Printf("%+v\n", studentData)
 	if firstName, ok := studentData["first_name"]; ok {
 		s.FirstName = firstName.(string)
 	}

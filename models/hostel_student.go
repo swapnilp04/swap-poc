@@ -121,10 +121,11 @@ func (hs *HostelStudent) AddTransaction() error {
 		"is_cleared": true, "transaction_type": "debit", "amount": hostel.Rate}
 
 	student := &Student{ID: hs.StudentId}
-	err = student.Find()
+	err = hostel.Find()
 	if err != nil {
 		return err
-	}	
+	}
+
 	transaction := NewTransaction(transactionData, *student)
 	err = transaction.Create()
 	

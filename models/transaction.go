@@ -52,7 +52,6 @@ func (t *Transaction) Validate() error {
 }
 
 func (t *Transaction) Assign(transactionData map[string]interface{}) {
-	fmt.Printf("%+v\n", transactionData)
 	if name, ok := transactionData["name"]; ok {
 		t.Name = name.(string)
 	}
@@ -123,7 +122,7 @@ func (t *Transaction) Find() error {
 }
 
 func (t *Transaction) Create() error {
-	err := db.Driver.Create(t).Error
+	err := db.Driver.Omit("Student").Create(t).Error
 	return err
 }
 

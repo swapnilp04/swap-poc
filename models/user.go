@@ -18,6 +18,7 @@ type User struct {
 	Salt            string `json:"-"`
 	Password        string `json:"-"`
 	ConfirmPassword string `json:"-" gorm:"-"`
+	Role						string `json:role`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -52,6 +53,12 @@ func (u *User) ValidPassword(password string) error {
 func (u *User) Save() error {
 	err := db.Driver.Save(u).Error
 	return err
+}
+
+func (u *User) All() ([]User, error) {
+	var users []User
+	err := db.Driver.Find(&users).Error
+	return users, err
 }
 
 func (u *User) Validate() error {

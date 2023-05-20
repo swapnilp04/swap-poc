@@ -9,6 +9,7 @@ import (
 type Session struct {
 	ID        string
 	UserID    int
+	Role			string
 	CreatedAt time.Time
 	ExpiresAt time.Time
 }

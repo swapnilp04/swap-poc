@@ -37,7 +37,7 @@ func IsLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 			fmt.Println("session.Valid()", "expired")
 			return c.JSON(http.StatusUnauthorized, map[string]interface{}{"errors": swapErr.ErrForbidden.Error()})
 		}
-
+		
 		cc := CustomContext{c, session}
 		return next(cc)
 	}

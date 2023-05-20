@@ -15,6 +15,16 @@ import (
 	"golang.org/x/crypto/scrypt"
 )
 
+func GetUsers(c echo.Context) error { 
+	u := &models.User{}
+	users, err := u.All()
+	if err != nil {
+		fmt.Println("s.ALL(GetUsers)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, users)	
+} 
+
 func Register(c echo.Context) error {
 	var userData map[string]string
 	if err := c.Bind(&userData); err != nil {
@@ -122,6 +132,7 @@ func Login(c echo.Context) error {
 	session := &models.Session{
 		ID:        sessionID.String(),
 		UserID:    user.ID,
+		Role:				user.Role,
 		CreatedAt: time.Now(),
 		ExpiresAt: time.Now().Add(constants.SESSION_EXPIRY * time.Hour),
 	}
@@ -151,7 +162,6 @@ func Logout(c echo.Context) error {
 		fmt.Println("session.Destroy()", err)
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
-
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "user logged out"})
 
 }

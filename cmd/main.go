@@ -76,6 +76,8 @@ func main() {
 
 	e.GET("/accounts/transactions", handlers.GetTransactions, handlers.IsLoggedIn)
 
+	e.GET("/users", handlers.GetUsers, handlers.IsLoggedIn)
+
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

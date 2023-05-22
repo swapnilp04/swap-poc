@@ -47,6 +47,11 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
 	}
 
+	if _, ok := userData["role"]; !ok {
+		fmt.Println("userData[\"role\"] not present")
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
 	salt := make([]byte, 16)
 	if _, err := rand.Read(salt); err != nil {
 		fmt.Println("rand.Read(salt)", err)
@@ -69,6 +74,7 @@ func Register(c echo.Context) error {
 	user.Username = userData["username"]
 	user.Password = hex.EncodeToString(hash)
 	user.ConfirmPassword = hex.EncodeToString(confirmHash)
+	user.Role = userData["role"]
 	user.Salt = hex.EncodeToString(salt)
 
 	if err := user.Validate(); err != nil {
@@ -143,7 +149,7 @@ func Login(c echo.Context) error {
 	}
 
 	// we can also set the session ID as token back
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "user loggedin successfully", "token": session.ID})
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "user loggedin successfully", "token": session.ID, "username": user.Username})
 }
 
 func Logout(c echo.Context) error {

@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"encoding/json"
+	"strings"
 )
 
 type CustomContext struct {
@@ -42,6 +43,64 @@ func IsLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(cc)
 	}
 }
+
+func OnlyAdmin(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := c.(CustomContext)
+		if cc.session == nil {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+		}
+
+		if 	cc.session.Role != "Admin" {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"errors": swapErr.ErrForbidden.Error()})
+		}
+		return next(cc)	
+	}
+}
+
+func OnlyAdminClerk(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := c.(CustomContext)
+		if cc.session == nil {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+		}	
+
+		if !strings.Contains("Admin Clerk Accountant ", cc.session.Role) {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"errors": swapErr.ErrForbidden.Error()})
+		}
+
+		return next(cc)	
+	}
+}
+
+func OnlyAdminAccountant(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := c.(CustomContext)
+		if cc.session == nil {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+		}
+
+		if !strings.Contains("Admin Accountant ", cc.session.Role) {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"errors": swapErr.ErrForbidden.Error()})
+		}
+		return next(cc)	
+	}
+}
+
+func OnlyAdminAccountantClerkTeacher(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := c.(CustomContext)
+		if cc.session == nil {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+		}
+
+		if !strings.Contains("Admin Accountant Clerk Teacher ", cc.session.Role) {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"errors": swapErr.ErrForbidden.Error()})
+		}
+		return next(cc)	
+	}
+}
+
 
 func OnlySwapnil() echo.MiddlewareFunc {
 	return middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {

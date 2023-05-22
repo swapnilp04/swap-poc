@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/scrypt"
 	"time"
+	"strings"
 )
 
 type User struct {
@@ -18,7 +19,7 @@ type User struct {
 	Salt            string `json:"-"`
 	Password        string `json:"-"`
 	ConfirmPassword string `json:"-" gorm:"-"`
-	Role						string `json:role`
+	Role						string `json:"role"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -64,6 +65,14 @@ func (u *User) All() ([]User, error) {
 func (u *User) Validate() error {
 	if u.ConfirmPassword != u.Password {
 		return swapErr.ErrPasswordMisMatch
+	}
+
+	if u.Role == "" {
+		return swapErr.ErrEmptyRole
+	}
+
+	if !strings.Contains("Admin Accountant Clerk Teacher", u.Role) {
+		return swapErr.ErrEmptyRole
 	}
 
 	////Other check///

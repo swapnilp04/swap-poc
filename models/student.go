@@ -17,6 +17,7 @@ type Student struct {
 	MiddleName     						string `json:"middle_name" validate:"nonzero"`
 	LastName      						string `json:"last_name" validate:"nonzero"`
 	BirthDate  								time.Time `json:"birth_date"`
+	AdharCard									string `json:"adhar_card" gorm:"adhar_card" validate:"nonzero,min=12,max=12"`
 	ParentName								string `json:"parent_name" validate:"nonzero"`
 	ParentOccupation					string `json:"parent_occupation" validate:"nonzero"`
 	ContactNumber 						string  `json:"contact_number" gorm:"contact_number" validate:"nonzero,min=10,max=12"`
@@ -90,6 +91,10 @@ func (s *Student) Assign(studentData map[string]interface{}) {
 
 	if whNumber, ok := studentData["wh_number"]; ok {
 		s.WhNumber = whNumber.(string)
+	}
+
+	if adharCard, ok := studentData["adhar_card"]; ok {
+		s.AdharCard = adharCard.(string)
 	}
 
 	if town, ok := studentData["town"]; ok {

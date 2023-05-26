@@ -15,6 +15,7 @@ type HostelStudent struct {
 	HostelRoomId    uint `json:"hostel_room_id"  validate:"nonzero"`
 	ContactNumber  	string `json:"contact_number"  validate:"nonzero"`
 	StudentId				uint `json:"student_id"  validate:"nonzero"`
+	FeeIncluded  		bool `json:"fee_included" gorm:"default:false"`
 	Hostel 					Hostel
 	HostelRoom      HostelRoom
 	Student  				Student
@@ -61,6 +62,10 @@ func (hs *HostelStudent) Assign(hostelStudentData map[string]interface{}) {
 
 	if contactNumber, ok := hostelStudentData["content_number"]; ok {
 		hs.ContactNumber = contactNumber.(string)
+	}
+
+	if feeIncluded, ok := hostelStudentData["fee_included"]; ok {
+		hs.FeeIncluded = feeIncluded.(bool)
 	}
 }
 
@@ -116,9 +121,13 @@ func (hs *HostelStudent) AddTransaction() error {
 	if err != nil {
 	 	return err
 	}
+	amount := 0.0
+	if !hs.FeeIncluded {
+		amount = hostel.Rate
+	}
 	transactionData := map[string]interface{}{"name": "New Hostel Adminission", "student_id": float64(hs.StudentId), 
 		"hostel_student_id": float64(hs.ID), "transaction_category_id": float64(transactionCategory.ID),
-		"is_cleared": true, "transaction_type": "debit", "amount": hostel.Rate}
+		"is_cleared": true, "transaction_type": "debit", "amount": amount}
 
 	student := &Student{ID: hs.StudentId}
 	err = hostel.Find()

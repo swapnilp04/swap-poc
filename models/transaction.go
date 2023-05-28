@@ -23,6 +23,7 @@ type Transaction struct {
 	TransactionType         string `json:"transaction_type" gorm:"default:'debit'" validate:"nonzero"`
 	Amount       						float64 `json:"amount" validate:"nonzero"`
 	RecieptUrl  						string `json:"receipt_url"`
+	UserID									uint `json:"user_id"`
 	Student 								Student
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time

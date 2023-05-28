@@ -26,6 +26,7 @@ type Student struct {
 	Town 											string `json:"town" validate:"nonzero"`
 	HasHostel									bool `json:"has_hostel" gorm:"default:false"`
 	Balance 									float64 `json:"balance" gorm:"default:0.0"`
+	StudentAccountBalance 		float64 `json:"student_account_balance" gorm:"default:0.0"`
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
@@ -295,4 +296,32 @@ func (s *Student) GetBalance() (float64, float64) {
 		}
 	}
 	return totalDebits, totalCredits
+}
+
+func (s *Student) GetStudentAccounts() ([]StudentAccount, error) {
+	studentAccounts := []StudentAccount{}
+	err := db.Driver.Where("student_id = ?", s.ID).Find(&studentAccounts).Error
+	return studentAccounts, err
+}
+
+func (s *Student) GetStudentAccountBalance() (float64, float64) {
+	studentAccounts, err := s.GetStudentAccounts()
+	var totalDebits = 0.0
+	var totalCredits = 0.0
+	if err == nil {
+		for _, studentAccount := range studentAccounts {
+			if studentAccount.TransactionType == "debit" {
+				totalDebits = totalDebits + studentAccount.Amount
+			} else {
+				totalCredits = totalCredits + studentAccount.Amount
+			}
+		}
+	}
+	return totalDebits, totalCredits
+}
+
+func (s *Student) SaveStudentAccountBalance() error{
+	debits, credits := s.GetStudentAccountBalance()
+	s.StudentAccountBalance =  credits - debits
+	return s.Update()
 }

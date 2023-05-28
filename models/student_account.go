@@ -13,7 +13,8 @@ type StudentAccount struct {
 	StudentId								uint `json:"student_id" validate:"nonzero"`
 	TransactionType         string `json:"transaction_type" gorm:"default:'debit'" validate:"nonzero"`
 	Amount       						float64 `json:"amount" validate:"nonzero"`
-	Balance 								float64 `json:balance gorm:"default:0.0"`
+	Balance 								float64 `json:"balance" gorm:"default:0.0"`
+	UserID									uint `json:"user_id"`
 	Student 								Student
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -28,8 +29,8 @@ func migrateStudentAccount() {
 	}
 }
 
-func NewStudentAccount(studentAccountData map[string]interface{}, student Student) *StudentAccount {
-	studentAccount := &StudentAccount{Student: student}
+func NewStudentAccount(studentAccountData map[string]interface{}, student Student, transactionType string) *StudentAccount {
+	studentAccount := &StudentAccount{Student: student, TransactionType: transactionType}
 	studentAccount.Assign(studentAccountData)
 	return studentAccount
 }
@@ -47,10 +48,6 @@ func (sa *StudentAccount) Assign(studentAccountData map[string]interface{}) {
 		sa.StudentId = uint(studentId.(float64))
 	}
 	
-	if transactionType, ok := studentAccountData["transaction_type"]; ok {
-		sa.TransactionType = transactionType.(string)
-	}
-
 	if amount, ok := studentAccountData["amount"]; ok {
 		sa.Amount = amount.(float64)
 	}

@@ -16,4 +16,5 @@ func init() {
 	migrateTransactionCategory()
 	migrateTransaction()
 	migrateCheque()
+	migrateStudentAccount()
 }

@@ -24,6 +24,7 @@ type Transaction struct {
 	Amount       						float64 `json:"amount" validate:"nonzero"`
 	RecieptUrl  						string `json:"receipt_url"`
 	UserID									uint `json:"user_id"`
+	Reason 									string `json:"reason"`
 	Student 								Student
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -82,6 +83,10 @@ func (t *Transaction) Assign(transactionData map[string]interface{}) {
 
 	if transactionType, ok := transactionData["transaction_type"]; ok {
 		t.TransactionType = transactionType.(string)
+	}
+
+	if reason, ok := transactionData["reason"]; ok {
+		t.Reason = reason.(string)
 	}
 
 	if amount, ok := transactionData["amount"]; ok {

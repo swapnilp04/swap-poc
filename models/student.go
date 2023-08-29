@@ -16,6 +16,7 @@ type Student struct {
 	FirstName     						string `json:"first_name" validate:"nonzero"`
 	MiddleName     						string `json:"middle_name" validate:"nonzero"`
 	LastName      						string `json:"last_name" validate:"nonzero"`
+	RollNumber								string `json:"roll_number"`
 	BirthDate  								time.Time `json:"birth_date"`
 	AdharCard									string `json:"adhar_card" gorm:"adhar_card" validate:"nonzero,min=12,max=12"`
 	ParentName								string `json:"parent_name" validate:"nonzero"`

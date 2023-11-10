@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"swapnil-ex/models/db"
 	"time"
+	"strconv"
 	"gorm.io/gorm"
 	"swapnil-ex/swapErr"
 	"gopkg.in/validator.v2"
@@ -11,6 +12,7 @@ import (
 
 type Transaction struct {
 	ID            					uint    `json:"id"`
+	ReceiptId								string `json:"receipt_id"`
 	Name     								string `json:"name" validate:"nonzero"`
 	StudentId								uint `json:"student_id" validate:"nonzero"`
 	HostelStudentId					uint `json:"hostel_student_id"`
@@ -95,7 +97,6 @@ func (t *Transaction) Assign(transactionData map[string]interface{}) {
 }
 
 
-
 func (t *Transaction) AllStudents(page int, ids []uint) ([]Transaction, error) {
 	var transactions []Transaction
 	query := db.Driver.Preload("Student")
@@ -128,7 +129,11 @@ func (t *Transaction) Find() error {
 }
 
 func (t *Transaction) Create() error {
-	err := db.Driver.Omit("Student").Create(t).Error
+	receiptId, err :=  t.getReiceptId()
+	if err == nil {
+		t.ReceiptId = receiptId
+	}
+	err = db.Driver.Omit("Student").Create(t).Error
 	return err
 }
 
@@ -150,4 +155,18 @@ func (t *Transaction) CheckedTransaction() error {
 		} else {
 			return swapErr.ErrAlreadyChecked
 		}
+}
+
+func (t *Transaction) getReiceptId() (string , error) {
+	var count int64
+	today, _ := time.Parse("2006-01-02", time.Now().Format("2006-01-02"))
+	//err := 
+	var transactions []Transaction
+	err := db.Driver.Where("created_at > ?", today).Find(&transactions).Count(&count).Error
+	if err != nil  {
+		return "", err
+	} else {
+		str := "" + time.Now().Format("20060102") + "" + strconv.FormatInt(count+1, 10)
+		return  str, nil
+	}
 }

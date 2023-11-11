@@ -41,6 +41,7 @@ func main() {
 	e.POST("/students/:student_id/batch_standards", handlers.CreateStudentBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
 	e.GET("/students/:student_id/transactions", handlers.GetStudentTransactions, handlers.IsLoggedIn)
+	e.GET("/students/:student_id/transactions/:id", handlers.GetStudentTransaction, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/students/:student_id/transactions", handlers.PayStudentFee, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/students/:student_id/transactions/dues/new", handlers.AddStudentDues, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/students/:student_id/transactions/balance", handlers.GetStudentBalance, handlers.IsLoggedIn)
@@ -80,6 +81,7 @@ func main() {
 	e.GET("/hostels/:hostel_id/hostel_rooms/:id/students", handlers.GetHostelRoomStudents, handlers.IsLoggedIn)
 
 	e.GET("/accounts/transactions", handlers.GetTransactions, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.GET("/accounts/students/:student_id/transactions/:id", handlers.GetStudentTransaction, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
 	e.GET("/users", handlers.GetUsers, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.POST("/users", handlers.Register, handlers.IsLoggedIn, handlers.OnlyAdmin)

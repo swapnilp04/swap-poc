@@ -27,6 +27,7 @@ type Transaction struct {
 	RecieptUrl  						string `json:"receipt_url"`
 	UserID									uint `json:"user_id"`
 	Reason 									string `json:"reason"`
+	AmountToWord						string `gorm:"-:all"`
 	Student 								Student
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -169,4 +170,9 @@ func (t *Transaction) getReiceptId() (string , error) {
 		str := "" + time.Now().Format("20060102") + "" + strconv.FormatInt(count+1, 10)
 		return  str, nil
 	}
+}
+
+func (t *Transaction) AddWordPayment() {
+	str := Convert(int(t.Amount))
+	t.AmountToWord = str
 }

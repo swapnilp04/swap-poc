@@ -98,7 +98,16 @@ func GetStudentTransaction(c echo.Context) error {
 		fmt.Println("s.Find(GetStudent)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-	return c.JSON(http.StatusOK, student)
+
+	Id := c.Param("id")
+	newId, err := strconv.Atoi(Id)
+	transaction , err := student.GetTransaction(uint(newId))
+	if err != nil {
+		fmt.Println("s.Find(GetTransaction)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}	
+	transaction.AddWordPayment()
+	return c.JSON(http.StatusOK, transaction)
 }
 
 func PayStudentFee(c echo.Context) error {

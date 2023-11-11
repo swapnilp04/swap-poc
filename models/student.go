@@ -251,6 +251,12 @@ func (s *Student) GetTransactions() ([]Transaction, error) {
 	return transactions, err
 }
 
+func (s *Student) GetTransaction(transactionID uint) (Transaction, error) {
+	transaction := Transaction{}
+	err := db.Driver.Preload("Student").Where("student_id = ? and id = ?", s.ID, transactionID).Find(&transaction).Error
+	return transaction, err
+}
+
 func (s *Student) TotalDebits() float64 {
 	transactions, err := s.GetTransactions()
 	var total = 0.0

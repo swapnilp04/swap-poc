@@ -191,7 +191,7 @@ func AssignStudentHostel(c echo.Context) error {
 		fmt.Println("s.Find(GetHostelRoom)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-	err = s.AssignHostel(hostel, hostelRoom, studentHostelData["fee_included"].(bool))
+	err = s.AssignHostel(hostel, hostelRoom, studentHostelData["fee_included"].(bool), studentHostelData["fee_iteration"].(string))
 	if err != nil {
 		fmt.Println("s.Find(AssignHostelStudent)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})

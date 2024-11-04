@@ -16,6 +16,8 @@ type HostelStudent struct {
 	ContactNumber  	string `json:"contact_number"  validate:"nonzero"`
 	StudentId				uint `json:"student_id"  validate:"nonzero"`
 	FeeIncluded  		bool `json:"fee_included" gorm:"default:false"`
+	FeeIteration  	string `json:"fee_iteration" gorm:"default:Yearly"`
+	NextCollection	time.Time `json:"next_collection"`
 	Hostel 					Hostel
 	HostelRoom      HostelRoom
 	Student  				Student
@@ -110,6 +112,22 @@ func (hs *HostelStudent) Delete() error {
 	return err
 }
 
+func (hs *HostelStudent) setNextCollection() error{
+	hs.NextCollection = time.Now()
+
+	switch hs.FeeIteration {
+	case "Yearly":
+		hs.NextCollection.AddDate(1,0,0)
+	case "HalfYearly":
+		hs.NextCollection.AddDate(0,6,0)
+	case "Quarterly":
+		hs.NextCollection.AddDate(0,3,0)
+	default:
+		hs.NextCollection.AddDate(0,1,0)
+	} 
+	return nil
+}
+
 func (hs *HostelStudent) AddTransaction() error {
 	hostel := &Hostel{ID: hs.HostelId}
 	err := hostel.Find()
@@ -123,7 +141,16 @@ func (hs *HostelStudent) AddTransaction() error {
 	}
 	amount := 0.0
 	if !hs.FeeIncluded {
-		amount = hostel.Rate
+		switch hs.FeeIteration {
+		case "Yearly":
+			amount = hostel.Rate * 12
+		case "HalfYearly":
+			amount = hostel.Rate * 6
+		case "Quarterly":
+			amount = hostel.Rate * 3
+		default:
+			amount = hostel.Rate
+		} 
 	}
 	transactionData := map[string]interface{}{"name": "New Hostel Adminission", "student_id": float64(hs.StudentId), 
 		"hostel_student_id": float64(hs.ID), "transaction_category_id": float64(transactionCategory.ID),
@@ -137,6 +164,11 @@ func (hs *HostelStudent) AddTransaction() error {
 
 	transaction := NewTransaction(transactionData, *student)
 	err = transaction.Create()
+	if err != nil {
+		return err
+	} else {
+		err = hs.setNextCollection()
+	}
 	
 	return err
 }

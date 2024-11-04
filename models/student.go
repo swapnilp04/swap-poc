@@ -12,22 +12,23 @@ import (
 
 type Student struct {
 	ID            						uint    `json:"id"`
-	Inil     									string `json:"inil"`
-	FirstName     						string `json:"first_name" validate:"nonzero"`
-	MiddleName     						string `json:"middle_name" validate:"nonzero"`
-	LastName      						string `json:"last_name" validate:"nonzero"`
-	RollNumber								string `json:"roll_number"`
+	Inil     									string 	`json:"inil"`
+	FirstName     						string 	`json:"first_name" validate:"nonzero"`
+	MiddleName     						string 	`json:"middle_name" validate:"nonzero"`
+	LastName      						string 	`json:"last_name" validate:"nonzero"`
+	RollNumber								string 	`json:"roll_number"`
 	BirthDate  								time.Time `json:"birth_date"`
-	AdharCard									string `json:"adhar_card" gorm:"adhar_card" validate:"nonzero,min=12,max=12"`
-	ParentName								string `json:"parent_name" validate:"nonzero"`
-	ParentOccupation					string `json:"parent_occupation" validate:"nonzero"`
+	AdharCard									string 	`json:"adhar_card" gorm:"adhar_card" validate:"nonzero,min=12,max=12"`
+	ParentName								string 	`json:"parent_name" validate:"nonzero"`
+	ParentOccupation					string 	`json:"parent_occupation" validate:"nonzero"`
 	ContactNumber 						string  `json:"contact_number" gorm:"contact_number" validate:"nonzero,min=10,max=12"`
 	WhNumber									string  `json:"wh_number" validate:"nonzero,min=10,max=12"`
-	Status 										string `json:"status"`
-	Town 											string `json:"town" validate:"nonzero"`
-	HasHostel									bool `json:"has_hostel" gorm:"default:false"`
+	Status 										string 	`json:"status"`
+	Town 											string 	`json:"town" validate:"nonzero"`
+	HasHostel									bool 		`json:"has_hostel" gorm:"default:false"`
 	Balance 									float64 `json:"balance" gorm:"default:0.0"`
 	StudentAccountBalance 		float64 `json:"student_account_balance" gorm:"default:0.0"`
+	HostelRoomId    					uint 		`json:"hostel_room_id"`
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
@@ -219,6 +220,7 @@ func (s *Student) AssignHostel(h *Hostel, hr *HostelRoom, fee_included bool, fee
 		err = hostelStudent.Create()
 		if err == nil {
 			s.HasHostel = true
+			s.HostelRoomId = hr.ID
 			s.Update()
 			s.SaveBalance()
 		}
@@ -232,6 +234,7 @@ func (s *Student) ChangeHostel(h *Hostel, hr *HostelRoom) error {
 	if err == nil {
 		hostelStudent.HostelId = h.ID
 		hostelStudent.HostelRoomId = hr.ID
+		s.HostelRoomId = hr.ID
 		s.HasHostel = true
 		s.Update()
 		return hostelStudent.Update()

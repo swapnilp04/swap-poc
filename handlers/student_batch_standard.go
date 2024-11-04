@@ -10,28 +10,28 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetBatchStandardStudents(c echo.Context) error {
-	studentId := c.Param("student_id")
-	newStudentId, err := strconv.Atoi(studentId)
-	if err != nil {
-		fmt.Println("strconv.Atoi failed", err)
-		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
-	}
-	student := &models.Student{ID: uint(newStudentId)}
-	err = student.Find()
-	if err != nil {
-		fmt.Println("s.Find(GetStudent)", err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
-	}
+// func GetBatchStandardStudents(c echo.Context) error {
+// 	studentId := c.Param("student_id")
+// 	newStudentId, err := strconv.Atoi(studentId)
+// 	if err != nil {
+// 		fmt.Println("strconv.Atoi failed", err)
+// 		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+// 	}
+// 	student := &models.Student{ID: uint(newStudentId)}
+// 	err = student.Find()
+// 	if err != nil {
+// 		fmt.Println("s.Find(GetStudent)", err)
+// 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+// 	}
 	
-	bss := &models.BatchStandardStudent{}
-	batchStandardStudents, err := bss.All(student.ID)
-	if err != nil {
-		fmt.Println("s.ALL(GetBatchStandardStudents)", err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
-	}
-	return c.JSON(http.StatusOK, batchStandardStudents)
-}
+// 	bss := &models.BatchStandardStudent{}
+// 	batchStandardStudents, err := bss.All(student.ID)
+// 	if err != nil {
+// 		fmt.Println("s.ALL(GetBatchStandardStudents)", err)
+// 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+// 	}
+// 	return c.JSON(http.StatusOK, batchStandardStudents)
+//}
 
 
 func GetBatchStandardStudent(c echo.Context) error {

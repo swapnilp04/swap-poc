@@ -33,8 +33,7 @@ func GetBatchStandard(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
 	}
 
-	batchStandard := &models.BatchStandard{ID: uint(newBatchStandardId)}
-	err = batchStandard.Find()
+	batchStandard, err := b.GetBatchStandard(uint(newBatchStandardId))
 	if err != nil {
 		fmt.Println("s.Find(GetBatchStandard)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
@@ -169,13 +168,12 @@ func GetBatchStandards(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-	bs := &models.BatchStandard{}
-	batchStandards, err := bs.All(b.ID)
+	bs, err := b.GetBatchStandards()
 	if err != nil {
 		fmt.Println("s.ALL(GetBatchs)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-	return c.JSON(http.StatusOK, batchStandards)
+	return c.JSON(http.StatusOK, bs)
 }
 
 func GetBatchUnassignedStandards(c echo.Context) error {
@@ -208,4 +206,39 @@ func GetBatchUnassignedStandards(c echo.Context) error {
 
 
 	return c.JSON(http.StatusOK, standards)
+}
+
+func GetBatchStandardStudents(c echo.Context) error {
+	batchId := c.Param("batch_id")
+	newBatchId, err := strconv.Atoi(batchId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	b := &models.Batch{ID: uint(newBatchId)}
+	err = b.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	batchStandardId := c.Param("id")
+	newBatchStandardId, err := strconv.Atoi(batchStandardId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	batchStandard := &models.BatchStandard{ID: uint(newBatchStandardId)}
+	err = batchStandard.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandard)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	//studentIDs := &models.BatchStandardStudent{}
+
+	return c.JSON(http.StatusOK, batchStandard)
+
 }

@@ -77,3 +77,15 @@ func (b *Batch) Delete() error {
 	err := db.Driver.Delete(b).Error
 	return err
 }
+
+func (b *Batch) GetBatchStandards() ([]BatchStandard, error) {
+	var batchStandards []BatchStandard
+	err := db.Driver.Where("batch_id = ?", b.ID).Find(&batchStandards).Error
+	return batchStandards, err
+}
+
+func (b *Batch) GetBatchStandard(batchID uint) (BatchStandard, error) {
+	var batchStandard BatchStandard
+	err := db.Driver.First(&batchStandard, "batch_id = ? and id = ?", b.ID, batchID).Error
+	return batchStandard, err
+}

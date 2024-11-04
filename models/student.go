@@ -107,7 +107,7 @@ func (s *Student) Assign(studentData map[string]interface{}) {
 
 func (s *Student) All(page int, search string) ([]Student, error) {
 	var students []Student
-	query := db.Driver.Limit(10).Offset((page - 1) * 10)
+	query := db.Driver.Limit(10).Offset((page - 1) * 10).Order("id desc")
 	search = strings.Trim(search, " ")
 	if len([]rune(search)) > 0 {
 		search = "%" + search + "%"

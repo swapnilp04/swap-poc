@@ -80,7 +80,7 @@ func (b *Batch) Delete() error {
 
 func (b *Batch) GetBatchStandards() ([]BatchStandard, error) {
 	var batchStandards []BatchStandard
-	err := db.Driver.Where("batch_id = ?", b.ID).Find(&batchStandards).Error
+	err := db.Driver.Where("batch_id = ?", b.ID).Preload("Standard").Find(&batchStandards).Error
 	return batchStandards, err
 }
 

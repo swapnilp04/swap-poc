@@ -169,10 +169,10 @@ func (s *Student) ConfirmedStatus() bool {
 	return s.Status == "Confirmed"
 }
 
-func (s *Student) GetBatchStandardStudents() []BatchStandardStudent {
+func (s *Student) GetBatchStandardStudents() ([]BatchStandardStudent, error) {
 	var batchStandardStudents []BatchStandardStudent
-	_ = db.Driver.Where("student_id = ?", s.ID).Find(&batchStandardStudents).Error
-	return batchStandardStudents
+	err := db.Driver.Where("student_id = ?", s.ID).Preload("Batch").Preload("Standard").Find(&batchStandardStudents).Error
+	return batchStandardStudents, err
 }
 
 func (s *Student) RemoveBatchStandard(batchStandard *BatchStandard) error {
@@ -194,7 +194,7 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 	//check student already assign to batch standard
 	//if assign remove from current batch standard before this check transaction 
 	// after that assign new batch standard
-	batchStandardStudents := s.GetBatchStandardStudents()
+	batchStandardStudents, _ := s.GetBatchStandardStudents()
 	if len(batchStandardStudents) > 0 {
 		return errors.New("Already assigned to Class")
 	} else {

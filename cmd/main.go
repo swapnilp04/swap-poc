@@ -37,7 +37,7 @@ func main() {
 	e.POST("/students/:id/assign_hostel", handlers.AssignStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.PUT("/students/:id/change_hostel", handlers.ChangeStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	
-	e.GET("/students/:student_id/batch_standards", handlers.GetBatchStandardStudents, handlers.IsLoggedIn)
+	e.GET("/students/:student_id/batch_standards", handlers.GetStudentStandards, handlers.IsLoggedIn)
 	e.POST("/students/:student_id/batch_standards", handlers.CreateStudentBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
 	e.GET("/students/:student_id/transactions", handlers.GetStudentTransactions, handlers.IsLoggedIn)

@@ -157,6 +157,31 @@ func GetStudentHostel(c echo.Context) error {
 	return c.JSON(http.StatusOK, hostelStudent)
 }
 
+func GetStudentStandards(c echo.Context) error {
+	// Get a single user by ID
+	id := c.Param("student_id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	s := &models.Student{ID: uint(newId)}
+	err = s.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	batchStandardStudents, err := s.GetBatchStandardStudents()
+	if err != nil {
+		fmt.Println("s.Find(batchStandardStudents)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, batchStandardStudents)
+}
+
 func AssignStudentHostel(c echo.Context) error {
 	studentHostelData := make(map[string]interface{})
 	if err := c.Bind(&studentHostelData); err != nil {

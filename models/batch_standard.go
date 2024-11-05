@@ -117,3 +117,9 @@ func (bs *BatchStandard) GetTransactionCategory() (*TransactionCategory, error) 
 	err := db.Driver.Where("name like ? and batch_id = ? and batch_standard_id = ?", "BatchStandard", bs.BatchId, bs.ID).First(tc).Error
 	return tc, err
 }
+
+func (bs *BatchStandard) GetStudents() ([]BatchStandardStudent, error) {
+	batchStandardStudents := []BatchStandardStudent{}
+	err := db.Driver.Where("batch_standard_id = ?", bs.ID).Preload("Student").Find(&batchStandardStudents).Error	
+	return batchStandardStudents, err
+}

@@ -231,14 +231,18 @@ func GetBatchStandardStudents(c echo.Context) error {
 	}
 
 	batchStandard := &models.BatchStandard{ID: uint(newBatchStandardId)}
+	
 	err = batchStandard.Find()
 	if err != nil {
 		fmt.Println("s.Find(GetBatchStandard)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
+	
+	batchStandardStudents, err := 	batchStandard.GetStudents()
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandard)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
 
-	//studentIDs := &models.BatchStandardStudent{}
-
-	return c.JSON(http.StatusOK, batchStandard)
-
+	return c.JSON(http.StatusOK, batchStandardStudents)
 }

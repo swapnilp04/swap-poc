@@ -17,7 +17,6 @@ type Hostel struct {
 	Rate     				float64 	`json:"rate" validate:"nonzero"`
 	HostelRoomsCount int64 `json:"hostel_rooms_count" gorm:"default:0"`
 	HostelStudentsCount int64 `json:"hostel_students_count" gorm:"default:0"`
-	BatchId       	uint `json:"batch_id"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

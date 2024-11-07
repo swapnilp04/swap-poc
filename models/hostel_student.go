@@ -18,7 +18,6 @@ type HostelStudent struct {
 	FeeIncluded  		bool `json:"fee_included" gorm:"default:false"`
 	FeeIteration  	string `json:"fee_iteration" gorm:"default:Yearly"`
 	NextCollection	time.Time `json:"next_collection"`
-	BatchId       	uint `json:"batch_id"`
 	Hostel 					Hostel
 	HostelRoom      HostelRoom
 	Student  				Student

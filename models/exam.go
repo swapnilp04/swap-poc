@@ -18,6 +18,7 @@ type Exam struct {
 	ExamDate				time.Time
 	ExamStatus 			string `json:"exam_status"`
 	ContactNumber  	string `json:"contact_number"`
+	BatchId       	uint `json:"batch_id"`
 	ExamStudents 		[]ExamStudent
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time

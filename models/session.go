@@ -10,6 +10,7 @@ type Session struct {
 	ID        string
 	UserID    int
 	Role			string
+	BatchId   uint `json:"batch_id"`
 	CreatedAt time.Time
 	ExpiresAt time.Time
 }

@@ -28,6 +28,7 @@ type Transaction struct {
 	UserID									uint `json:"user_id"`
 	Reason 									string `json:"reason"`
 	AmountToWord						string `gorm:"-:all"`
+	BatchId       	uint `json:"batch_id"`
 	Student 								Student
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time

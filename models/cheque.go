@@ -14,6 +14,7 @@ type Cheque struct {
 	IsCleared 							bool `json:"is_cleared"`
 	Amount       						float64 `json:"amount" validate:"nonzero"`
 	TransactionId 					uint `json:"transaction_id" validate:"nonzero"`
+	BatchId       					uint `json:"batch_id"`
 	Date  									time.Time
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time

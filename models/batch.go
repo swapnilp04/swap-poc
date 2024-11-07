@@ -13,6 +13,7 @@ type Batch struct {
 	Name     				string `json:"name" validate:"nonzero"`
 	Year      			int `json:"year" validate:"nonzero"`
 	StandardsCount  int64 `json:"standards_count"`
+	IsDefault  			bool `json:"is_default" gorm:"default:false"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -48,6 +49,13 @@ func (b *Batch) Assign(batchData map[string]interface{}) {
 
 	if year, ok := batchData["year"]; ok {
 		b.Year = int(year.(float64))
+	}
+
+	if isDefault, ok := batchData["is_default"]; ok {
+		b.IsDefault = isDefault.(bool)
+		if b.IsDefault {
+			BatchDefaultFalse()
+		}
 	}
 }
 
@@ -88,4 +96,8 @@ func (b *Batch) GetBatchStandard(batchID uint) (BatchStandard, error) {
 	var batchStandard BatchStandard
 	err := db.Driver.First(&batchStandard, "batch_id = ? and id = ?", b.ID, batchID).Error
 	return batchStandard, err
+}
+
+func BatchDefaultFalse() {
+	db.Driver.Exec("Update batches set is_default = false")
 }

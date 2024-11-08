@@ -16,7 +16,6 @@ type ExamStudent struct {
 	Exam  					Exam
 	Marks     			float32 `json:"marks"`
 	Rank						int16 `json:"rank"`
-	BatchId       	uint `json:"batch_id"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

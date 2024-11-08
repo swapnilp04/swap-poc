@@ -29,7 +29,6 @@ type Student struct {
 	Balance 									float64 `json:"balance" gorm:"default:0.0"`
 	StudentAccountBalance 		float64 `json:"student_account_balance" gorm:"default:0.0"`
 	HostelRoomId    					uint 		`json:"hostel_room_id"`
-	BatchId       	uint `json:"batch_id"`
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time

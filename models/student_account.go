@@ -15,7 +15,6 @@ type StudentAccount struct {
 	Amount       						float64 `json:"amount" validate:"nonzero"`
 	Balance 								float64 `json:"balance" gorm:"default:0.0"`
 	UserID									uint `json:"user_id"`
-	BatchId       					uint `json:"batch_id"`
 	Student 								Student
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time

@@ -88,5 +88,5 @@ func main() {
 	e.POST("/users", handlers.Register, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

@@ -113,7 +113,9 @@ func (hs *HostelStudent) Delete() error {
 }
 
 func (hs *HostelStudent) setNextCollection() error{
-	hs.NextCollection = time.Now()
+	if(hs.NextCollection.Year() == 1) {
+		hs.NextCollection = time.Now()
+	}
 
 	switch hs.FeeIteration {
 	case "Yearly":
@@ -181,7 +183,7 @@ func GetEarlyExpiredHostelStudents() ([]HostelStudent, error){
 	currentTime = currentTime.AddDate(0,0,15)
 
 	var hostelStudents []HostelStudent
-	err := db.Driver.Where("next_collection <= ?", currentTime).Preload("Student").Preload("Hostel").
+	err := db.Driver.Where("next_collection <= ? AND fee_included = ?", currentTime, false).Preload("Student").Preload("Hostel").
 			Preload("HostelRoom").Find(&hostelStudents).Error
 	return hostelStudents, err
 }

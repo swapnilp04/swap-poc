@@ -117,15 +117,17 @@ func (hs *HostelStudent) setNextCollection() error{
 
 	switch hs.FeeIteration {
 	case "Yearly":
-		hs.NextCollection.AddDate(1,0,0)
+		hs.NextCollection = hs.NextCollection.AddDate(1,0,0)
 	case "HalfYearly":
-		hs.NextCollection.AddDate(0,6,0)
+		hs.NextCollection = hs.NextCollection.AddDate(0,6,0)
 	case "Quarterly":
-		hs.NextCollection.AddDate(0,3,0)
+		hs.NextCollection = hs.NextCollection.AddDate(0,3,0)
+	case "Monthly":
+		hs.NextCollection = hs.NextCollection.AddDate(0,1,0)
 	default:
-		hs.NextCollection.AddDate(0,1,0)
+		hs.NextCollection = hs.NextCollection.AddDate(0,1,0)
 	} 
-	return nil
+	return hs.Update()
 }
 
 func (hs *HostelStudent) AddTransaction() error {
@@ -171,4 +173,15 @@ func (hs *HostelStudent) AddTransaction() error {
 	}
 	
 	return err
+}
+
+
+func GetEarlyExpiredHostelStudents() ([]HostelStudent, error){
+	currentTime := time.Now()
+	currentTime = currentTime.AddDate(1,0,15)
+
+	var hostelStudents []HostelStudent
+	err := db.Driver.Where("next_collection <= ?", currentTime).Preload("Student").Preload("Hostel").
+			Preload("HostelRoom").Find(&hostelStudents).Error
+	return hostelStudents, err
 }

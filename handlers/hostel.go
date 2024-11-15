@@ -113,3 +113,11 @@ func DeleteHostel(c echo.Context) error {
 	// Delete a user by ID
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Hostel deleted successfully"})
 }
+
+func GetEarlyExpiredHostelStudents(c echo.Context) error {
+	hostelStudents, err := models.GetEarlyExpiredHostelStudents()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, hostelStudents)
+}

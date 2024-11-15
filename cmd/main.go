@@ -71,6 +71,7 @@ func main() {
 
 	e.GET("/hostels", handlers.GetHostels, handlers.IsLoggedIn)
 	e.GET("/hostels/:id", handlers.GetHostel, handlers.IsLoggedIn)
+	e.GET("/hostels/get_early_expired_students", handlers.GetEarlyExpiredHostelStudents, handlers.IsLoggedIn)
 	e.POST("/hostels", handlers.CreateHostel, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/hostels/:id", handlers.UpdateHostel, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.DELETE("/hostels/:id", handlers.DeleteHostel, handlers.IsLoggedIn, handlers.OnlyAdmin)

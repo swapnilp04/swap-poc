@@ -178,7 +178,7 @@ func (hs *HostelStudent) AddTransaction() error {
 
 func GetEarlyExpiredHostelStudents() ([]HostelStudent, error){
 	currentTime := time.Now()
-	currentTime = currentTime.AddDate(1,0,15)
+	currentTime = currentTime.AddDate(0,0,15)
 
 	var hostelStudents []HostelStudent
 	err := db.Driver.Where("next_collection <= ?", currentTime).Preload("Student").Preload("Hostel").

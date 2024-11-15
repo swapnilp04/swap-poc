@@ -25,6 +25,100 @@ func GetUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)	
 } 
 
+func GetCurrentUser(c echo.Context) error {
+	cc := c.(CustomContext)
+	if cc.session == nil {
+		return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+	}
+
+	session := cc.session
+
+	if ok := session.Valid(); !ok {
+		return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+	}
+
+	u := &models.User{ID: session.UserID}
+	err := u.Find()
+	if err != nil {
+		fmt.Println("u.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, u)	
+}
+
+
+func UpdatePassword(c echo.Context) error {
+	cc := c.(CustomContext)
+	if cc.session == nil {
+		return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+	}
+
+	session := cc.session
+
+	if ok := session.Valid(); !ok {
+		return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+	}
+
+	user := &models.User{ID: session.UserID}
+	err := user.Find()
+	if err != nil {
+		fmt.Println("u.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	userData := make(map[string]interface{})
+	
+	if err := c.Bind(&userData); err != nil {
+		fmt.Println("c.Bind()", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	if _, ok := userData["password"]; !ok {
+		fmt.Println("userData[\"password\"] not present")
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	if _, ok := userData["confirm_password"]; !ok {
+		fmt.Println("userData[\"confirm_password\"] not present")
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	salt := make([]byte, 16)
+	if _, err := rand.Read(salt); err != nil {
+		fmt.Println("rand.Read(salt)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer})
+	}
+
+	hash, err := scrypt.Key([]byte(userData["password"].(string)), salt, 32768, 8, 1, 32)
+	if err != nil {
+		fmt.Println("scrypt.Key()", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer})
+	}
+
+	confirmHash, err := scrypt.Key([]byte(userData["confirm_password"].(string)), salt, 32768, 8, 1, 32)
+	if err != nil {
+		fmt.Println("scrypt.Key()", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer})
+	}
+
+	user.Password = hex.EncodeToString(hash)
+	user.ConfirmPassword = hex.EncodeToString(confirmHash)
+	user.Salt = hex.EncodeToString(salt)
+
+	if err := user.Validate(); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
+	}
+
+	err = user.Save()
+	if err != nil {
+		fmt.Println("user.Save()", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "user Update successfully"})
+}
+
 func Register(c echo.Context) error {
 	var userData map[string]string
 	if err := c.Bind(&userData); err != nil {

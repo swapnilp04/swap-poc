@@ -51,6 +51,11 @@ func (u *User) ValidPassword(password string) error {
 	return nil
 }
 
+func (u *User) Find() error {
+	err := db.Driver.First(u, "ID = ?", u.ID).Error
+	return err
+}
+
 func (u *User) Save() error {
 	err := db.Driver.Save(u).Error
 	return err

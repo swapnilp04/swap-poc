@@ -85,7 +85,9 @@ func main() {
 	e.GET("/accounts/students/:student_id/transactions/:id", handlers.GetStudentTransaction, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
 	e.GET("/users", handlers.GetUsers, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.GET("/users/current", handlers.GetCurrentUser, handlers.IsLoggedIn)
 	e.POST("/users", handlers.Register, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.PUT("/users/update_password", handlers.UpdatePassword, handlers.IsLoggedIn)
 
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))

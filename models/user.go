@@ -67,6 +67,11 @@ func (u *User) All() ([]User, error) {
 	return users, err
 }
 
+func (u *User) Delete() error {
+	err := db.Driver.Delete(u).Error
+	return err
+}
+
 func (u *User) Validate() error {
 	if u.ConfirmPassword != u.Password {
 		return swapErr.ErrPasswordMisMatch

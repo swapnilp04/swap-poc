@@ -336,3 +336,13 @@ func (s *Student) SaveStudentAccountBalance() error{
 	s.StudentAccountBalance =  credits - debits
 	return s.Update()
 }
+
+func (s *Student) GetUpcommingBirthdays() ([]Student, error) {
+	var students []Student
+	//currentTime := time.Now()
+	//maxTime := currentTime.AddDate(0,0,2)
+	query := db.Driver.Order("id desc")
+	//query = query.Where("DATE_FORMAT(FROM_UNIXTIME(birth_date),'%m-%d') = ? ", currentTime.Format("%m-%d"))
+	err := query.Find(&students).Error
+	return students, err	
+}

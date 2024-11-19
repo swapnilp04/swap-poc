@@ -177,6 +177,9 @@ func (hs *HostelStudent) AddTransaction() error {
 	return err
 }
 
+func (hs *HostelStudent) RenewHostel() error {
+	return nil
+}
 
 func GetEarlyExpiredHostelStudents() ([]HostelStudent, error){
 	currentTime := time.Now()

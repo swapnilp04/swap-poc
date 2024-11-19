@@ -29,6 +29,7 @@ func main() {
 	
 	e.GET("/students", handlers.GetStudents, handlers.IsLoggedIn)
 	e.GET("/students/:id", handlers.GetStudent, handlers.IsLoggedIn)
+	e.GET("/students/get-upcomming-birthdays", handlers.GetUpcommingBirthdays, handlers.IsLoggedIn)
 	e.POST("/students", handlers.CreateStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.PUT("/students/:id", handlers.UpdateStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)

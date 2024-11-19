@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"strconv"
 	"net/http"
 	"swapnil-ex/constants"
 	"swapnil-ex/models"
@@ -23,6 +24,24 @@ func GetUsers(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 	return c.JSON(http.StatusOK, users)	
+}
+
+func GetUser(c echo.Context) error { 
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	user := &models.User{ID: int(newId)}
+	err = user.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, user)
 } 
 
 func GetCurrentUser(c echo.Context) error {

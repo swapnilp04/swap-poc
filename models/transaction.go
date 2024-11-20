@@ -120,7 +120,7 @@ func (t *Transaction) Count(ids []uint) (int64, error) {
 
 func (t *Transaction) All(studentId int) ([]Transaction, error) {
 	var transactions []Transaction
-	err := db.Driver.Where("student_id = ?", studentId).Find(&transactions).Error
+	err := db.Driver.Where("student_id = ?", studentId).Order("id desc").Find(&transactions).Error
 	return transactions, err
 }
 

@@ -29,6 +29,7 @@ type Student struct {
 	Balance 									float64 `json:"balance" gorm:"default:0.0"`
 	StudentAccountBalance 		float64 `json:"student_account_balance" gorm:"default:0.0"`
 	HostelRoomId    					uint 		`json:"hostel_room_id"`
+	StandardId      					uint 		`json:"standard_id"`
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
@@ -205,7 +206,8 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 		batchStandardStudent.StudentId = s.ID
 		batchStandardStudent.BatchStandardId = batchStandard.ID
 		batchStandardStudent.Fee = batchStandard.Fee
-		
+		s.StandardId = batchStandard.StandardId
+		s.Update()
 		return batchStandardStudent.Create()
 	}
 	

@@ -103,6 +103,8 @@ func (t *Transaction) AllStudents(page int, ids []uint) ([]Transaction, error) {
 	query := db.Driver.Preload("Student")
 	if len(ids) > 0 {	
 		query = query.Where("student_id in (?)", ids)
+	} else {
+		query = query.Where("student_id in (?)", 0)
 	}
 	err := query.Limit(10).Offset((page - 1) * 10).Order("id desc").Find(&transactions).Error
 	return transactions, err

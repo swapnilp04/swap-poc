@@ -83,6 +83,7 @@ func (hs *HostelStudent) Find() error {
 }
 
 func (hs *HostelStudent) Create() error {
+	hs.NextCollection = time.Now()
 	err := db.Driver.Create(hs).Error
 	hs.updateCount()
 	if err != nil {
@@ -113,7 +114,7 @@ func (hs *HostelStudent) Delete() error {
 }
 
 func (hs *HostelStudent) setNextCollection() error{
-	if(hs.NextCollection.Year() == 1) {
+	if(hs.NextCollection.Year() == 1 || hs.NextCollection.Year() == 0) {
 		hs.NextCollection = time.Now()
 	}
 

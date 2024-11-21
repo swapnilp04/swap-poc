@@ -35,7 +35,7 @@ func main() {
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	
 	e.GET("/students/:id/hostel", handlers.GetStudentHostel, handlers.IsLoggedIn)
-	e.POST("/students/:id/assign_hostel", handlers.AssignStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.POST("/students/:id/assign_hostel", handlers.AssignStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/students/:id/change_hostel", handlers.ChangeStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	
 	e.GET("/students/:student_id/batch_standards", handlers.GetStudentStandards, handlers.IsLoggedIn)
@@ -48,8 +48,8 @@ func main() {
 	e.GET("/students/:student_id/transactions/balance", handlers.GetStudentBalance, handlers.IsLoggedIn)
 
 	e.GET("/students/:student_id/student_accounts", handlers.GetStudentAccounts, handlers.IsLoggedIn)
-	e.POST("/students/:student_id/student_accounts/deposit", handlers.DepositStudentAccountAmount, handlers.IsLoggedIn)
-	e.POST("/students/:student_id/student_accounts/withdraw", handlers.WithdrawStudentAccountAmount, handlers.IsLoggedIn)
+	e.POST("/students/:student_id/student_accounts/deposit", handlers.DepositStudentAccountAmount, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.POST("/students/:student_id/student_accounts/withdraw", handlers.WithdrawStudentAccountAmount, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)
@@ -65,9 +65,9 @@ func main() {
 	
 	e.GET("/batchs/:batch_id/standards", handlers.GetBatchStandards, handlers.IsLoggedIn)
 	e.GET("/batchs/:batch_id/unassigned_standards", handlers.GetBatchUnassignedStandards, handlers.IsLoggedIn)
-	e.POST("/batchs/:batch_id/batch-standards", handlers.CreateBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.POST("/batchs/:batch_id/batch-standards", handlers.CreateBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/batchs/:batch_id/batch-standards/:id", handlers.GetBatchStandard, handlers.IsLoggedIn)
-	e.PUT("/batchs/:batch_id/batch-standards/:id", handlers.UpdateBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.PUT("/batchs/:batch_id/batch-standards/:id", handlers.UpdateBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/batchs/:batch_id/batch-standards/:id/students", handlers.GetBatchStandardStudents, handlers.IsLoggedIn)
 
 	e.GET("/hostels", handlers.GetHostels, handlers.IsLoggedIn)
@@ -86,8 +86,8 @@ func main() {
 	e.GET("/accounts/transactions", handlers.GetTransactions, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/accounts/students/:student_id/transactions/:id", handlers.GetStudentTransaction, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
-	e.GET("/users", handlers.GetUsers, handlers.IsLoggedIn, handlers.OnlyAdmin)
-	e.GET("/users/current", handlers.GetCurrentUser, handlers.IsLoggedIn)
+	e.GET("/users", handlers.GetUsers, handlers.IsLoggedIn)
+	e.GET("/users/current", handlers.GetCurrentUser, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.POST("/users", handlers.Register, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/users/update_password", handlers.UpdatePassword, handlers.IsLoggedIn)
 

@@ -342,7 +342,7 @@ func (s *Student) SaveStudentAccountBalance() error{
 func (s *Student) GetUpcommingBirthdays() ([]Student, error) {
 	var students []Student
 	query := db.Driver
-	query = query.Where("DAY(birth_date) >= DAY(NOW()) and MONTH(birth_date) = MONTH(NOW())").Order("DAY(birth_date) asc")
+	query = query.Where("DAY(birth_date) >= (DAY(NOW()) - 1) and MONTH(birth_date) = MONTH(NOW())").Order("DAY(birth_date) asc")
 	err := query.Find(&students).Error
 	return students, err	
 }

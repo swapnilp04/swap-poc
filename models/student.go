@@ -30,7 +30,7 @@ type Student struct {
 	StudentAccountBalance 		float64 `json:"student_account_balance" gorm:"default:0.0"`
 	HostelRoomId    					uint 		`json:"hostel_room_id"`
 	StandardId      					uint 		`json:"standard_id"`
-	Standard 									Standard
+	Standard 									Standard `validate:"-"`
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
@@ -144,7 +144,7 @@ func (s *Student) SearchIds(search string) (error, []uint){
 }
 
 func (s *Student) Find() error {
-	err := db.Driver.First(s, "ID = ?", s.ID).Error
+	err := db.Driver.First(s, "ID = ?", s.ID).Preload("Standard").Error
 	return err
 }
 

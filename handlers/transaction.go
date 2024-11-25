@@ -210,3 +210,51 @@ func AddStudentDues(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Transaction created", "transaction": transaction})
 }
+
+func AddDiscount(c echo.Context) error {
+	// Get a single user by ID
+	studentId := c.Param("student_id")
+	newStudentId, err := strconv.Atoi(studentId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+	student := &models.Student{ID: uint(newStudentId)}
+	err = student.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	transactionData := make(map[string]interface{})
+	if err := c.Bind(&transactionData); err != nil {
+		fmt.Println("c.Bind()", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+	
+	transaction_category, err := models.GetDiscountTransactionCategory()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+
+	transaction := models.NewTransaction(transactionData, *student)
+	transaction.TransactionType = "cridit"
+	transaction.Name = "Discount"
+	transaction.TransactionCategoryId = transaction_category.ID
+
+	if err := transaction.Validate(); err != nil {
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
+	}
+	err = transaction.Create()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+
+	err = student.SaveBalance()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Transaction created", "transaction": transaction})
+}

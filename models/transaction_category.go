@@ -27,11 +27,25 @@ func migrateTransactionCategory() {
 		panic("failed to migrate database")
 	}
 }
+	
+func migrateTransactionDiscountCategory() {
+	_, err :=  GetDiscountTransactionCategory()
+	if err != nil {
+		transactionCategory := TransactionCategory{Name: "Discount"}
+			db.Driver.Create(&transactionCategory)
+	}
+}
 
 func NewTransactionCategory(transactionCategoryData map[string]interface{}) *TransactionCategory {
 	transactionCategory := &TransactionCategory{}
 	transactionCategory.Assign(transactionCategoryData)
 	return transactionCategory
+}
+
+func GetDiscountTransactionCategory() (TransactionCategory, error) {
+	tc := &TransactionCategory{Name: "Discount"}
+	err :=  tc.FindByName()
+	return *tc, err
 }
 
 func (t *TransactionCategory) Validate() error {
@@ -69,6 +83,11 @@ func (t *TransactionCategory) All() ([]TransactionCategory, error) {
 
 func (t *TransactionCategory) Find() error {
 	err := db.Driver.First(t, "ID = ?", t.ID).Error
+	return err
+}
+
+func (t *TransactionCategory) FindByName() error {
+	err := db.Driver.First(t, "Name = ?", t.Name).Error
 	return err
 }
 

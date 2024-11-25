@@ -14,6 +14,7 @@ func init() {
 	migrateHostelStudent()
 	migrateBatchStandardStudent()
 	migrateTransactionCategory()
+	migrateTransactionDiscountCategory()
 	migrateTransaction()
 	migrateCheque()
 	migrateStudentAccount()

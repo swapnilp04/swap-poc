@@ -144,7 +144,7 @@ func (s *Student) SearchIds(search string) (error, []uint){
 }
 
 func (s *Student) Find() error {
-	err := db.Driver.First(s, "ID = ?", s.ID).Preload("Standard").Error
+	err := db.Driver.Preload("Standard").First(s, "ID = ?", s.ID).Error
 	return err
 }
 
@@ -260,7 +260,7 @@ func (s *Student) GetTransactions() ([]Transaction, error) {
 
 func (s *Student) GetTransaction(transactionID uint) (Transaction, error) {
 	transaction := Transaction{}
-	err := db.Driver.Preload("Student").Where("student_id = ? and id = ?", s.ID, transactionID).Find(&transaction).Error
+	err := db.Driver.Preload("Student.Standard").Where("student_id = ? and id = ?", s.ID, transactionID).Find(&transaction).Error
 	return transaction, err
 }
 

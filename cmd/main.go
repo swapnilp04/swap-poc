@@ -47,6 +47,8 @@ func main() {
 	e.POST("/students/:student_id/transactions/dues/new", handlers.AddStudentDues, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/students/:student_id/transactions/balance", handlers.GetStudentBalance, handlers.IsLoggedIn)
 
+	e.POST("/students/:student_id/discounts", handlers.AddDiscount, handlers.IsLoggedIn, handlers.OnlyAdmin)
+
 	e.GET("/students/:student_id/student_accounts", handlers.GetStudentAccounts, handlers.IsLoggedIn)
 	e.POST("/students/:student_id/student_accounts/deposit", handlers.DepositStudentAccountAmount, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/students/:student_id/student_accounts/withdraw", handlers.WithdrawStudentAccountAmount, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)

@@ -112,6 +112,8 @@ func GetStudentTransaction(c echo.Context) error {
 
 func PayStudentFee(c echo.Context) error {
 	// Get a single user by ID
+	cc := c.(CustomContext)
+	session := cc.session
 	studentId := c.Param("student_id")
 	newStudentId, err := strconv.Atoi(studentId)
 	if err != nil {
@@ -133,7 +135,9 @@ func PayStudentFee(c echo.Context) error {
 
 	transaction := models.NewTransaction(transactionData, *student)
 	transaction.TransactionType = "cridit"
-	transaction.Name = "Pay Fee" 
+	transaction.Name = "Pay Fee"
+	transaction.UserID = uint(session.UserID)
+
 	if err := transaction.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
@@ -169,6 +173,8 @@ func PayStudentFee(c echo.Context) error {
 
 func AddStudentDues(c echo.Context) error {
 	// Get a single user by ID
+	cc := c.(CustomContext)
+	session := cc.session
 	studentId := c.Param("student_id")
 	newStudentId, err := strconv.Atoi(studentId)
 	if err != nil {
@@ -193,6 +199,7 @@ func AddStudentDues(c echo.Context) error {
 	transaction.Name = "Dues"
 	transaction.PaymentMode = "-"
 	transaction.PaidBy = "-"
+	transaction.UserID = uint(session.UserID)
 	if err := transaction.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
@@ -213,6 +220,9 @@ func AddStudentDues(c echo.Context) error {
 
 func AddDiscount(c echo.Context) error {
 	// Get a single user by ID
+	cc := c.(CustomContext)
+	session := cc.session
+
 	studentId := c.Param("student_id")
 	newStudentId, err := strconv.Atoi(studentId)
 	if err != nil {
@@ -241,6 +251,7 @@ func AddDiscount(c echo.Context) error {
 	transaction.TransactionType = "cridit"
 	transaction.Name = "Discount"
 	transaction.TransactionCategoryId = transaction_category.ID
+	transaction.UserID = uint(session.UserID)
 
 	if err := transaction.Validate(); err != nil {
 		formErr := MarshalFormError(err)	

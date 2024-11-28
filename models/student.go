@@ -31,6 +31,8 @@ type Student struct {
 	HostelRoomId    					uint 		`json:"hostel_room_id"`
 	StandardId      					uint 		`json:"standard_id"`
 	Standard 									Standard `validate:"-"`
+	HasAbsconded							bool		`json:"has_absconded" gorm:"default:false"`
+	AbscondedAt								*time.Time
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time

@@ -18,4 +18,6 @@ func init() {
 	migrateTransaction()
 	migrateCheque()
 	migrateStudentAccount()
+	migrateCommentCategory()
+	migrateComment()
 }

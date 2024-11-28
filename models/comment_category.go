@@ -25,6 +25,17 @@ func migrateCommentCategory() {
 	}
 }
 
+func migrateCommentCategoryData() {
+	categoryArr := [...]string{"Hostel", "Payment", "Teacher", "HomeWork", "Parents", "Exam"}
+	for _, category := range categoryArr { 
+        commentCategory := CommentCategory{Name: category}
+        err := commentCategory.FindByName()
+        if(err != nil) {
+        	commentCategory.Create()
+        }
+    } 
+}
+
 func NewCommentCategory(commentCategoryData map[string]interface{}) *CommentCategory {
 	commentCategory := &CommentCategory{}
 	commentCategory.Assign(commentCategoryData)
@@ -54,6 +65,11 @@ func (cc *CommentCategory) All() ([]CommentCategory, error) {
 
 func (cc *CommentCategory) Find() error {
 	err := db.Driver.First(cc, "ID = ?", cc.ID).Error
+	return err
+}
+
+func (cc *CommentCategory) FindByName() error {
+	err := db.Driver.First(cc, "Name = ?", cc.Name).Error
 	return err
 }
 

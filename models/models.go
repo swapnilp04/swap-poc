@@ -20,4 +20,5 @@ func init() {
 	migrateStudentAccount()
 	migrateCommentCategory()
 	migrateComment()
+	migrateCommentCategoryData()
 }

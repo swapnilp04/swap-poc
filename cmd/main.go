@@ -18,7 +18,7 @@ func main() {
 
 	// e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:4200", "https://labstack.net", "*"},
+		AllowOrigins: []string{"http://localhost:4200", "http://eracord.com", "*"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
@@ -93,6 +93,8 @@ func main() {
 	e.POST("/users", handlers.Register, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/users/update_password", handlers.UpdatePassword, handlers.IsLoggedIn)
 
+	e.GET("/comments", handlers.GetComments, handlers.IsLoggedIn)
+	e.GET("/comments/:id", handlers.GetComment, handlers.IsLoggedIn)
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

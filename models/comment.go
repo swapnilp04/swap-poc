@@ -17,6 +17,8 @@ type Comment struct {
 	ReminderOn							time.Time `json:"reminder_on"`
 	CommentCategoryID				uint `json:"comment_category_id" validate:"nonzero"`
 	CommentCategory 				CommentCategory
+	UserID									uint `json:"user_id" validate:"nonzero"`
+	User  									User
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`
@@ -65,12 +67,12 @@ func (c *Comment) Assign(commentData map[string]interface{}) {
 
 func (c *Comment) All() ([]Comment, error) {
 	var comments []Comment
-	err := db.Driver.Find(&comments).Error
+	err := db.Driver.Preload("User").Preload("CommentCategory").Find(&comments).Error
 	return comments, err
 }
 
 func (c *Comment) Find() error {
-	err := db.Driver.First(c, "ID = ?", c.ID).Error
+	err := db.Driver.Preload("User").Preload("CommentCategory").First(c, "ID = ?", c.ID).Error
 	return err
 }
 

@@ -52,6 +52,7 @@ func main() {
 	e.GET("/students/:student_id/student_accounts", handlers.GetStudentAccounts, handlers.IsLoggedIn)
 	e.POST("/students/:student_id/student_accounts/deposit", handlers.DepositStudentAccountAmount, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/students/:student_id/student_accounts/withdraw", handlers.WithdrawStudentAccountAmount, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	//e.POST("/students/:student_id/comments", handlers., handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)
@@ -95,6 +96,8 @@ func main() {
 
 	e.GET("/comments", handlers.GetComments, handlers.IsLoggedIn)
 	e.GET("/comments/:id", handlers.GetComment, handlers.IsLoggedIn)
+
+	e.GET("/comment_categories", handlers.GetCommentCategories, handlers.IsLoggedIn)
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

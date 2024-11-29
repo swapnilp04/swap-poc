@@ -7,6 +7,7 @@ import (
 	"time"
 	"gorm.io/gorm"
 	"gopkg.in/validator.v2"
+	//"database/sql"
 )
 
 type Comment struct {
@@ -14,11 +15,11 @@ type Comment struct {
 	Comment     						string `json:"comment" validate:"nonzero"`
 	StudentID								uint `json:"student_id"  validate:"nonzero"`
 	HasReminder			   			bool `json:"has_reminder" gorm:"default:false"`
-	ReminderOn							time.Time `json:"reminder_on"`
+	ReminderOn							*time.Time `json:"reminder_on"`
 	CommentCategoryID				uint `json:"comment_category_id" validate:"nonzero"`
-	CommentCategory 				CommentCategory
+	CommentCategory 				CommentCategory `validate:"-"`
 	UserID									uint `json:"user_id" validate:"nonzero"`
-	User  									User
+	User  									User `validate:"-"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`
@@ -51,9 +52,6 @@ func (c *Comment) Assign(commentData map[string]interface{}) {
 	if comment, ok := commentData["comment"]; ok {
 		c.Comment = comment.(string)
 	}
-	if studentId, ok := commentData["student_id"]; ok {
-		c.StudentID = uint(studentId.(float64))
-	}
 	if commentCategoryId, ok := commentData["comment_category_id"]; ok {
 		c.CommentCategoryID = uint(commentCategoryId.(float64))
 	}
@@ -61,8 +59,9 @@ func (c *Comment) Assign(commentData map[string]interface{}) {
 		c.HasReminder = hasReminder.(bool)
 	}
 	if reminderOn, ok := commentData["reminder_on"]; ok {
-		c.ReminderOn, _ = time.Parse("2006-01-02T15:04:05.999999999Z", reminderOn.(string))
-	}	
+		var time, _ = time.Parse("2006-01-02T15:04:05.999999999Z", reminderOn.(string))
+		c.ReminderOn = &time
+	}
 }
 
 func (c *Comment) All() ([]Comment, error) {

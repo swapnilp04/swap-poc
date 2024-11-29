@@ -39,3 +39,33 @@ func GetComment(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, comment)
 }
+
+func CreateComment(c echo.Context) error {
+	cc := c.(CustomContext)
+	session := cc.session
+	studentId := c.Param("student_id")
+	newStudentId, err := strconv.Atoi(studentId)
+
+	commentData := make(map[string]interface{})
+	if err := c.Bind(&commentData); err != nil {
+		fmt.Println("c.Bind()", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	fmt.Printf("Comment %+v\n", commentData)
+	comment := models.NewComment(commentData)
+	comment.UserID = uint(session.UserID)
+	comment.StudentID = uint(newStudentId)
+
+	if err := comment.Validate(); err != nil {
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
+	}
+
+	err = comment.Create()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "hostel created", "comment": comment})
+}

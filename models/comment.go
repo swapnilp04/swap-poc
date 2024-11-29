@@ -70,6 +70,12 @@ func (c *Comment) All() ([]Comment, error) {
 	return comments, err
 }
 
+func (c *Comment) AllByStudent(studentId uint) ([]Comment, error) {
+	var comments []Comment
+	err := db.Driver.Preload("User").Preload("CommentCategory").Where("student_id = ?", studentId).Find(&comments).Error
+	return comments, err
+}
+
 func (c *Comment) Find() error {
 	err := db.Driver.Preload("User").Preload("CommentCategory").First(c, "ID = ?", c.ID).Error
 	return err

@@ -173,6 +173,12 @@ func (s *Student) ConfirmedStatus() bool {
 	return s.Status == "Confirmed"
 }
 
+func (s *Student) GetStudentComments() ([]Comment, error) {
+	comment := Comment{}
+	comments, err := comment.AllByStudent(s.ID)
+	return comments, err
+}
+
 func (s *Student) GetBatchStandardStudents() ([]BatchStandardStudent, error) {
 	var batchStandardStudents []BatchStandardStudent
 	err := db.Driver.Where("student_id = ?", s.ID).Preload("Batch").Preload("Standard").Find(&batchStandardStudents).Error

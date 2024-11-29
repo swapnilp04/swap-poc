@@ -10,7 +10,7 @@ import (
 
 type Standard struct {
 	ID           	uint    `json:"id"`
-	Name     			string `json:"name" validate:"nonzero"`
+	Name     			string `json:"name" gorm:"unique" validate:"nonzero"`
 	Std       		int `json:"std" validate:"nonzero"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time

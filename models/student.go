@@ -173,11 +173,20 @@ func (s *Student) ConfirmedStatus() bool {
 	return s.Status == "Confirmed"
 }
 
-func (s *Student) GetStudentComments() ([]Comment, error) {
+func (s *Student) GetStudentComments(page int) ([]Comment, error) {
 	comment := Comment{}
-	comments, err := comment.AllByStudent(s.ID)
+	comments, err := comment.AllByStudent(s.ID, page)
 	return comments, err
 }
+
+func (s *Student) GetStudentCommentsCount() (int64, error) {
+	comment := Comment{}
+	var count int64
+	count, err := comment.AllByStudentCount(s.ID)
+	return count, err
+}
+
+
 
 func (s *Student) GetBatchStandardStudents() ([]BatchStandardStudent, error) {
 	var batchStandardStudents []BatchStandardStudent

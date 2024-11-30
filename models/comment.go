@@ -70,11 +70,18 @@ func (c *Comment) All() ([]Comment, error) {
 	return comments, err
 }
 
-func (c *Comment) AllByStudent(studentId uint) ([]Comment, error) {
+func (c *Comment) AllByStudent(studentId uint, page int) ([]Comment, error) {
 	var comments []Comment
-	err := db.Driver.Preload("User").Preload("CommentCategory").Where("student_id = ?", studentId).Find(&comments).Error
+	err := db.Driver.Limit(10).Preload("User").Preload("CommentCategory").Offset((page-1) * 10).Where("student_id = ?", studentId).Order("id desc").Find(&comments).Error
 	return comments, err
 }
+
+func (c *Comment) AllByStudentCount(studentId uint) (int64, error) {
+	var count int64
+	err := db.Driver.Model(&Comment{}).Where("student_id = ?", studentId).Count(&count).Error
+	return count, err
+}
+
 
 func (c *Comment) Find() error {
 	err := db.Driver.Preload("User").Preload("CommentCategory").First(c, "ID = ?", c.ID).Error

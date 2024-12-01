@@ -20,6 +20,7 @@ type Comment struct {
 	CommentCategory 				CommentCategory `validate:"-"`
 	UserID									uint `json:"user_id" validate:"nonzero"`
 	User  									User `validate:"-"`
+	Student  								Student `validate:"-"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`
@@ -64,10 +65,16 @@ func (c *Comment) Assign(commentData map[string]interface{}) {
 	}
 }
 
-func (c *Comment) All() ([]Comment, error) {
+func (c *Comment) All(page int) ([]Comment, error) {
 	var comments []Comment
-	err := db.Driver.Preload("User").Preload("CommentCategory").Find(&comments).Error
+	err := db.Driver.Limit(10).Preload("User").Preload("CommentCategory").Preload("Student").Offset((page-1) * 10).Find(&comments).Error
 	return comments, err
+}
+
+func (c *Comment) AllCount() (int64, error) {
+	var count int64
+	err := db.Driver.Model(&Comment{}).Count(&count).Error
+	return count, err
 }
 
 func (c *Comment) AllByStudent(studentId uint, page int) ([]Comment, error) {

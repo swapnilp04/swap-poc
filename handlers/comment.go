@@ -12,14 +12,20 @@ import (
 
 func GetComments(c echo.Context) error {
 	// Get all users
+	page := c.QueryParam("page")
+	newPage, err := strconv.Atoi(page)
+	if err != nil {
+		newPage = 1
+	}
+	
 	cm := &models.Comment{}
-	comments, err := cm.All()
+	comments, err := cm.All(newPage)
 	if err != nil {
 		fmt.Println("s.ALL(GetComments)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-
-	return c.JSON(http.StatusOK, comments)
+	count, err := cm.AllCount()
+	return c.JSON(http.StatusOK, map[string]interface{}{"comments": comments, "total": count})
 }
 
 func GetComment(c echo.Context) error {

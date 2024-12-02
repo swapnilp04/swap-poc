@@ -97,6 +97,7 @@ func main() {
 
 	e.GET("/comments", handlers.GetComments, handlers.IsLoggedIn)
 	e.GET("/comments/:id", handlers.GetComment, handlers.IsLoggedIn)
+	e.GET("/comments/upcomming_comments", handlers.GetUpcommingComments, handlers.IsLoggedIn)
 
 	e.GET("/comment_categories", handlers.GetCommentCategories, handlers.IsLoggedIn)
 

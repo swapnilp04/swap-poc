@@ -85,6 +85,19 @@ func GetStudentComments(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"comments": comments, "total": count})
 }
 
+func GetUpcommingComments(c echo.Context) error {
+	// Get all users
+	
+	cm := &models.Comment{}
+	comments, err := cm.UpcommingComments()
+	if err != nil {
+		fmt.Println("s.ALLUpcommingComments(GetComments)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	return c.JSON(http.StatusOK, comments)
+}
+
 func CreateComment(c echo.Context) error {
 	cc := c.(CustomContext)
 	session := cc.session
@@ -112,5 +125,5 @@ func CreateComment(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "hostel created", "comment": comment})
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Comment created", "comment": comment})
 }

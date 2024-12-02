@@ -89,6 +89,13 @@ func (c *Comment) AllByStudentCount(studentId uint) (int64, error) {
 	return count, err
 }
 
+func (c *Comment) UpcommingComments() ([]Comment, error) {
+	var comments []Comment
+	time := time.Now().AddDate(0, 0, -2)
+	err := db.Driver.Preload("User").Preload("CommentCategory").Preload("Student").Where("has_reminder = ? AND reminder_on > ?", true, time).Order("reminder_on desc").Find(&comments).Error
+	return comments, err
+}
+
 
 func (c *Comment) Find() error {
 	err := db.Driver.Preload("User").Preload("CommentCategory").First(c, "ID = ?", c.ID).Error

@@ -65,15 +65,26 @@ func (c *Comment) Assign(commentData map[string]interface{}) {
 	}
 }
 
-func (c *Comment) All(page int) ([]Comment, error) {
+func (c *Comment) All(page int, ids []uint) ([]Comment, error) {
 	var comments []Comment
-	err := db.Driver.Limit(10).Preload("User").Preload("CommentCategory").Preload("Student").Offset((page-1) * 10).Find(&comments).Error
+	query := db.Driver.Limit(10).Preload("User").Preload("CommentCategory").Preload("Student")
+	if len(ids) > 0 {	
+		query = query.Where("student_id in (?)", ids)
+	} else {
+		query = query.Where("student_id in (?)", 0)
+	}
+	err := query.Offset((page-1) * 10).Find(&comments).Error
 	return comments, err
 }
 
-func (c *Comment) AllCount() (int64, error) {
+func (c *Comment) AllCount(ids []uint) (int64, error) {
 	var count int64
-	err := db.Driver.Model(&Comment{}).Count(&count).Error
+	query := db.Driver.Model(&Comment{})
+	if len(ids) > 0 {	
+		query = query.Where("student_id in (?)", ids)
+	}
+	err := query.Count(&count).Error
+
 	return count, err
 }
 

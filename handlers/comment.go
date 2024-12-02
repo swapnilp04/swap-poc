@@ -17,14 +17,21 @@ func GetComments(c echo.Context) error {
 	if err != nil {
 		newPage = 1
 	}
-	
+	search := c.QueryParam("search")
+	s := &models.Student{}
+	err, ids := s.SearchIds(search)
+	if err != nil {
+		fmt.Println("s.ALL(SearchStudents)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
 	cm := &models.Comment{}
-	comments, err := cm.All(newPage)
+	comments, err := cm.All(newPage, ids)
 	if err != nil {
 		fmt.Println("s.ALL(GetComments)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-	count, err := cm.AllCount()
+	count, err := cm.AllCount(ids)
 	return c.JSON(http.StatusOK, map[string]interface{}{"comments": comments, "total": count})
 }
 

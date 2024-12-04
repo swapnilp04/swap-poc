@@ -101,5 +101,7 @@ func main() {
 
 	e.GET("/comment_categories", handlers.GetCommentCategories, handlers.IsLoggedIn)
 
+	e.GET("/exams", handlers.GetExams, handlers.IsLoggedIn)
+
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

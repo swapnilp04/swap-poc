@@ -195,8 +195,8 @@ func (s *Student) GetBatchStandardStudents() ([]BatchStandardStudent, error) {
 }
 
 func (s *Student) RemoveBatchStandard(batchStandard *BatchStandard) error {
-	totalDebits, totalCredits := s.GetBalance()
-	balance := totalCredits - totalDebits
+	totalDebits, totalCredits, totalDiscounts := s.GetBalance()
+	balance := totalCredits + totalDiscounts - totalDebits
 	if balance > 0.0 {
 		return errors.New("Please Clear Balance first")
 	}
@@ -308,25 +308,30 @@ func (s *Student) TotalCridits() float64 {
 }
 
 func (s *Student) SaveBalance() error{
-	debits, credits := s.GetBalance()
-	s.Balance =  credits - debits
+	debits, credits, discounts := s.GetBalance()
+	s.Balance =  credits + discounts - debits 
 	return s.Update()
 }
 
-func (s *Student) GetBalance() (float64, float64) {
+func (s *Student) GetBalance() (float64, float64, float64) {
 	transactions, err := s.GetTransactions()
 	var totalDebits = 0.0
 	var totalCredits = 0.0
+	var totalDiscount = 0.0
 	if err == nil {
 		for _, transaction := range transactions {
 			if transaction.TransactionType == "debit" {
 				totalDebits = totalDebits + transaction.Amount
+			} else if(transaction.TransactionType == "cridit" && transaction.Name == "Discount") {
+
+				totalDiscount = totalDiscount + transaction.Amount
 			} else {
 				totalCredits = totalCredits + transaction.Amount
 			}
+
 		}
 	}
-	return totalDebits, totalCredits
+	return totalDebits, totalCredits, totalDiscount
 }
 
 func (s *Student) GetStudentAccounts() ([]StudentAccount, error) {

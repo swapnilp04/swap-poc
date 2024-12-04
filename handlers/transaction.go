@@ -80,8 +80,8 @@ func GetStudentBalance(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-	debits, credits := student.GetBalance()
-	return c.JSON(http.StatusOK, map[string]interface{}{"debits": debits, "credits": credits})
+	debits, credits, discounts := student.GetBalance()
+	return c.JSON(http.StatusOK, map[string]interface{}{"debits": debits, "credits": credits, "discounts": discounts})
 }
 
 func GetStudentTransaction(c echo.Context) error {

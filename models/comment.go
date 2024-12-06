@@ -73,7 +73,7 @@ func (c *Comment) All(page int, ids []uint) ([]Comment, error) {
 	} else {
 		query = query.Where("student_id in (?)", 0)
 	}
-	err := query.Offset((page-1) * 10).Find(&comments).Error
+	err := query.Offset((page-1) * 10).Order("id desc").Find(&comments).Error
 	return comments, err
 }
 

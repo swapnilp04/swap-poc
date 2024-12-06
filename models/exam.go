@@ -9,17 +9,18 @@ import (
 
 type Exam struct {
 	ID            	int    `json:"id"`
-	Name     				string `json:"name"`
-	BatchStandardId	int `json:"batch_standard_id"`
+	Name     				string `json:"name" validate:"nonzero"`
+	BatchStandardId	int `json:"batch_standard_id" validate:"nonzero"`
 	BatchStandard		BatchStandard
-	StandardId      uint `json:"standard_id"`
-	BatchId      		uint `json:"batch_id"`
-	ExamType				string `json:"exam_type"`
-	ExamMarks				int `json:"exam_marks"`
-	ExamTime 				int `json:"exam_time"`
+	StandardId      uint `json:"standard_id" validate:"nonzero"`
+	Standard 				Standard
+	BatchId      		uint `json:"batch_id" validate:"nonzero"`
+	Batch 					Batch
+	ExamType				string `json:"exam_type" validate:"nonzero"`
+	ExamMarks				int `json:"exam_marks" validate:"nonzero"`
+	ExamTime				int `json:"exam_time" validate:"nonzero"`
 	ExamDate				time.Time
-	ExamStatus 			string `json:"exam_status"`
-	ContactNumber  	string `json:"contact_number"`
+	ExamStatus 			string `json:"exam_status" validate:"nonzero"`
 	ExamStudents 		[]ExamStudent
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time

@@ -46,63 +46,8 @@ func migrateStudent() {
 	if err != nil {
 		panic("failed to migrate database")
 	}
-	updateLastTransaction()
 }
 
-func updateLastTransaction() error{
-	fmt.Println("@@@@@@@@@@@@@@")
-	fmt.Println("@@@@@@@@@@@@@@")
-	fmt.Println("@@@@@@@@@@@@@@")
-
-	var students []Student
-	err := db.Driver.Find(&students).Error
-
-	for _, student := range students {
-		var transactions []Transaction
-
-		err = db.Driver.Preload("Student").Where("transaction_type = 'cridit' and name = 'Pay Fee' and student_id = ?", student.ID).Find(&transactions).Error
-		dates := []int64{}
-		for _, transaction := range transactions {
-			const layout = "2/1/06"
-		  tm, _ := time.Parse(layout, transaction.PaidBy) 	   	 	
-	   	 if(tm.Year() > 2023) {
-	   	  	dates = append(dates, tm.UnixMilli())	
-	   	  } else {
-	   	  	date := transaction.CreatedAt.Format("2/1/06")
-	   	  	tmm, _ := time.Parse(layout, date)
-	   	  	dates = append(dates, tmm.UnixMilli())	
-	   	  }
-
-	   	  //	student.Update()
-		}
-		largest := findLargestNumber(dates)
-		
-		if(largest > 0) {
-			t := time.UnixMilli(largest)//.UTC()
-			fmt.Println(t)
-			student.LastPaymentOn = &t
-			student.Update()
-		}
-		
-		
-	}
-	return err
-	
-}
-
-
-func findLargestNumber(nums []int64) int64 {
-    if len(nums) == 0 {
-        return 0 // handle empty slice case
-    }
-    largest := nums[0] // Step 2
-    for i := 1; i < len(nums); i++ { // Step 1
-        if nums[i] > largest { // Step 3
-            largest = nums[i] // Step 4
-        }
-    }
-    return largest // Step 5
-}
 
 func NewStudent(studentData map[string]interface{}) *Student {
 	student := &Student{}

@@ -21,6 +21,8 @@ type Comment struct {
 	UserID									uint `json:"user_id" validate:"nonzero"`
 	User  									User `validate:"-"`
 	Student  								Student `validate:"-"`
+	Completed  							bool `json:"completed" gorm:"default:false"`
+	CompletedOn							*time.Time `json:"completed_on"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`
@@ -86,6 +88,14 @@ func (c *Comment) AllCount(ids []uint) (int64, error) {
 	err := query.Count(&count).Error
 
 	return count, err
+}
+
+func (c *Comment) MakeCompleted() error { 
+		currentTime := time.Now()
+		c.CompletedOn = &currentTime
+		c.Completed = true
+		err := c.Update()
+		return err
 }
 
 func (c *Comment) AllByStudent(studentId uint, page int) ([]Comment, error) {

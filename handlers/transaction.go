@@ -163,6 +163,10 @@ func PayStudentFee(c echo.Context) error {
 		}
 	}
 
+	err = student.UpdateLastPaymentOn()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
 	err = student.SaveBalance()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})

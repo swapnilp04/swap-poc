@@ -31,6 +31,7 @@ type Student struct {
 	HostelRoomId    					uint 		`json:"hostel_room_id"`
 	StandardId      					uint 		`json:"standard_id"`
 	Standard 									Standard `validate:"-"`
+	LastPaymentOn							*time.Time `json:"last_payment_on"`
 	HasAbsconded							bool		`json:"has_absconded" gorm:"default:false"`
 	AbscondedAt								*time.Time
 	BatchStandardStudents     []BatchStandardStudent 
@@ -309,8 +310,16 @@ func (s *Student) TotalCridits() float64 {
 
 func (s *Student) SaveBalance() error{
 	debits, credits, discounts := s.GetBalance()
-	s.Balance =  credits + discounts - debits 
+	s.Balance =  credits + discounts - debits
+
 	return s.Update()
+}
+
+func(s *Student) UpdateLastPaymentOn() error {
+	currentTime := time.Now()
+	s.LastPaymentOn = &currentTime
+	err := s.Update()
+	return err
 }
 
 func (s *Student) GetBalance() (float64, float64, float64) {

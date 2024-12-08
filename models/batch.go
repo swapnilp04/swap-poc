@@ -33,6 +33,12 @@ func NewBatch(batchData map[string]interface{}) *Batch {
 	return batch
 }
 
+func GetDefaultBatch() (Batch, error) {
+	batch := Batch{}
+	err := db.Driver.Where("is_default = true").Find(&batch).Error
+	return batch, err
+}
+
 func (b *Batch) Validate() error {
 	if errs := validator.Validate(b); errs != nil {
 		return errs

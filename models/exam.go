@@ -5,6 +5,7 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type Exam struct {
@@ -20,7 +21,7 @@ type Exam struct {
 	ExamMarks				int `json:"exam_marks" validate:"nonzero"`
 	ExamTime				int `json:"exam_time" validate:"nonzero"`
 	ExamDate				time.Time
-	ExamStatus 			string `json:"exam_status" validate:"nonzero"`
+	ExamStatus 			string `json:"exam_status" validate:"nonzero"` // Created, Conducted, Published
 	ExamStudents 		[]ExamStudent
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
@@ -42,7 +43,11 @@ func NewExam(examData map[string]interface{}) *Exam {
 }
 
 func (e *Exam) Validate() error {
-	return nil
+	if errs := validator.Validate(e); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (e *Exam) Assign(examData map[string]interface{}) {

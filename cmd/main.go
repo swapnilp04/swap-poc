@@ -66,6 +66,7 @@ func main() {
 	e.POST("/batchs", handlers.CreateBatch, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/batchs/:id", handlers.UpdateBatch, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.DELETE("/batchs/:id", handlers.DeleteBatch, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.GET("/batchs/get_default_batch_standards", handlers.GetDefaultBatchStandards, handlers.IsLoggedIn)
 	
 	e.GET("/batchs/:batch_id/standards", handlers.GetBatchStandards, handlers.IsLoggedIn)
 	e.GET("/batchs/:batch_id/unassigned_standards", handlers.GetBatchUnassignedStandards, handlers.IsLoggedIn)
@@ -97,7 +98,7 @@ func main() {
 
 	e.GET("/comments", handlers.GetComments, handlers.IsLoggedIn)
 	e.GET("/comments/:id", handlers.GetComment, handlers.IsLoggedIn)
-	e.POST("/comments/:id/completed_comment", handlers.CommentCompleted, handlers.IsLoggedIn)
+	e.POST("/comments/:id/completed_comment", handlers.CommentCompleted, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/comments/upcomming_comments", handlers.GetUpcommingComments, handlers.IsLoggedIn)
 
 	e.GET("/comment_categories", handlers.GetCommentCategories, handlers.IsLoggedIn)

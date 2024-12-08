@@ -208,6 +208,23 @@ func GetBatchUnassignedStandards(c echo.Context) error {
 	return c.JSON(http.StatusOK, standards)
 }
 
+func GetDefaultBatchStandards(c echo.Context) error {
+	
+	batch, err := models.GetDefaultBatch()
+	if err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	batchStandards, err := batch.GetBatchStandards()
+	if err != nil {
+		fmt.Println("s.ALL(GetBatchStandards)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, batchStandards)
+}
+
 func GetBatchStandardStudents(c echo.Context) error {
 	batchId := c.Param("batch_id")
 	newBatchId, err := strconv.Atoi(batchId)

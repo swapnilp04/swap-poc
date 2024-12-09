@@ -5,17 +5,18 @@ import (
 	"swapnil-ex/models/db"
 	"time"
 	"gorm.io/gorm"
+	"gopkg.in/validator.v2"
 )
 
 type ExamStudent struct {
 	ID            	int    `json:"id"`
-	Name     				string `json:"name"`
-	StudentId				uint `json:"student_id"`
-	Student 				Student
-	ExamId					uint `json:"exam_id"`
-	Exam  					Exam
+	StudentID				uint `json:"student_id" validate:"nonzero"`
+	Student 				Student `validate:"-"`
+	ExamID					uint `json:"exam_id" validate:"nonzero"`
+	Exam  					Exam `validate:"-"`
 	Marks     			float32 `json:"marks"`
 	Rank						int16 `json:"rank"`
+	IsPresent				bool `json:"is_present" gorm:"default:true"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -36,14 +37,18 @@ func NewExamStudent(examStudentData map[string]interface{}) *ExamStudent {
 }
 
 func (es *ExamStudent) Validate() error {
-	return nil
+	if errs := validator.Validate(es); errs != nil {
+		return errs
+	} else {
+		return nil
+	}
 }
 
 func (es *ExamStudent) Assign(examStudentData map[string]interface{}) {
 	fmt.Printf("%+v\n", examStudentData)
-	if name, ok := examStudentData["name"]; ok {
-		es.Name = name.(string)
-	}
+	// if name, ok := examStudentData["name"]; ok {
+	// 	es.Name = name.(string)
+	// }
 }
 
 func (es *ExamStudent) All() ([]ExamStudent, error) {

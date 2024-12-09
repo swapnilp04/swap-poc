@@ -9,19 +9,18 @@ import (
 )
 
 type Exam struct {
-	ID            	int    `json:"id"`
+	ID            	uint    `json:"id"`
 	Name     				string `json:"name" validate:"nonzero"`
-	BatchStandardId	int `json:"batch_standard_id" validate:"nonzero"`
-	BatchStandard		BatchStandard
-	StandardId      uint `json:"standard_id" validate:"nonzero"`
-	Standard 				Standard
-	BatchId      		uint `json:"batch_id" validate:"nonzero"`
-	Batch 					Batch
+	BatchStandardID	uint `json:"batch_standard_id" validate:"nonzero"`
+	StandardID      uint `json:"standard_id" validate:"nonzero"`
+	Standard 				Standard `validate:"-"`
+	BatchID      		uint `json:"batch_id" validate:"nonzero"`
+	Batch 					Batch `validate:"-"`
 	ExamType				string `json:"exam_type" validate:"nonzero"`
 	ExamMarks				int `json:"exam_marks" validate:"nonzero"`
 	ExamTime				int `json:"exam_time" validate:"nonzero"`
-	ExamDate				time.Time
-	ExamStatus 			string `json:"exam_status" validate:"nonzero"` // Created, Conducted, Published
+	ExamDate				time.Time `json:"exam_date"`
+	ExamStatus 			string `json:"exam_status" validate:"nonzero" gorm:"default:'Created'"` // Created, Conducted, Published
 	ExamStudents 		[]ExamStudent
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
@@ -39,6 +38,7 @@ func migrateExam() {
 func NewExam(examData map[string]interface{}) *Exam {
 	exam := &Exam{}
 	exam.Assign(examData)
+	exam.ExamStatus = "Created"
 	return exam
 }
 
@@ -55,16 +55,31 @@ func (e *Exam) Assign(examData map[string]interface{}) {
 	if name, ok := examData["name"]; ok {
 		e.Name = name.(string)
 	}
+	if batchStandardID, ok := examData["batch_standard_id"]; ok {
+		e.BatchStandardID = uint(batchStandardID.(float64))
+	}
+	if examDate, ok := examData["exam_date"]; ok {
+		e.ExamDate, _ = time.Parse("2006-01-02T15:04:05.999999999Z", examDate.(string))
+	}
+	if examType, ok := examData["exam_type"]; ok {
+		e.ExamType = examType.(string)
+	}
+	if examMarks, ok := examData["exam_marks"]; ok {
+		e.ExamMarks = int(examMarks.(float64))
+	}
+	if examTime, ok := examData["exam_time"]; ok {
+		e.ExamTime = int(examTime.(float64))
+	}
 }
 
 func (e *Exam) All() ([]Exam, error) {
 	var exams []Exam
-	err := db.Driver.Find(&exams).Error
+	err := db.Driver.Preload("Standard").Find(&exams).Error
 	return exams, err
 }
 
 func (e *Exam) Find() error {
-	err := db.Driver.First(e, "ID = ?", e.ID).Error
+	err := db.Driver.Preload("Standard").First(e, "ID = ?", e.ID).Error
 	return err
 }
 
@@ -74,7 +89,8 @@ func (e *Exam) Create() error {
 }
 
 func (e *Exam) Update() error {
-	err := db.Driver.Save(e).Error
+	//err := db.Driver.Updates(e).Error
+	err := db.Driver.Omit("Standard").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
 	return err
 }
 
@@ -83,12 +99,39 @@ func (e *Exam) Delete() error {
 	return err
 }
 
+func(e *Exam) GetBatchStandard() (BatchStandard, error) {
+	batchStandard := BatchStandard{}
+	
+	err := db.Driver.First(&batchStandard, "ID = ?", e.BatchStandardID).Error
+	return batchStandard, err
+}
+
+func (e * Exam) ChangeStatus(status string) error {
+	err := db.Driver.Model(e).Updates(Exam{ExamStatus: status}).Error
+	return err
+}
+
+func (e *Exam) AssighBatchStandard() error {
+	batchStandard, err := e.GetBatchStandard()
+	if err == nil {
+		e.BatchID = batchStandard.BatchId
+		e.StandardID = batchStandard.StandardId
+	}
+	return err
+}
+
 func (e *Exam) PlotExamStudents() error {
-	batchStandardStudents, err := e.BatchStandard.GetStudents()
+	batchStandard, err := e.GetBatchStandard()
+	if(err != nil) {
+		return err
+	}
+
+	batchStandardStudents, err := batchStandard.GetStudents()
 	for _, batchStandardStudent := range batchStandardStudents {
-			examStudent := &ExamStudent{StudentId: batchStandardStudent.StudentId}
+			examStudent := &ExamStudent{StudentID: batchStandardStudent.StudentId, ExamID: e.ID}
 			examStudent.Create()
 		}
 	//err := db.Driver.Find(&examStudents).Error
+	err = e.ChangeStatus("Conducted")
 	return  err
 }

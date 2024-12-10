@@ -21,7 +21,6 @@ type Exam struct {
 	ExamTime				int `json:"exam_time" validate:"nonzero"`
 	ExamDate				time.Time `json:"exam_date"`
 	ExamStatus 			string `json:"exam_status" validate:"nonzero" gorm:"default:'Created'"` // Created, Conducted, Published
-	ExamStudents 		[]ExamStudent
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -134,4 +133,10 @@ func (e *Exam) PlotExamStudents() error {
 	//err := db.Driver.Find(&examStudents).Error
 	err = e.ChangeStatus("Conducted")
 	return  err
+}
+
+func (e *Exam) GetExamStudents() ([]ExamStudent, error) {
+	var examStudents []ExamStudent
+	err := db.Driver.Preload("Student").Where("exam_id = ?", e.ID).Find(&examStudents).Error
+	return examStudents, err
 }

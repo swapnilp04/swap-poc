@@ -154,3 +154,25 @@ func ConductExam(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "exam Conducted", "exam": e})	
 }
+
+func GetExamStudents(c echo.Context) error {
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+	e := &models.Exam{ID: uint(newId)}
+	if err := e.Find(); err != nil {
+		fmt.Println("e.Find(GetExam)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	examStudents, err := e.GetExamStudents()
+	if err := e.Find(); err != nil {
+		fmt.Println("e.Find(GetExam)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, examStudents)
+}

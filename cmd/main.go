@@ -109,6 +109,7 @@ func main() {
 	e.PUT("/exams/:id", handlers.UpdateExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.DELETE("/exams/:id", handlers.DeleteExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/exams/:id/conduct_exam", handlers.ConductExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.GET("/exams/:id/exam_students", handlers.GetExamStudents, handlers.IsLoggedIn)
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

@@ -33,7 +33,8 @@ func main() {
 	e.POST("/students", handlers.CreateStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.PUT("/students/:id", handlers.UpdateStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
-	
+	e.GET("/students/:id/get_exams", handlers.GetStudentExams, handlers.IsLoggedIn)
+
 	e.GET("/students/:id/hostel", handlers.GetStudentHostel, handlers.IsLoggedIn)
 	e.POST("/students/:id/assign_hostel", handlers.AssignStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/students/:id/change_hostel", handlers.ChangeStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)

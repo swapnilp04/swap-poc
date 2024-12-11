@@ -74,7 +74,7 @@ func (e *Exam) Assign(examData map[string]interface{}) {
 
 func (e *Exam) All() ([]Exam, error) {
 	var exams []Exam
-	err := db.Driver.Preload("Standard").Find(&exams).Error
+	err := db.Driver.Preload("Standard").Order("id desc").Find(&exams).Error
 	return exams, err
 }
 

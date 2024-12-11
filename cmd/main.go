@@ -111,7 +111,7 @@ func main() {
 	e.POST("/exams/:id/conduct_exam", handlers.ConductExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/exams/:id/publish_exam", handlers.PublishExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/exams/:id/exam_students", handlers.GetExamStudents, handlers.IsLoggedIn)
-	e.POST("/exams/:id/save_exam_marks", handlers.SaveExamMarks, handlers.IsLoggedIn)
+	e.POST("/exams/:id/save_exam_marks", handlers.SaveExamMarks, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 	"gorm.io/gorm"
 	"gopkg.in/validator.v2"
+	//"strconv"
 )
 
 type Exam struct {
@@ -135,8 +136,29 @@ func (e *Exam) PlotExamStudents() error {
 	return  err
 }
 
+
+func (e *Exam) PublishExam() error {
+	err := db.Driver.Model(&e).Updates(Exam{ExamStatus: "Published"}).Error
+	return err
+}
+
 func (e *Exam) GetExamStudents() ([]ExamStudent, error) {
 	var examStudents []ExamStudent
 	err := db.Driver.Preload("Student").Where("exam_id = ?", e.ID).Find(&examStudents).Error
 	return examStudents, err
+}
+
+func (e *Exam) SaveExamMarks(examStudents []map[string]interface{}) error {
+	fmt.Println(examStudents)
+	for _, examStudentObj := range examStudents {
+		newId := examStudentObj["id"].(float64)		
+		es := ExamStudent{ID: uint(newId)}	
+		es.Assign(examStudentObj)
+		err := es.UpdateMarks()
+		if err != nil {
+			return err
+		}
+		
+	}
+	return nil
 }

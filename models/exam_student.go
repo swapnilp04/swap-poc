@@ -9,7 +9,7 @@ import (
 )
 
 type ExamStudent struct {
-	ID            	int    `json:"id"`
+	ID            	uint    `json:"id"`
 	StudentID				uint `json:"student_id" validate:"nonzero"`
 	Student 				Student `validate:"-"`
 	ExamID					uint `json:"exam_id" validate:"nonzero"`
@@ -46,9 +46,14 @@ func (es *ExamStudent) Validate() error {
 
 func (es *ExamStudent) Assign(examStudentData map[string]interface{}) {
 	fmt.Printf("%+v\n", examStudentData)
-	// if name, ok := examStudentData["name"]; ok {
-	// 	es.Name = name.(string)
-	// }
+	if marks, ok := examStudentData["marks"]; ok {
+		es.Marks = float32(marks.(float64))
+	}
+
+	if is_present, ok := examStudentData["is_present"]; ok {
+		es.IsPresent = is_present.(bool)
+		fmt.Println(es.IsPresent)
+	}
 }
 
 func (es *ExamStudent) All() ([]ExamStudent, error) {
@@ -69,6 +74,11 @@ func (es *ExamStudent) Create() error {
 
 func (es *ExamStudent) Update() error {
 	err := db.Driver.Save(es).Error
+	return err
+}
+
+func (es *ExamStudent) UpdateMarks() error {
+	err := db.Driver.Model(&es).Omit("Student").Omit("Exam").Updates(map[string]interface{}{"marks": es.Marks, "is_present": es.IsPresent}).Error
 	return err
 }
 

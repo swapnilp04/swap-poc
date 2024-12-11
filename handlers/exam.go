@@ -155,6 +155,30 @@ func ConductExam(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "exam Conducted", "exam": e})	
 }
 
+func PublishExam(c echo.Context) error {
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+	e := &models.Exam{ID: uint(newId)}
+	if err := e.Find(); err != nil {
+		fmt.Println("e.Find(GetExam)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	if e.ExamStatus != "Conducted" {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Can not Conduct Exam"})
+	}
+	
+	if err := e.PublishExam(); err != nil {
+		fmt.Println("s.ConductExam()", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "exam Published", "exam": e})	
+}
+
 func GetExamStudents(c echo.Context) error {
 	id := c.Param("id")
 	newId, err := strconv.Atoi(id)
@@ -175,4 +199,33 @@ func GetExamStudents(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, examStudents)
+}
+
+func SaveExamMarks(c echo.Context) error {
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+	e := &models.Exam{ID: uint(newId)}
+	if err := e.Find(); err != nil {
+		fmt.Println("e.Find(GetExam)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	//examStudents := make([]interface{}, 0)
+	examStudents := make([]map[string]interface{}, 0)
+	
+	if err := c.Bind(&examStudents); err != nil {
+		fmt.Println("c.Bind()", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}	
+	
+	err = e.SaveExamMarks(examStudents)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	return c.JSON(http.StatusOK, nil)
 }

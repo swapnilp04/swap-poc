@@ -382,7 +382,7 @@ func (s *Student) GetUpcommingBirthdays() ([]Student, error) {
 
 func (s *Student) GetStudentExams() ([]ExamStudent, error) {
 	var examStudents []ExamStudent
-	err := db.Driver.Preload("Exam").Where("student_id = ?", s.ID).Find(&examStudents).Error
+	err := db.Driver.Preload("Exam").Where("student_id = ?", s.ID).Omit("Student").Find(&examStudents).Error
 	return examStudents, err
 }
 

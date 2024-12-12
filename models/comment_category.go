@@ -26,7 +26,7 @@ func migrateCommentCategory() {
 }
 
 func migrateCommentCategoryData() {
-	categoryArr := [...]string{"Hostel", "Payment", "Teacher", "HomeWork", "Parents", "Exam"}
+	categoryArr := [...]string{"Hostel", "Payment", "Teacher", "HomeWork", "Parents", "Exam", "Medical"}
 	for _, category := range categoryArr { 
         commentCategory := CommentCategory{Name: category}
         err := commentCategory.FindByName()

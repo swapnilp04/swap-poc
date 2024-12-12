@@ -214,6 +214,10 @@ func SaveExamMarks(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
+	if e.ExamStatus != "Conducted" {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Exam Can not be on Conducted State"})
+	}
+
 	//examStudents := make([]interface{}, 0)
 	examStudents := make([]map[string]interface{}, 0)
 	

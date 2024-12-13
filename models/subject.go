@@ -43,10 +43,6 @@ func (s *Subject) Assign(subjectData map[string]interface{}) {
 	if name, ok := subjectData["name"]; ok {
 		s.Name = name.(string)
 	}
-
-	if standardID, ok := subjectData["standard_id"]; ok {
-		s.StandardID = uint(standardID.(float64))
-	}
 }
 
 func (s *Subject) All() ([]Subject, error) {

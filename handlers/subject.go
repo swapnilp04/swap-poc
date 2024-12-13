@@ -48,19 +48,28 @@ func GetSubject(c echo.Context) error {
 }
 
 func CreateSubject(c echo.Context) error {
+	id := c.Param("standard_id")
+	standard, err := findStandard(id)
+	if err != nil {
+		fmt.Println("s.Find(GetStandard)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
 	subjectData := make(map[string]interface{})
 	if err := c.Bind(&subjectData); err != nil {
 		fmt.Println("c.Bind()", err)
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
 	}
-
+	
 	subject := models.NewSubject(subjectData)
+	subject.StandardID = standard.ID
 	if err := subject.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
 	}
 
-	err := subject.Create()
+	err = subject.Create()
+	
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}

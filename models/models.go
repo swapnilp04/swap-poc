@@ -23,4 +23,5 @@ func init() {
 	migrateCommentCategoryData()
 	migrateExam()
 	migrateExamStudent()
+	migrateSubject()
 }

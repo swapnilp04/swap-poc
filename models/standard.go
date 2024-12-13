@@ -86,3 +86,15 @@ func (s *Standard) Delete() error {
 	err := db.Driver.Delete(s).Error
 	return err
 }
+
+func (s *Standard) GetSubjects() ([]Subject, error) {
+	var subjects []Subject
+	err := db.Driver.Where("standard_id = ?", s.ID).Find(&subjects).Error
+	return subjects, err
+}
+
+func (s *Standard) GetSubject(subjectID uint) ([]Subject, error) {
+	var subject []Subject
+	err := db.Driver.Where("standard_id = ? and id = ?", s.ID, subjectID).Find(&subject).Error
+	return subject, err
+}

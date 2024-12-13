@@ -12,13 +12,22 @@ import (
 
 func GetExams(c echo.Context) error {
 	// Get all users
+	page := c.QueryParam("page")
+	newPage, err := strconv.Atoi(page)
+	if err != nil {
+		newPage = 1
+	}
+
 	e := &models.Exam{}
-	exams, err := e.All()
+	exams, err := e.All(newPage)
 	if err != nil {
 		fmt.Println("s.ALL(GetExams)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-	return c.JSON(http.StatusOK, exams)
+
+	count, err := e.AllCount()
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"exams": exams, "total": count})
 }
 
 func GetExam(c echo.Context) error {

@@ -22,6 +22,8 @@ type Exam struct {
 	ExamTime				int `json:"exam_time" validate:"nonzero"`
 	ExamDate				time.Time `json:"exam_date"`
 	ExamStatus 			string `json:"exam_status" validate:"nonzero" gorm:"default:'Created'"` // Created, Conducted, Published
+	SubjectID 			uint `json:"subject_id" validate:"nonzero"`
+	Subject 				Subject `validate:"-"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -58,6 +60,9 @@ func (e *Exam) Assign(examData map[string]interface{}) {
 	if batchStandardID, ok := examData["batch_standard_id"]; ok {
 		e.BatchStandardID = uint(batchStandardID.(float64))
 	}
+	if subjectID, ok := examData["subject_id"]; ok {
+		e.SubjectID = uint(subjectID.(float64))
+	}
 	if examDate, ok := examData["exam_date"]; ok {
 		e.ExamDate, _ = time.Parse("2006-01-02T15:04:05.999999999Z", examDate.(string))
 	}
@@ -74,12 +79,12 @@ func (e *Exam) Assign(examData map[string]interface{}) {
 
 func (e *Exam) All() ([]Exam, error) {
 	var exams []Exam
-	err := db.Driver.Preload("Standard").Order("id desc").Find(&exams).Error
+	err := db.Driver.Preload("Standard").Preload("Subject").Order("id desc").Find(&exams).Error
 	return exams, err
 }
 
 func (e *Exam) Find() error {
-	err := db.Driver.Preload("Standard").First(e, "ID = ?", e.ID).Error
+	err := db.Driver.Preload("Standard").Preload("Subject").First(e, "ID = ?", e.ID).Error
 	return err
 }
 
@@ -90,7 +95,7 @@ func (e *Exam) Create() error {
 
 func (e *Exam) Update() error {
 	//err := db.Driver.Updates(e).Error
-	err := db.Driver.Omit("Standard").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
+	err := db.Driver.Omit("Subject, Standard").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
 	return err
 }
 

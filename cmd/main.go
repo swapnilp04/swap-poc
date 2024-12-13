@@ -82,6 +82,7 @@ func main() {
 	e.GET("/batchs/:batch_id/batch-standards/:id", handlers.GetBatchStandard, handlers.IsLoggedIn)
 	e.PUT("/batchs/:batch_id/batch-standards/:id", handlers.UpdateBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/batchs/:batch_id/batch-standards/:id/students", handlers.GetBatchStandardStudents, handlers.IsLoggedIn)
+	e.GET("/batch-standards/:id/subjects", handlers.GetBatchStandardSubjects, handlers.IsLoggedIn)
 
 	e.GET("/hostels", handlers.GetHostels, handlers.IsLoggedIn)
 	e.GET("/hostels/:id", handlers.GetHostel, handlers.IsLoggedIn)

@@ -10,7 +10,7 @@ import (
 
 type Subject struct {
 	ID           	uint    `json:"id"`
-	Name     			string `json:"name" gorm:"unique" validate:"nonzero"`
+	Name     			string `json:"name" validate:"nonzero"`
 	StandardID    uint `json:"standard_id" validate:"nonzero"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time

@@ -76,6 +76,11 @@ func (t *Teacher) Find() error {
 	return err
 }
 
+func (t *Teacher) FindByUser() error {
+	err := db.Driver.First(t, "UserID = ?", t.UserID).Error
+	return err
+}
+
 func (t *Teacher) Create() error {
 	err := db.Driver.Create(t).Error
 	return err
@@ -122,4 +127,11 @@ func (t *Teacher) CreateUser() error {
 	user.Save()
 	db.Driver.Model(&t).Updates(Teacher{UserID: uint(user.ID)})	
 	return err
+}
+
+
+func (t *Teacher) GetTeachersLogs() ([]TeacherLog, error) {
+	var teacherLogs []TeacherLog
+	err := db.Driver.Where("teacher_id = ?", t.ID).Find(&teacherLogs).Error
+	return teacherLogs, err
 }

@@ -129,3 +129,9 @@ func (bs *BatchStandard) GetSubjects() ([]Subject, error) {
 	err := db.Driver.Where("standard_id = ?", bs.StandardId).Find(&subjects).Error	
 	return subjects, err
 }
+
+func (bs *BatchStandard) GetTeachersLogs() ([]TeacherLog, error) {
+	var teacherLogs []TeacherLog
+	err := db.Driver.Where("batch_standard_id = ?", bs.ID).Find(&teacherLogs).Error
+	return teacherLogs, err
+}

@@ -58,6 +58,20 @@ func OnlyAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+func OnlyTeacher(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := c.(CustomContext)
+		if cc.session == nil {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
+		}
+
+		if 	cc.session.Role != "Teacher" {
+			return c.JSON(http.StatusForbidden, map[string]interface{}{"errors": swapErr.ErrForbidden.Error()})
+		}
+		return next(cc)	
+	}
+}
+
 func OnlyAdminClerk(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		cc := c.(CustomContext)

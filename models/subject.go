@@ -70,3 +70,9 @@ func (s *Subject) Delete() error {
 	err := db.Driver.Delete(s).Error
 	return err
 }
+
+func (s *Subject) GetTeachersLogs() ([]TeacherLog, error) {
+	var teacherLogs []TeacherLog
+	err := db.Driver.Where("subject_id = ?", s.ID).Find(&teacherLogs).Error
+	return teacherLogs, err
+}

@@ -6,6 +6,9 @@ import (
 	"time"
 	"gorm.io/gorm"
 	"gopkg.in/validator.v2"
+	"crypto/rand"
+	"encoding/hex"
+	"golang.org/x/crypto/scrypt"
 )
 
 type Teacher struct {
@@ -84,5 +87,38 @@ func (t *Teacher) Update() error {
 
 func (t *Teacher) Delete() error {
 	err := db.Driver.Delete(t).Error
+	return err
+}
+
+func (t *Teacher) CreateUser() error {
+	salt := make([]byte, 16)
+	if _, err := rand.Read(salt); err != nil {
+		fmt.Println("rand.Read(salt)", err)
+		return err
+	}
+
+	hash, err := scrypt.Key([]byte(t.Mobile), salt, 32768, 8, 1, 32)
+	if err != nil {
+		fmt.Println("scrypt.Key()", err)
+		return err
+	}
+
+	confirmHash, err := scrypt.Key([]byte(t.Mobile), salt, 32768, 8, 1, 32)
+	if err != nil {
+		fmt.Println("scrypt.Key()", err)
+		return err
+	}
+
+	var user User
+	user.Username = t.Mobile
+	user.Password = hex.EncodeToString(hash)
+	user.ConfirmPassword = hex.EncodeToString(confirmHash)
+	user.Role = "Teacher"
+	user.Salt = hex.EncodeToString(salt)
+	if err := user.Validate(); err != nil {
+		return err
+	}
+	user.Save()
+	
 	return err
 }

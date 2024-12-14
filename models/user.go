@@ -14,12 +14,12 @@ import (
 )
 
 type User struct {
-	ID              int    `json:"id"`
-	Username        string `json:"username"`
+	ID              int    `json:"id"` 
+	Username        string `json:"username" validate:"nonzero"`
 	Salt            string `json:"-"`
 	Password        string `json:"-"`
 	ConfirmPassword string `json:"-" gorm:"-"`
-	Role						string `json:"role"`
+	Role						string `json:"role" validate:"nonzero"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

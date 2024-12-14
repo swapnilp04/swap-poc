@@ -57,10 +57,13 @@ func CreateTeacher(c echo.Context) error {
 
 	err := teacher.Create()
 	if err != nil {
-		
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
-
+	err = teacher.CreateUser()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+	
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "teacher created", "teacher": teacher})
 }
 

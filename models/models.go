@@ -20,9 +20,12 @@ func init() {
 	migrateStudentAccount()
 	migrateCommentCategory()
 	migrateComment()
-	migrateCommentCategoryData()
+	migrateCommentCategoryData() //Data load
 	migrateExam()
 	migrateExamStudent()
 	migrateSubject()
 	migrateTeacher()
+	migrateLogCategory()
+	migrateLogCategoryData() // data load
+	migrateTeacherLog()
 }

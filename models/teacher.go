@@ -18,6 +18,7 @@ type Teacher struct {
 	AdharCard			string 	`json:"adhar_card" gorm:"adhar_card" validate:"nonzero,min=12,max=12"`
 	JoiningDate		*time.Time `json:"joining_date"`
 	LastDate			*time.Time `json:"last_date"`
+	UserID 				uint `json:"user_id"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
   DeletedAt 		gorm.DeletedAt `gorm:"index"`
@@ -119,6 +120,6 @@ func (t *Teacher) CreateUser() error {
 		return err
 	}
 	user.Save()
-	
+	db.Driver.Model(&t).Updates(Teacher{UserID: uint(user.ID)})	
 	return err
 }

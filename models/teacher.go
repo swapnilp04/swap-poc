@@ -56,7 +56,8 @@ func (t *Teacher) Assign(teacherData map[string]interface{}) {
 	}
 
 	if joiningDate, ok := teacherData["joining_date"]; ok {
-		s.JoiningDate, _ = time.Parse("2006-01-02T15:04:05.999999999Z", joiningDate.(string))
+		var time, _ = time.Parse("2006-01-02T15:04:05.999999999Z", joiningDate.(string))
+		t.JoiningDate = &time
 	}	
 }
 

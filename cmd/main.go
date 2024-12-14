@@ -68,6 +68,7 @@ func main() {
 	e.PUT("/standards/:standard_id/subjects/:id", handlers.UpdateSubject, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.DELETE("/standards/:standard_id/subjects/:id", handlers.DeleteSubject, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	
+	e.GET("/teachers", handlers.GetTeachers, handlers.IsLoggedIn)
 
 	e.GET("/batchs", handlers.GetBatchs, handlers.IsLoggedIn)
 	e.GET("/batchs/:id", handlers.GetBatch, handlers.IsLoggedIn)

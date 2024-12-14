@@ -24,4 +24,5 @@ func init() {
 	migrateExam()
 	migrateExamStudent()
 	migrateSubject()
+	migrateTeacher()
 }

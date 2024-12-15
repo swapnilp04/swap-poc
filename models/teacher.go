@@ -77,7 +77,7 @@ func (t *Teacher) Find() error {
 }
 
 func (t *Teacher) FindByUser() error {
-	err := db.Driver.First(t, "UserID = ?", t.UserID).Error
+	err := db.Driver.First(t, "user_id = ?", t.UserID).Error
 	return err
 }
 

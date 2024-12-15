@@ -67,6 +67,8 @@ func main() {
 	e.POST("/logs", handlers.CreateTeacherLog, handlers.IsLoggedIn, handlers.OnlyTeacher)
 	e.PUT("/logs/:id", handlers.UpdateTeacherLog, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
 	e.DELETE("/logs/:id", handlers.DeleteTeacherLog, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
+
+	e.GET("/log_categories", handlers.GetLogCategories, handlers.IsLoggedIn)
 	
 	e.GET("/standards/:standard_id/subjects", handlers.GetSubjects, handlers.IsLoggedIn)
 	e.GET("/standards/:standard_id/subjects/:id", handlers.GetSubject, handlers.IsLoggedIn)

@@ -16,14 +16,14 @@ type TeacherLog struct {
 	EndHour       	int `json:"end_hour" validate:"nonzero"`
 	EndMinuit     	int `json:"end_minuit" validate:"nonzero"`
 	TeacherID     	uint `json:"teacher_id" validate:"nonzero"`
-	Teacher 				Teacher
+	Teacher 				Teacher `validate:"-"`
 	SubjectID  			uint `json:"subject_id" validate:"nonzero"`
-	Subject 				Subject
+	Subject 				Subject `validate:"-"`
 	BatchStandardID uint `json:"batch_standard_id" validate:"nonzero"`
 	BatchStandard 	BatchStandard `validate:"-"`
 	Comment 				string `json:"comment"`
 	LogCategoryID 	uint `json:"log_category_id" validate:"nonzero"`
-	LogCategory 		LogCategory
+	LogCategory 		LogCategory `validate:"-"`
 	ApprovedOn			*time.Time `json:"approved_on"`
 	ApprovedBy			uint `json:"approved_by"`
 	CreatedAt 			time.Time
@@ -61,19 +61,19 @@ func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 	}
 
 	if startHour, ok := teachersLogData["start_hour"]; ok {
-		tl.StartHour = int(startHour.(int64))
+		tl.StartHour = int(startHour.(float64))
 	}
 
 	if startMinuit, ok := teachersLogData["start_minuit"]; ok {
-		tl.StartMinuit = int(startMinuit.(int64))
+		tl.StartMinuit = int(startMinuit.(float64))
 	}
 
 	if endHour, ok := teachersLogData["end_hour"]; ok {
-		tl.EndHour = int(endHour.(int64))
+		tl.EndHour = int(endHour.(float64))
 	}
 
 	if endMinuit, ok := teachersLogData["end_minuit"]; ok {
-		tl.EndMinuit = int(endMinuit.(int64))
+		tl.EndMinuit = int(endMinuit.(float64))
 	}
 
 	if subjectID, ok := teachersLogData["subject_id"]; ok {
@@ -95,17 +95,17 @@ func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 
 func (tl *TeacherLog) All() ([]TeacherLog, error) {
 	var teachersLogs []TeacherLog
-	err := db.Driver.Find(&teachersLogs).Error
+	err := db.Driver.Preload("BatchStandard").Preload("Subject").Preload("Teacher").Preload("LogCategory").Find(&teachersLogs).Error
 	return teachersLogs, err
 }
 
 func (tl *TeacherLog) Find() error {
-	err := db.Driver.Preload("BatchStandard, Subject, Teacher, LogCategory").First(tl, "ID = ?", tl.ID).Error
+	err := db.Driver.Preload("BatchStandard").Preload("Subject").Preload("Teacher").Preload("LogCategory").First(tl, "ID = ?", tl.ID).Error
 	return err
 }
 
 func (tl *TeacherLog) Create() error {
-	err := db.Driver.Create(tl).Error
+	err := db.Driver.Omit("BatchStandard, Subject, Teacher, LogCategory").Create(tl).Error
 	return err
 }
 

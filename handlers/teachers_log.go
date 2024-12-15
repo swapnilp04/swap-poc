@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"swapnil-ex/models"
 	"swapnil-ex/swapErr"
-
+	"time"
 	"github.com/labstack/echo/v4"
 )
 
@@ -49,15 +49,18 @@ func CreateTeacherLog(c echo.Context) error {
 	if cc.session == nil {
 		return c.JSON(http.StatusForbidden, map[string]interface{}{"error": swapErr.ErrForbidden.Error()})
 	}
+
 	session := cc.session
 	teacher := models.Teacher{UserID: uint(session.UserID)}
-	err := teacher.FindByUser
+	
+	err := teacher.FindByUser()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
-
+	t := time.Now()
 	teacherLog := models.NewTeacherLog(teacherLogData)
 	teacherLog.TeacherID = teacher.ID
+	teacherLog.LogDate = &t
 	if err := teacherLog.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
@@ -119,4 +122,15 @@ func DeleteTeacherLog(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "TeacherLog deleted successfully"})
+}
+
+func GetLogCategories(c echo.Context) error {
+	lcs := &models.LogCategory{}
+	logCategories, err := lcs.All()
+	if err != nil {
+		fmt.Println("s.ALL(GetTeacherLogs)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, logCategories)
 }

@@ -93,14 +93,21 @@ func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 	}
 }
 
-func (tl *TeacherLog) All() ([]TeacherLog, error) {
+func (tl *TeacherLog) All(page int) ([]TeacherLog, error) {
 	var teachersLogs []TeacherLog
-	err := db.Driver.Preload("BatchStandard").Preload("Subject").Preload("Teacher").Preload("LogCategory").Find(&teachersLogs).Error
+	err := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
+	Preload("LogCategory").Offset((page-1) * 10).Order("id desc").Find(&teachersLogs).Error
 	return teachersLogs, err
 }
 
+func (tl *TeacherLog) AllCount() (int64, error) {
+	var count int64
+	err := db.Driver.Model(&TeacherLog{}).Count(&count).Error
+	return count, err
+}
+
 func (tl *TeacherLog) Find() error {
-	err := db.Driver.Preload("BatchStandard").Preload("Subject").Preload("Teacher").Preload("LogCategory").First(tl, "ID = ?", tl.ID).Error
+	err := db.Driver.Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").Preload("LogCategory").First(tl, "ID = ?", tl.ID).Error
 	return err
 }
 

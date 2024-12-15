@@ -11,14 +11,19 @@ import (
 )
 
 func GetTeacherLogs(c echo.Context) error {
+	page := c.QueryParam("page")
+	newPage, err := strconv.Atoi(page)
+	if err != nil {
+		newPage = 1
+	}
 	tl := &models.TeacherLog{}
-	teacherLogs, err := tl.All()
+	teacherLogs, err := tl.All(newPage)
 	if err != nil {
 		fmt.Println("s.ALL(GetTeacherLogs)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-
-	return c.JSON(http.StatusOK, teacherLogs)
+	count, err := tl.AllCount()
+	return c.JSON(http.StatusOK, map[string]interface{}{"teacherLogs": teacherLogs, "total": count})
 }
 
 func GetTeacherLog(c echo.Context) error {

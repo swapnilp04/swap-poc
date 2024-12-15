@@ -10,6 +10,7 @@ import (
 
 type TeacherLog struct {
 	ID           		uint `json:"id"`
+	LogDate					*time.Time `json:"log_date" validate:"nonzero"`
 	StartHour     	int `json:"start_hour" validate:"nonzero"`
 	StartMinuit   	int `json:"start_minuit" validate:"nonzero"`
 	EndHour       	int `json:"end_hour" validate:"nonzero"`
@@ -54,6 +55,11 @@ func (tl *TeacherLog) Validate() error {
 
 func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 	fmt.Printf("%+v\n", teachersLogData)
+	if logDate, ok := teachersLogData["log_date"]; ok {
+		var time, _ = time.Parse("2006-01-02T15:04:05.999999999Z", logDate.(string))
+		tl.LogDate = &time
+	}
+
 	if startHour, ok := teachersLogData["start_hour"]; ok {
 		tl.StartHour = int(startHour.(int64))
 	}

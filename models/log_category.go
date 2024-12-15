@@ -26,7 +26,7 @@ func migrateLogCategory() {
 }
 
 func migrateLogCategoryData() {
-	categoryArr := [...]string{"Teaching", "Prectice", "Checking", "Discussion", "Exercise", "Paper", "DPP"}
+	categoryArr := [...]string{"Teaching", "Prectice", "Checking", "Discussion", "Exercise", "Paper", "DPP", "Exam"}
 	for _, category := range categoryArr { 
         logCategory := LogCategory{Name: category}
         err := logCategory.FindByName()

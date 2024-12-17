@@ -93,16 +93,41 @@ func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 	}
 }
 
-func (tl *TeacherLog) All(page int) ([]TeacherLog, error) {
+func (tl *TeacherLog) All(page int, searchBatchStandard string, searchSubject string, searchTeacher string) ([]TeacherLog, error) {
 	var teachersLogs []TeacherLog
-	err := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
-	Preload("LogCategory").Offset((page-1) * 10).Order("id desc").Find(&teachersLogs).Error
+	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
+	Preload("LogCategory")
+	if searchTeacher != "" {
+		query = query.Where("teacher_id = ?", searchTeacher)
+	}
+
+	if searchBatchStandard != "" {
+		query = query.Where("batch_standard_id = ?", searchBatchStandard)
+	}
+
+	if searchSubject != "" {
+		query = query.Where("subject_id = ?", searchSubject)
+	}
+
+	err := query.Offset((page-1) * 10).Order("id desc").Find(&teachersLogs).Error
 	return teachersLogs, err
 }
 
-func (tl *TeacherLog) AllCount() (int64, error) {
+func (tl *TeacherLog) AllCount(searchBatchStandard string, searchSubject string, searchTeacher string) (int64, error) {
 	var count int64
-	err := db.Driver.Model(&TeacherLog{}).Count(&count).Error
+	query := db.Driver.Model(&TeacherLog{})
+	if searchTeacher != "" {
+		query = query.Where("teacher_id = ?", searchTeacher)
+	}
+
+	if searchBatchStandard != "" {
+		query = query.Where("batch_standard_id = ?", searchBatchStandard)
+	}
+
+	if searchSubject != "" {
+		query = query.Where("subject_id = ?", searchSubject)
+	}
+	err := query.Count(&count).Error
 	return count, err
 }
 

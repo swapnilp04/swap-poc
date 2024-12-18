@@ -34,7 +34,7 @@ func main() {
 	e.PUT("/students/:id", handlers.UpdateStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/students/:id/get_exams", handlers.GetStudentExams, handlers.IsLoggedIn)
-	e.POST("/students/:id/left_academy", handlers.LeftAcademy, handlers.IsLoggedIn)
+	e.POST("/students/:id/left_academy", handlers.LeftAcademy, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/students/:id/hostel", handlers.GetStudentHostel, handlers.IsLoggedIn)
 	e.POST("/students/:id/assign_hostel", handlers.AssignStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdmin)
@@ -54,8 +54,8 @@ func main() {
 	e.GET("/students/:student_id/student_accounts", handlers.GetStudentAccounts, handlers.IsLoggedIn)
 	e.POST("/students/:student_id/student_accounts/deposit", handlers.DepositStudentAccountAmount, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/students/:student_id/student_accounts/withdraw", handlers.WithdrawStudentAccountAmount, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
-	e.GET("/students/:student_id/comments", handlers.GetStudentComments, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
-	e.POST("/students/:student_id/comments", handlers.CreateComment, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.GET("/students/:student_id/comments", handlers.GetStudentComments, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
+	e.POST("/students/:student_id/comments", handlers.CreateComment, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
 
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)

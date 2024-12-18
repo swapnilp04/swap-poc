@@ -278,6 +278,29 @@ func ChangeStudentHostel(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Student assigned to hostel", "student": s})
 }
 
+func LeftAcademy(c echo.Context) error {
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	s := &models.Student{ID: uint(newId)}
+	err = s.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}	
+
+	err = s.LeftAcademy()
+	if err != nil {
+		fmt.Println("s.Find(GetStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}	
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Left Academy Success"})
+}
+
 func GetStudentExams(c echo.Context) error {
 	id := c.Param("id")
 	newId, err := strconv.Atoi(id)

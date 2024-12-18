@@ -28,7 +28,7 @@ type Student struct {
 	HasHostel									bool 		`json:"has_hostel" gorm:"default:false"`
 	Balance 									float64 `json:"balance" gorm:"default:0.0"`
 	StudentAccountBalance 		float64 `json:"student_account_balance" gorm:"default:0.0"`
-	HostelRoomId    					uint 		`json:"hostel_room_id"`
+	HostelRoomId    					uint 		`json:"hostel_room_id" validate:"-"`
 	StandardId      					uint 		`json:"standard_id"`
 	Standard 									Standard `validate:"-"`
 	LastPaymentOn							*time.Time `json:"last_payment_on"`
@@ -160,7 +160,7 @@ func (s *Student) Create() error {
 }
 
 func (s *Student) Update() error {
-	err := db.Driver.Save(s).Error
+	err := db.Driver.Omit("Standard").Save(s).Error
 	return err
 }
 
@@ -387,6 +387,44 @@ func (s *Student) GetStudentExams() ([]ExamStudent, error) {
 	err := db.Driver.Preload("Exam.Subject").Where("student_id = ?", s.ID).Omit("Student").Find(&examStudents).Error
 	return examStudents, err
 }
+
+
+func (s *Student) LeftAcademy() error {
+	// Remove from classs
+	batchStandardStudents, err := s.GetBatchStandardStudents()
+	if err != nil {
+		return err
+	}
+	for _, batchStandardStudent := range batchStandardStudents {
+		err := batchStandardStudent.Delete()
+		if err != nil {
+			return err
+		}
+	}
+	// Remove From Hostel
+	if s.HasHostel {
+		hostelStudent, err := s.GetStudentHostel()
+		if err != nil {
+	 		return err
+	 	}
+	 	err = hostelStudent.Delete()
+	 	if err != nil {
+	 		return err
+	 	}
+ 	}
+
+	// Update Balance 
+	s.SaveBalance()
+	currentTime := time.Now()
+	s.LeftAt = &currentTime
+	s.HasLeft = true
+	s.HostelRoomId = 0
+	s.HasHostel = false
+	s.StandardId = 0
+	err = s.Update()		
+	return err
+}
+
 
 
 

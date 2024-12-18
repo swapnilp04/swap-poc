@@ -34,6 +34,8 @@ type Student struct {
 	LastPaymentOn							*time.Time `json:"last_payment_on"`
 	HasAbsconded							bool		`json:"has_absconded" gorm:"default:false"`
 	AbscondedAt								*time.Time
+	HasLeft 									bool 		`json:"has_left" gorm:"default:false"`
+	LeftAt										*time.Time `json:"left_at"`
 	BatchStandardStudents     []BatchStandardStudent 
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time

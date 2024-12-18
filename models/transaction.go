@@ -26,7 +26,7 @@ type Transaction struct {
 	Amount       						float64 `json:"amount" validate:"nonzero"`
 	RecieptUrl  						string `json:"receipt_url"`
 	UserID									uint `json:"user_id"`
-	User 										User
+	User 										User `validate:"-"`
 	Reason 									string `json:"reason"`
 	AmountToWord						string `gorm:"-:all"`
 	Student 								Student

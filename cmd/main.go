@@ -116,6 +116,8 @@ func main() {
 	e.GET("/users/current", handlers.GetCurrentUser, handlers.IsLoggedIn)
 	e.POST("/users", handlers.Register, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/users/update_password", handlers.UpdatePassword, handlers.IsLoggedIn)
+	e.POST("/users/:id/deactive_user", handlers.DeactivateUser, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.POST("/users/:id/active_user", handlers.ActivateUser, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/comments", handlers.GetComments, handlers.IsLoggedIn)
 	e.GET("/comments/:id", handlers.GetComment, handlers.IsLoggedIn)

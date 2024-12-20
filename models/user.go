@@ -20,6 +20,7 @@ type User struct {
 	Password        string `json:"-"`
 	ConfirmPassword string `json:"-" gorm:"-"`
 	Role						string `json:"role" validate:"nonzero"`
+	Active					bool `json:"active" gorm:"default:true"` 
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -34,7 +35,7 @@ func migrateUser() {
 }
 
 func (u *User) FindUserByUsername(username string) error {
-	err := db.Driver.First(u, "username = ?", username).Error
+	err := db.Driver.Where("username = ? and active = ?", username, true).First(u).Error
 	return err
 }
 
@@ -53,6 +54,16 @@ func (u *User) ValidPassword(password string) error {
 
 func (u *User) Find() error {
 	err := db.Driver.First(u, "ID = ?", u.ID).Error
+	return err
+}
+
+func (u *User) DeactiveUser() error {
+	err := db.Driver.Model(u).Updates(map[string]interface{}{"active": false}).Error
+	return err
+}
+
+func (u *User) ActiveUser() error {
+	err := db.Driver.Model(u).Updates(map[string]interface{}{"active": true}).Error
 	return err
 }
 

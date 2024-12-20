@@ -353,6 +353,59 @@ func UpdateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "user update successfully", "user": user})
 }
 
+
+func DeactivateUser(c echo.Context) error { 
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	user := &models.User{ID: int(newId)}
+	err = user.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	if user.Role == "Admin" {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Can not Deactive Admin User"})
+	}
+	err = user.DeactiveUser()
+	if err != nil {
+		fmt.Println("s.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, user)
+} 
+
+func ActivateUser(c echo.Context) error { 
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	user := &models.User{ID: int(newId)}
+	err = user.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	if user.Role == "Admin" {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Can not Deactive Admin User"})
+	}
+	err = user.ActiveUser()
+	if err != nil {
+		fmt.Println("s.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, user)
+} 
+
 // package main
 
 // import (

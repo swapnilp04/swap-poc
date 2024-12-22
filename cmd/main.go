@@ -80,6 +80,7 @@ func main() {
 	e.GET("/teachers", handlers.GetTeachers, handlers.IsLoggedIn)
 	e.GET("/teachers/:id", handlers.GetTeacher, handlers.IsLoggedIn)
 	e.POST("/teachers", handlers.CreateTeacher, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.PUT("/teachers/:id", handlers.UpdateTeacher, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/batchs", handlers.GetBatchs, handlers.IsLoggedIn)
 	e.GET("/batchs/:id", handlers.GetBatch, handlers.IsLoggedIn)

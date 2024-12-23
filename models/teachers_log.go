@@ -11,10 +11,10 @@ import (
 type TeacherLog struct {
 	ID           		uint `json:"id"`
 	LogDate					*time.Time `json:"log_date" validate:"nonzero"`
-	StartHour     	int `json:"start_hour" validate:"nonzero"`
-	StartMinuit   	int `json:"start_minuit" validate:"nonzero"`
-	EndHour       	int `json:"end_hour" validate:"nonzero"`
-	EndMinuit     	int `json:"end_minuit" validate:"nonzero"`
+	StartHour     	int `json:"start_hour" validate:"max=24, min=0"`
+	StartMinuit   	int `json:"start_minuit" validate:"max=60,min=0"`
+	EndHour       	int `json:"end_hour" validate:"max=24,min=0"`
+	EndMinuit     	int `json:"end_minuit" validate:"max=60,min=0"`
 	TeacherID     	uint `json:"teacher_id" validate:"nonzero"`
 	Teacher 				Teacher `validate:"-"`
 	SubjectID  			uint `json:"subject_id" validate:"nonzero"`

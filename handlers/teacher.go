@@ -146,14 +146,15 @@ func GetTeachersLog(c echo.Context) error {
 	}
 	searchBatchStandard := c.QueryParam("searchBatchStandard")
 	searchSubject := c.QueryParam("searchSubject")
+	searchDate := c.QueryParam("searchDate")
 	
-	teacherLogs, err := teacher.GetTeachersLogs(newPage, searchBatchStandard, searchSubject)
+	teacherLogs, err := teacher.GetTeachersLogs(newPage, searchBatchStandard, searchSubject, searchDate)
 	if err != nil {
 		fmt.Println("s.Find(GetBatch)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 	
-	count, err := teacher.AllTeachersLogsCount(searchBatchStandard, searchSubject)
+	count, err := teacher.AllTeachersLogsCount(searchBatchStandard, searchSubject, searchDate)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"teacherLogs": teacherLogs, "total": count})
 }

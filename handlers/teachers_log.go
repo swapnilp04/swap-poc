@@ -19,14 +19,15 @@ func GetTeacherLogs(c echo.Context) error {
 	searchBatchStandard := c.QueryParam("searchBatchStandard")
 	searchSubject := c.QueryParam("searchSubject")
 	searchTeacher := c.QueryParam("searchTeacher")
+	searchDate := c.QueryParam("searchDate")
 
 	tl := &models.TeacherLog{}
-	teacherLogs, err := tl.All(newPage, searchBatchStandard, searchSubject, searchTeacher)
+	teacherLogs, err := tl.All(newPage, searchBatchStandard, searchSubject, searchTeacher, searchDate)
 	if err != nil {
 		fmt.Println("s.ALL(GetTeacherLogs)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-	count, err := tl.AllCount(searchBatchStandard, searchSubject, searchTeacher)
+	count, err := tl.AllCount(searchBatchStandard, searchSubject, searchTeacher, searchDate)
 	return c.JSON(http.StatusOK, map[string]interface{}{"teacherLogs": teacherLogs, "total": count})
 }
 

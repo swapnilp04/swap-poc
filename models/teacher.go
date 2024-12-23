@@ -130,7 +130,7 @@ func (t *Teacher) CreateUser() error {
 }
 
 
-func (t *Teacher) GetTeachersLogs(page int, searchBatchStandard string, searchSubject string) ([]TeacherLog, error) {
+func (t *Teacher) GetTeachersLogs(page int, searchBatchStandard string, searchSubject string, searchDate string) ([]TeacherLog, error) {
 	var teachersLogs []TeacherLog
 
 	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
@@ -145,11 +145,18 @@ func (t *Teacher) GetTeachersLogs(page int, searchBatchStandard string, searchSu
 		query = query.Where("subject_id = ?", searchSubject)
 	}
 
+	if searchDate != "" {
+		startDate, _ := time.Parse("2/1/2006", searchDate)
+		year, month, day := startDate.Date()
+		endDate := time.Date(year, month, day, 23, 59, 59, 0, time.UTC)
+		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
+	}
+
 	err := query.Offset((page-1) * 10).Order("id desc").Find(&teachersLogs).Error
 	return teachersLogs, err
 }
 
-func (t *Teacher) AllTeachersLogsCount(searchBatchStandard string, searchSubject string) (int64, error) {
+func (t *Teacher) AllTeachersLogsCount(searchBatchStandard string, searchSubject string, searchDate string) (int64, error) {
 	var count int64
 	query := db.Driver.Model(&TeacherLog{}).Where("teacher_id = ?", t.ID)
 	
@@ -160,6 +167,14 @@ func (t *Teacher) AllTeachersLogsCount(searchBatchStandard string, searchSubject
 	if searchSubject != "" {
 		query = query.Where("subject_id = ?", searchSubject)
 	}
+
+	if searchDate != "" {
+		startDate, _ := time.Parse("2/1/2006", searchDate)
+		year, month, day := startDate.Date()
+		endDate := time.Date(year, month, day, 23, 59, 59, 0, time.UTC)
+		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
+	}
+
 	err := query.Count(&count).Error
 	return count, err
 }

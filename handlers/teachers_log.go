@@ -71,6 +71,7 @@ func CreateTeacherLog(c echo.Context) error {
 	teacherLog := models.NewTeacherLog(teacherLogData)
 	teacherLog.TeacherID = teacher.ID
 	teacherLog.LogDate = &t
+	teacherLog.UserID = uint(session.UserID)
 	if err := teacherLog.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
@@ -104,7 +105,7 @@ func UpdateTeacherLog(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-	tl.Assign(teacherLogData)
+	tl.AssignUpdate(teacherLogData)
 	if err := tl.Update(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}

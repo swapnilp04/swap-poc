@@ -26,6 +26,7 @@ type TeacherLog struct {
 	LogCategory 		LogCategory `validate:"-"`
 	ApprovedOn			*time.Time `json:"approved_on"`
 	ApprovedBy			uint `json:"approved_by"`
+	UserID  				uint `json:"user_id" validate:"nonzero"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -59,6 +60,41 @@ func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 		var time, _ = time.Parse("2006-01-02T15:04:05.999999999Z", logDate.(string))
 		tl.LogDate = &time
 	}
+
+	if startHour, ok := teachersLogData["start_hour"]; ok {
+		tl.StartHour = int(startHour.(float64))
+	}
+
+	if startMinuit, ok := teachersLogData["start_minuit"]; ok {
+		tl.StartMinuit = int(startMinuit.(float64))
+	}
+
+	if endHour, ok := teachersLogData["end_hour"]; ok {
+		tl.EndHour = int(endHour.(float64))
+	}
+
+	if endMinuit, ok := teachersLogData["end_minuit"]; ok {
+		tl.EndMinuit = int(endMinuit.(float64))
+	}
+
+	if subjectID, ok := teachersLogData["subject_id"]; ok {
+		tl.SubjectID = uint(subjectID.(float64))
+	}
+
+	if batchStandardID, ok := teachersLogData["batch_standard_id"]; ok {
+		tl.BatchStandardID = uint(batchStandardID.(float64))
+	}
+
+	if logCategoryID, ok := teachersLogData["log_category_id"]; ok {
+		tl.LogCategoryID = uint(logCategoryID.(float64))
+	}
+
+	if comment, ok := teachersLogData["comment"]; ok {
+		tl.Comment = comment.(string)
+	}
+}
+
+func (tl *TeacherLog) AssignUpdate(teachersLogData map[string]interface{}) {
 
 	if startHour, ok := teachersLogData["start_hour"]; ok {
 		tl.StartHour = int(startHour.(float64))

@@ -262,7 +262,7 @@ func Login(c echo.Context) error {
 	}
 
 	// we can also set the session ID as token back
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "user loggedin successfully", "token": session.ID, "username": user.Username, "role": user.Role})
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "user loggedin successfully", "token": session.ID, "username": user.Username, "role": user.Role, "id": user.ID})
 }
 
 func Logout(c echo.Context) error {

@@ -185,3 +185,19 @@ func (bs *BatchStandard) AllBatchStandardLogsCount(searchTeacher string, searchS
 	return count, err
 }
 
+func (bs *BatchStandard) ReportLogs(searchDate string) ([]TeacherLog, error) {
+	var teachersLogs []TeacherLog
+	query := db.Driver.Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
+	Preload("LogCategory").Where("batch_standard_id = ?", bs.ID)
+	
+		
+	if searchDate != "" {
+		startDate, _ := time.Parse("2/1/2006", searchDate)
+		year, month, day := startDate.Date()
+		endDate := time.Date(year, month, day, 23, 59, 59, 0, time.UTC)
+		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
+	}
+
+	err := query.Order("id desc").Find(&teachersLogs).Error
+	return teachersLogs, err
+}

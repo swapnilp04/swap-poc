@@ -97,7 +97,8 @@ func main() {
 	e.PUT("/batchs/:batch_id/batch-standards/:id", handlers.UpdateBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/batchs/:batch_id/batch-standards/:id/students", handlers.GetBatchStandardStudents, handlers.IsLoggedIn)
 	e.GET("/batch-standards/:id/subjects", handlers.GetBatchStandardSubjects, handlers.IsLoggedIn)
-	e.GET("/batch_standards/:id/get_logs", handlers.GetBatchStandardLog, handlers.IsLoggedIn)
+	e.GET("/batch_standards/:id/get_logs", handlers.GetBatchStandardLogs, handlers.IsLoggedIn)
+	e.GET("/batch_standards/:id/get_report_logs", handlers.GetBatchStandardReportLogs, handlers.IsLoggedIn)
 
 	e.GET("/hostels", handlers.GetHostels, handlers.IsLoggedIn)
 	e.GET("/hostels/:id", handlers.GetHostel, handlers.IsLoggedIn)

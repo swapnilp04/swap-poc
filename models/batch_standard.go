@@ -135,3 +135,53 @@ func (bs *BatchStandard) GetTeachersLogs() ([]TeacherLog, error) {
 	err := db.Driver.Where("batch_standard_id = ?", bs.ID).Find(&teacherLogs).Error
 	return teacherLogs, err
 }
+
+func (bs *BatchStandard) GetBatchStandardLogs(page int, searchTeacher string, searchSubject string, searchDate string) ([]TeacherLog, error) {
+	var teachersLogs []TeacherLog
+
+	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
+	Preload("LogCategory").Where("batch_standard_id = ?", bs.ID)
+
+
+	if searchTeacher != "" {
+		query = query.Where("teacher_id = ?", searchTeacher)
+	}
+
+	if searchSubject != "" {
+		query = query.Where("subject_id = ?", searchSubject)
+	}
+
+	if searchDate != "" {
+		startDate, _ := time.Parse("2/1/2006", searchDate)
+		year, month, day := startDate.Date()
+		endDate := time.Date(year, month, day, 23, 59, 59, 0, time.UTC)
+		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
+	}
+
+	err := query.Offset((page-1) * 10).Order("id desc").Find(&teachersLogs).Error
+	return teachersLogs, err
+}
+
+func (bs *BatchStandard) AllBatchStandardLogsCount(searchTeacher string, searchSubject string, searchDate string) (int64, error) {
+	var count int64
+	query := db.Driver.Model(&TeacherLog{}).Where("batch_standard_id = ?", bs.ID)
+	
+	if searchTeacher != "" {
+		query = query.Where("teacher_id = ?", searchTeacher)
+	}
+
+	if searchSubject != "" {
+		query = query.Where("subject_id = ?", searchSubject)
+	}
+
+	if searchDate != "" {
+		startDate, _ := time.Parse("2/1/2006", searchDate)
+		year, month, day := startDate.Date()
+		endDate := time.Date(year, month, day, 23, 59, 59, 0, time.UTC)
+		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
+	}
+
+	err := query.Count(&count).Error
+	return count, err
+}
+

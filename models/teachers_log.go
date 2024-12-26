@@ -152,7 +152,7 @@ func (tl *TeacherLog) All(page int, searchBatchStandard string, searchSubject st
 		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
 	}
 
-	err := query.Offset((page-1) * 10).Order("id desc").Find(&teachersLogs).Error
+	err := query.Offset((page-1) * 10).Order("log_date DESC, start_hour DESC").Find(&teachersLogs).Error
 	return teachersLogs, err
 }
 

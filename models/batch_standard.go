@@ -158,7 +158,7 @@ func (bs *BatchStandard) GetBatchStandardLogs(page int, searchTeacher string, se
 		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
 	}
 
-	err := query.Offset((page-1) * 10).Order("id desc").Find(&teachersLogs).Error
+	err := query.Offset((page-1) * 10).Order("log_date DESC, start_hour DESC").Find(&teachersLogs).Error
 	return teachersLogs, err
 }
 
@@ -198,6 +198,6 @@ func (bs *BatchStandard) ReportLogs(searchDate string) ([]TeacherLog, error) {
 		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
 	}
 
-	err := query.Order("id desc").Find(&teachersLogs).Error
+	err := query.Order("start_hour DESC").Find(&teachersLogs).Error
 	return teachersLogs, err
 }

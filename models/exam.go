@@ -161,7 +161,6 @@ func (e *Exam) GetExamStudents() ([]ExamStudent, error) {
 }
 
 func (e *Exam) SaveExamMarks(examStudents []map[string]interface{}) error {
-	fmt.Println(examStudents)
 	for _, examStudentObj := range examStudents {
 		newId := examStudentObj["id"].(float64)		
 		es := ExamStudent{ID: uint(newId)}	

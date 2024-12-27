@@ -80,6 +80,13 @@ func CreateTeacherLog(c echo.Context) error {
 	if err := teacherLog.Create(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
+	
+
+	combinedClasses := teacherLogData["combined_classes"].([]interface {})
+	 
+	if err :=teacherLog.CreateCombinedClasses(combinedClasses); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "teacherLog created", "teacherLog": teacherLog})
 }

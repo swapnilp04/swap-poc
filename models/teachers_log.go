@@ -27,6 +27,7 @@ type TeacherLog struct {
 	ApprovedOn			*time.Time `json:"approved_on"`
 	ApprovedBy			uint `json:"approved_by"`
 	UserID  				uint `json:"user_id" validate:"nonzero"`
+	HasCombinedClass bool `json:"has_combined_class" gorm:"default:false"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -201,3 +202,24 @@ func (tl *TeacherLog) Delete() error {
 	err := db.Driver.Delete(tl).Error
 	return err
 }
+
+func (tl *TeacherLog) CreateCombinedClasses(combinedClasses []interface {}) error {
+	for _, combinedClasses := range combinedClasses {
+		classObj := combinedClasses.(map[string]interface{})
+		newBatchStandardID := classObj["batch_standard_id"].(float64)
+		newSubjectID := classObj["subject_id"].(float64)
+		tLog := &TeacherLog{BatchStandardID: uint(newBatchStandardID), SubjectID: uint(newSubjectID), LogDate: tl.LogDate,
+			StartHour: tl.StartHour, StartMinuit: tl.StartMinuit, EndHour: tl.EndHour, EndMinuit: tl.EndMinuit,
+		 	TeacherID: tl.TeacherID, Comment: tl.Comment, LogCategoryID: tl.LogCategoryID, UserID: tl.UserID, HasCombinedClass: true}
+		 err := tLog.Create()
+		 if err != nil {
+		 	return err
+		 }
+	}
+
+	err := db.Driver.Model(&tl).Updates(map[string]interface{}{"has_combined_class": true}).Error
+	return err
+}
+
+
+

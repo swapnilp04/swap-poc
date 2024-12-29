@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"gopkg.in/validator.v2"
 	//"strconv"
+	"strings"
 )
 
 type Exam struct {
@@ -169,7 +170,13 @@ func (e *Exam) SaveExamMarks(examStudents []map[string]interface{}) error {
 		if err != nil {
 			return err
 		}
-		
 	}
 	return nil
+}
+
+func (e *Exam) GetExamsReportStudents(examIds string) ([]ExamStudent, error) {
+	var examStudents []ExamStudent
+	examsArr := strings.Split(examIds, ",")
+	err := db.Driver.Preload("Student").Where("exam_id in (?)", examsArr).Find(&examStudents).Error
+	return examStudents, err
 }

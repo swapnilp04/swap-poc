@@ -201,3 +201,11 @@ func (bs *BatchStandard) ReportLogs(searchDate string) ([]TeacherLog, error) {
 	err := query.Order("start_hour DESC").Find(&teachersLogs).Error
 	return teachersLogs, err
 }
+
+func (bs *BatchStandard) GetExams() ([]Exam, error) {
+	var exams []Exam
+	err := db.Driver.Preload("Standard").Preload("Subject").Where("batch_standard_id = ? AND exam_status != 'Created'", bs.ID).Order("id desc").Find(&exams).Error
+	return exams, err
+}	
+
+

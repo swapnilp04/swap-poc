@@ -226,20 +226,7 @@ func GetDefaultBatchStandards(c echo.Context) error {
 }
 
 func GetBatchStandardStudents(c echo.Context) error {
-	batchId := c.Param("batch_id")
-	newBatchId, err := strconv.Atoi(batchId)
-	if err != nil {
-		fmt.Println("strconv.Atoi failed", err)
-		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
-	}
-
-	b := &models.Batch{ID: uint(newBatchId)}
-	err = b.Find()
-	if err != nil {
-		fmt.Println("s.Find(GetBatch)", err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
-	}
-
+	
 	batchStandardId := c.Param("id")
 	newBatchStandardId, err := strconv.Atoi(batchStandardId)
 	if err != nil {
@@ -350,3 +337,27 @@ func GetBatchStandardReportLogs(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, batchStandardLogs)
 }
+
+func GetBatchStandardExams(c echo.Context) error {
+	batchStandardId := c.Param("id")
+	newBatchStandardId, err := strconv.Atoi(batchStandardId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	batchStandard := &models.BatchStandard{ID: uint(newBatchStandardId)}	
+	err = batchStandard.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandard)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	exams, err := batchStandard.GetExams()
+	if err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, exams)
+}
+

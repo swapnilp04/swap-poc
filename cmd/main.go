@@ -99,6 +99,8 @@ func main() {
 	e.GET("/batch-standards/:id/subjects", handlers.GetBatchStandardSubjects, handlers.IsLoggedIn)
 	e.GET("/batch_standards/:id/get_logs", handlers.GetBatchStandardLogs, handlers.IsLoggedIn)
 	e.GET("/batch_standards/:id/get_report_logs", handlers.GetBatchStandardReportLogs, handlers.IsLoggedIn)
+	e.GET("/batch_standards/:id/get_exams", handlers.GetBatchStandardExams, handlers.IsLoggedIn)
+	e.GET("/batch-standards/:id/students", handlers.GetBatchStandardStudents, handlers.IsLoggedIn)
 
 	e.GET("/hostels", handlers.GetHostels, handlers.IsLoggedIn)
 	e.GET("/hostels/:id", handlers.GetHostel, handlers.IsLoggedIn)
@@ -139,6 +141,8 @@ func main() {
 	e.POST("/exams/:id/publish_exam", handlers.PublishExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/exams/:id/exam_students", handlers.GetExamStudents, handlers.IsLoggedIn)
 	e.POST("/exams/:id/save_exam_marks", handlers.SaveExamMarks, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
+	e.GET("/exams/get_exam_group_report", handlers.GetExamGroupReport, handlers.IsLoggedIn)
+
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

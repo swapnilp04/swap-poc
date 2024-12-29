@@ -242,3 +242,14 @@ func SaveExamMarks(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, nil)
 }
+
+func GetExamGroupReport(c echo.Context) error { 
+	examIds := c.QueryParam("examString")
+	exam := &models.Exam{}
+	examStudents, err := exam.GetExamsReportStudents(examIds)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
+	}
+
+	return c.JSON(http.StatusOK, examStudents)
+}

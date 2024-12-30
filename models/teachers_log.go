@@ -216,9 +216,11 @@ func (tl *TeacherLog) CreateCombinedClasses(combinedClasses []interface {}) erro
 		 	return err
 		 }
 	}
-
-	err := db.Driver.Model(&tl).Updates(map[string]interface{}{"has_combined_class": true}).Error
-	return err
+	if(len(combinedClasses) > 0) { 
+		err := db.Driver.Model(&tl).Updates(map[string]interface{}{"has_combined_class": true}).Error
+		return err
+	}
+	return nil
 }
 
 

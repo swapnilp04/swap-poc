@@ -139,7 +139,7 @@ func DeleteTeacherLog(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "TeacherLog deleted successfully"})
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "TeacherLog deleted successfully", "id": newId})
 }
 
 func GetLogCategories(c echo.Context) error {

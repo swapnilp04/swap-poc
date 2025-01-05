@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"swapnil-ex/models"
 	"swapnil-ex/swapErr"
-
 	"github.com/labstack/echo/v4"
+
 )
 
 func GetTransactions(c echo.Context) error {
@@ -273,3 +273,31 @@ func AddDiscount(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Transaction created", "transaction": transaction})
 }
+
+func GetTransactionsReport(c echo.Context) error {
+	transaction := &models.Transaction{}
+	var transactions []models.Transaction  
+	var err error
+	
+	
+	switch reportType := c.QueryParam("type"); reportType {
+		case "Daily":
+			reportDate := c.QueryParam("report_date")
+			transactions, err = transaction.GetDailyReport(reportDate)
+		case "Monthly":
+			reportMonth := c.QueryParam("report_month")
+			transactions, err = transaction.GetMonthlyReport(reportMonth)
+		case "Custom":
+			reportStart := c.QueryParam("report_start")
+			reportEnd := c.QueryParam("report_end")
+			transactions, err = transaction.GetCustomReport(reportStart, reportEnd)
+			
+		}
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, transactions)
+}
+
+

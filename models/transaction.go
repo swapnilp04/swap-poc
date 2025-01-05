@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 	"swapnil-ex/swapErr"
 	"gopkg.in/validator.v2"
+	"github.com/jinzhu/now"
 )
 
 type Transaction struct {
@@ -173,6 +174,32 @@ func (t *Transaction) getReiceptId() (string , error) {
 		str := "" + time.Now().Format("20060102") + "" + strconv.FormatInt(count+1, 10)
 		return  str, nil
 	}
+}
+
+func (t *Transaction) GetDailyReport(date string) ([]Transaction, error) {
+	var transactions []Transaction
+	startDate, _ := time.Parse("02/01/2006", date)
+	endDate := now.With(startDate).EndOfDay()
+	err := db.Driver.Preload("Student").Where("created_at > ? and created_at < ?", startDate, endDate).Find(&transactions).Error
+	return transactions, err
+}
+
+func (t *Transaction) GetMonthlyReport(date string) ([]Transaction, error) {
+	var transactions []Transaction
+	monthDate, _ := time.Parse("02/01/2006", date)
+	startDate := now.With(monthDate).BeginningOfMonth()
+	endDate := now.With(monthDate).EndOfMonth()
+	err := db.Driver.Preload("Student").Where("created_at > ? and created_at < ?", startDate, endDate).Find(&transactions).Error
+	return transactions, err
+}
+
+func (t *Transaction) GetCustomReport(start string, end string) ([]Transaction, error) {
+	var transactions []Transaction
+	startDate, _ := time.Parse("02/01/2006", start)
+	endDate, _ := time.Parse("02/01/2006", end)
+	endDate = now.With(endDate).EndOfDay()
+	err := db.Driver.Preload("Student").Where("created_at > ? and created_at < ?", startDate, endDate).Find(&transactions).Error
+	return transactions, err
 }
 
 func (t *Transaction) AddWordPayment() {

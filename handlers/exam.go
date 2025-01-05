@@ -77,6 +77,8 @@ func CreateExam(c echo.Context) error {
 }
 
 func UpdateExam(c echo.Context) error {
+	cc := c.(CustomContext)
+	session := cc.session
 	id := c.Param("id")
 	newId, err := strconv.Atoi(id)
 	if err != nil {
@@ -96,8 +98,11 @@ func UpdateExam(c echo.Context) error {
 		fmt.Println("s.Find(GetExam)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-	if e.ExamStatus != "Created" {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Can not update Exam"})
+	
+	if session.Role != "Admin"  {
+		if e.ExamStatus != "Created" {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Can not update Exam"})
+		}
 	}
 
 	e.Assign(examData)

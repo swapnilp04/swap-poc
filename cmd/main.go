@@ -117,7 +117,7 @@ func main() {
 
 	e.GET("/accounts/transactions", handlers.GetTransactions, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/accounts/students/:student_id/transactions/:id", handlers.GetStudentTransaction, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
-	e.GET("/accounts/transactions/report", handlers.GetTransactionsReport, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.GET("/accounts/transactions/report", handlers.GetTransactionsReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/users", handlers.GetUsers, handlers.IsLoggedIn)
 	e.GET("/users/current", handlers.GetCurrentUser, handlers.IsLoggedIn)

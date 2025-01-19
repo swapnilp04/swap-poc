@@ -14,8 +14,8 @@ type StudentAccount struct {
 	TransactionType         string `json:"transaction_type" gorm:"default:'debit'" validate:"nonzero"`
 	Amount       						float64 `json:"amount" validate:"nonzero"`
 	Balance 								float64 `json:"balance" gorm:"default:0.0"`
-	UserID									uint `json:"user_id"`
-	Student 								Student
+	UserID									uint `json:"user_id" validate:"nonzero"`
+	Student 								Student `validate:"-"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`
@@ -75,7 +75,7 @@ func (sa *StudentAccount) Count(ids []uint) (int64, error) {
 
 func (sa *StudentAccount) All(studentId int) ([]StudentAccount, error) {
 	var studentAccounts []StudentAccount
-	err := db.Driver.Where("student_id = ?", studentId).Find(&studentAccounts).Error
+	err := db.Driver.Where("student_id = ?", studentId).Order("id desc").Find(&studentAccounts).Error
 	return studentAccounts, err
 }
 

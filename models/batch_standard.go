@@ -70,7 +70,7 @@ func (bs *BatchStandard) AllIds(batchId uint) ([]uint, error) {
 }
 
 func (bs *BatchStandard) Find() error {
-	err := db.Driver.Preload("Standard").First(bs, "ID = ?", bs.ID).Error
+	err := db.Driver.Preload("Standard").Preload("Batch").First(bs, "ID = ?", bs.ID).Error
 	return err
 }
 

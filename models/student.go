@@ -150,7 +150,7 @@ func (s *Student) SearchIds(search string) (error, []uint){
 }
 
 func (s *Student) Find() error {
-	err := db.Driver.Preload("Standard").First(s, "ID = ?", s.ID).Error
+	err := db.Driver.Preload("Standard").Preload("BatchStandardStudents").Omit("BatchStandardStudents.Student").Omit("BatchStandardStudents.Batch").Omit("BatchStandardStudents.BatchStandard").Omit("BatchStandardStudents.Standard").First(s, "ID = ?", s.ID).Error
 	return err
 }
 
@@ -198,6 +198,13 @@ func (s *Student) GetBatchStandardStudents() ([]BatchStandardStudent, error) {
 	return batchStandardStudents, err
 }
 
+func (s *Student) GetBatchStandardStudent(batchStandardID uint) ([]BatchStandardStudent, error) {
+	var batchStandardStudents []BatchStandardStudent
+	err := db.Driver.Where("student_id = ? & batch_standard_id = ?", s.ID, batchStandardID).Preload("Batch").Preload("Standard").
+	Find(&batchStandardStudents).Error
+	return batchStandardStudents, err
+}
+
 func (s *Student) RemoveBatchStandard(batchStandard *BatchStandard) error {
 	totalDebits, totalCredits, totalDiscounts := s.GetBalance()
 	balance := totalCredits + totalDiscounts - totalDebits
@@ -217,7 +224,7 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 	//check student already assign to batch standard
 	//if assign remove from current batch standard before this check transaction 
 	// after that assign new batch standard
-	batchStandardStudents, _ := s.GetBatchStandardStudents()
+	batchStandardStudents, _ := s.GetBatchStandardStudent(batchStandard.ID)
 	if len(batchStandardStudents) > 0 {
 		return errors.New("Already assigned to Class")
 	} else {

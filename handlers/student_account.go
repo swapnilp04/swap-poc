@@ -84,6 +84,9 @@ func GetStudentAccount(c echo.Context) error {
 }
 
 func DepositStudentAccountAmount(c echo.Context) error {
+	cc := c.(CustomContext)
+	session := cc.session
+
 	// Get a single user by ID
 	studentId := c.Param("student_id")
 	newStudentId, err := strconv.Atoi(studentId)
@@ -105,6 +108,8 @@ func DepositStudentAccountAmount(c echo.Context) error {
 	}
 
 	studentAccount := models.NewStudentAccount(studentAccountData, *student, "cridit")
+	studentAccount.UserID = uint(session.UserID)
+
 	if err := studentAccount.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
@@ -131,6 +136,9 @@ func DepositStudentAccountAmount(c echo.Context) error {
 }
 
 func WithdrawStudentAccountAmount(c echo.Context) error {
+	cc := c.(CustomContext)
+	session := cc.session
+
 	// Get a single user by ID
 	studentId := c.Param("student_id")
 	newStudentId, err := strconv.Atoi(studentId)
@@ -152,6 +160,8 @@ func WithdrawStudentAccountAmount(c echo.Context) error {
 	}
 
 	studentAccount := models.NewStudentAccount(studentAccountData, *student, "debit")
+	studentAccount.UserID = uint(session.UserID)
+	
 	if err := studentAccount.Validate(); err != nil {
 		formErr := MarshalFormError(err)	
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})

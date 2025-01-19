@@ -16,6 +16,7 @@ type StudentAccount struct {
 	Balance 								float64 `json:"balance" gorm:"default:0.0"`
 	UserID									uint `json:"user_id" validate:"nonzero"`
 	Student 								Student `validate:"-"`
+	User 										User `validate:"-"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`
@@ -73,10 +74,17 @@ func (sa *StudentAccount) Count(ids []uint) (int64, error) {
 	return count, err
 }
 
-func (sa *StudentAccount) All(studentId int) ([]StudentAccount, error) {
+func (sa *StudentAccount) All(studentId int, page int) ([]StudentAccount, error) {
 	var studentAccounts []StudentAccount
-	err := db.Driver.Where("student_id = ?", studentId).Order("id desc").Find(&studentAccounts).Error
+	err := db.Driver.Limit(10).Preload("User").Where("student_id = ?", studentId).Offset((page - 1) * 10).Order("id desc").Find(&studentAccounts).Error
 	return studentAccounts, err
+}
+
+func (sa *StudentAccount) AllCount(studentId int) (int64, error) {
+	var count int64
+	query := db.Driver.Model(&StudentAccount{})
+	err := query.Where("student_id = ?", studentId).Count(&count).Error
+	return count, err
 }
 
 func (sa *StudentAccount) Find() error {

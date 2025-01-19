@@ -11,6 +11,11 @@ import (
 )
 
 func GetStudentAccounts(c echo.Context) error {
+	page := c.QueryParam("page")
+	newPage, err := strconv.Atoi(page)
+	if err != nil {
+		newPage = 1
+	}
 	// Get student
 	studentId := c.Param("student_id")
 	newStudentId, err := strconv.Atoi(studentId)
@@ -26,12 +31,13 @@ func GetStudentAccounts(c echo.Context) error {
 	}
 
 	studentAccount := &models.StudentAccount{}
-	studentAccounts, err := studentAccount.All(newStudentId)
+	studentAccounts, err := studentAccount.All(newStudentId, newPage)
 	if err != nil {
 		fmt.Println("s.ALL(GetStudentAccounts)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-	return c.JSON(http.StatusOK, studentAccounts)
+	count, err := studentAccount.AllCount(newStudentId)
+	return c.JSON(http.StatusOK, map[string]interface{}{"studentAccounts": studentAccounts, "total": count})
 }
 
 func GetStudentAccountBalance(c echo.Context) error {

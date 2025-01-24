@@ -102,6 +102,40 @@ func CreateStudentBatchStandard(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "batch Standard Student created", "batch_standard": batchStandard})	
 }
 
+func RemoveBatchStandardStudent(c echo.Context) error {
+
+	batchStandardId := c.Param("batch_standard_id")
+	newBatchStandardId, err := strconv.Atoi(batchStandardId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	batchStandardStudentId := c.Param("id")
+	newBatchStandardStudentId, err := strconv.Atoi(batchStandardStudentId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	batchStandardStudent := &models.BatchStandardStudent{ID: uint(newBatchStandardStudentId), BatchStandardId: uint(newBatchStandardId)}
+	err = batchStandardStudent.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandardStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+
+
+	err = batchStandardStudent.Delete()
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandardStudent)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"id": newBatchStandardStudentId, "message": "Remove Student successfully"})
+}
+
 func UpdateStudentBatchStandard(c echo.Context) error {
 	batchId := c.Param("batch_id")
 	newBatchId, err := strconv.Atoi(batchId)

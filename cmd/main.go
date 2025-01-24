@@ -101,6 +101,7 @@ func main() {
 	e.GET("/batch_standards/:id/get_report_logs", handlers.GetBatchStandardReportLogs, handlers.IsLoggedIn)
 	e.GET("/batch_standards/:id/get_exams", handlers.GetBatchStandardExams, handlers.IsLoggedIn)
 	e.GET("/batch-standards/:id/students", handlers.GetBatchStandardStudents, handlers.IsLoggedIn)
+	e.DELETE("/batch-standards/:batch_standard_id/batch-standard-students/:id", handlers.RemoveBatchStandardStudent, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/hostels", handlers.GetHostels, handlers.IsLoggedIn)
 	e.GET("/hostels/:id", handlers.GetHostel, handlers.IsLoggedIn)

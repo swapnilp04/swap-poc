@@ -200,7 +200,7 @@ func (s *Student) GetBatchStandardStudents() ([]BatchStandardStudent, error) {
 
 func (s *Student) GetBatchStandardStudent(batchStandardID uint) ([]BatchStandardStudent, error) {
 	var batchStandardStudents []BatchStandardStudent
-	err := db.Driver.Where("student_id = ? & batch_standard_id = ?", s.ID, batchStandardID).Preload("Batch").Preload("Standard").
+	err := db.Driver.Where("student_id = ? && batch_standard_id = ?", s.ID, batchStandardID).Preload("Batch").Preload("Standard").
 	Find(&batchStandardStudents).Error
 	return batchStandardStudents, err
 }

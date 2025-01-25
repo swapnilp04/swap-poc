@@ -15,6 +15,7 @@ type StudentAccount struct {
 	Amount       						float64 `json:"amount" validate:"nonzero"`
 	Balance 								float64 `json:"balance" gorm:"default:0.0"`
 	UserID									uint `json:"user_id" validate:"nonzero"`
+	Reason 									string `json:"reason"`
 	Student 								Student `validate:"-"`
 	User 										User `validate:"-"`
 	CreatedAt 							time.Time
@@ -51,6 +52,10 @@ func (sa *StudentAccount) Assign(studentAccountData map[string]interface{}) {
 	
 	if amount, ok := studentAccountData["amount"]; ok {
 		sa.Amount = amount.(float64)
+	}
+
+	if reason, ok := studentAccountData["reason"]; ok {
+		sa.Reason = reason.(string)
 	}
 }
 

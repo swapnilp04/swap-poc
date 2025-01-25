@@ -30,7 +30,7 @@ type Transaction struct {
 	User 										User `validate:"-"`
 	Reason 									string `json:"reason"`
 	AmountToWord						string `gorm:"-:all"`
-	Student 								Student
+	Student 								Student `validate:"-"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
   DeletedAt 							gorm.DeletedAt `gorm:"index"`

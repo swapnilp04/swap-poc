@@ -202,6 +202,24 @@ func (bs *BatchStandard) ReportLogs(searchDate string) ([]TeacherLog, error) {
 	return teachersLogs, err
 }
 
+func (bs *BatchStandard) ReportMonthlyLogs(searchDate string) ([]TeacherLog, error) {
+	var teachersLogs []TeacherLog
+	query := db.Driver.Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
+	Preload("LogCategory").Where("batch_standard_id = ?", bs.ID)
+	
+		
+	if searchDate != "" {
+		reportDate, _ := time.Parse("2/1/2006", searchDate)
+		year, month, _ := reportDate.Date()
+		startDate := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+		endDate := startDate.AddDate(0,1,0)
+		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
+	}
+
+	err := query.Order("log_date ASC").Find(&teachersLogs).Error
+	return teachersLogs, err
+}
+
 func (bs *BatchStandard) GetExams() ([]Exam, error) {
 	var exams []Exam
 	err := db.Driver.Preload("Standard").Preload("Subject").Where("batch_standard_id = ? AND exam_status != 'Created'", bs.ID).Order("id desc").Find(&exams).Error

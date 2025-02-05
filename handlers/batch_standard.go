@@ -338,6 +338,31 @@ func GetBatchStandardReportLogs(c echo.Context) error {
 	return c.JSON(http.StatusOK, batchStandardLogs)
 }
 
+func GetBatchStandardMonthlyReportLogs(c echo.Context) error {
+	batchStandardId := c.Param("id")
+	newBatchStandardId, err := strconv.Atoi(batchStandardId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	batchStandard := &models.BatchStandard{ID: uint(newBatchStandardId)}	
+	err = batchStandard.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandard)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	searchDate := c.QueryParam("searchDate")
+	batchStandardLogs, err := batchStandard.ReportMonthlyLogs(searchDate)
+	if err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, batchStandardLogs)
+}
+
+
 func GetBatchStandardExams(c echo.Context) error {
 	batchStandardId := c.Param("id")
 	newBatchStandardId, err := strconv.Atoi(batchStandardId)

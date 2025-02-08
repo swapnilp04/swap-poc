@@ -36,7 +36,7 @@ type Student struct {
 	AbscondedAt								*time.Time
 	HasLeft 									bool 		`json:"has_left" gorm:"default:false"`
 	LeftAt										*time.Time `json:"left_at"`
-	BatchStandardStudents     []BatchStandardStudent 
+	BatchStandardStudents     []BatchStandardStudent `validate:"-"`
 	CreatedAt 								time.Time
 	UpdatedAt 								time.Time
   DeletedAt 								gorm.DeletedAt `gorm:"index"`

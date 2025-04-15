@@ -16,6 +16,7 @@ type BatchStandard struct {
 	Standard 				Standard
 	Fee							float64 `json:"fee"  validate:"nonzero"`
 	StudentsCount 	int64 `json:"students_count"`
+	IsActive        bool `json:"is_active" gorm:"default:true"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`

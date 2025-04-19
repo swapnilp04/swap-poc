@@ -113,6 +113,16 @@ func (bs *BatchStandard) createTransactionCategory() error {
 	return err
 }
 
+func (bs *BatchStandard) Deactivate() error {
+	err := db.Driver.Model(&bs).Update("is_active", false).Error
+	return err
+}
+
+func (bs *BatchStandard) Activate() error {
+	err := db.Driver.Model(&bs).Update("is_active", true).Error
+	return err
+}
+
 func (bs *BatchStandard) GetTransactionCategory() (*TransactionCategory, error) {
 	tc := &TransactionCategory{}
 	err := db.Driver.Where("name like ? and batch_id = ? and batch_standard_id = ?", "BatchStandard", bs.BatchId, bs.ID).First(tc).Error

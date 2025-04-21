@@ -16,6 +16,7 @@ type ExamStudent struct {
 	Exam  					Exam `validate:"-"`
 	Marks     			float32 `json:"marks"`
 	Rank						int16 `json:"rank"`
+	Percentage			float64 `json:"percentage" gorm:"default:0"`
 	IsPresent				bool `json:"is_present" gorm:"default:true"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
@@ -91,4 +92,10 @@ func (c *ExamStudent) AllByStudentCount(studentId uint) (int64, error) {
 	var count int64
 	err := db.Driver.Model(&ExamStudent{}).Where("student_id = ?", studentId).Count(&count).Error
 	return count, err
+}
+
+func (es *ExamStudent) UpdatePercentage(examMarks int) error { 
+	percentage := float64((es.Marks / float32(examMarks)) * 100)
+	err := db.Driver.Model(&es).Updates(ExamStudent{Percentage: percentage}).Error
+	return err
 }

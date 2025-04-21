@@ -149,9 +149,9 @@ func (e *Exam) PlotExamStudents() error {
 	return  err
 }
 
-
 func (e *Exam) PublishExam() error {
-	err := db.Driver.Model(&e).Updates(Exam{ExamStatus: "Published"}).Error
+	e.UpdatePercentage() //Update Percentage
+	err := db.Driver.Model(&e).Omit("Subject, Standard, Batch").Updates(Exam{ExamStatus: "Published"}).Error
 	return err
 }
 
@@ -159,6 +159,17 @@ func (e *Exam) GetExamStudents() ([]ExamStudent, error) {
 	var examStudents []ExamStudent
 	err := db.Driver.Preload("Student").Where("exam_id = ?", e.ID).Find(&examStudents).Error
 	return examStudents, err
+}
+
+func (e *Exam) UpdatePercentage() error {
+	var examStudents []ExamStudent
+	err := db.Driver.Where("exam_id = ?", e.ID).Find(&examStudents).Error
+	if(err == nil && e.ExamMarks > 0) {
+		for _, examStudent := range examStudents {
+			examStudent.UpdatePercentage(e.ExamMarks)
+		}
+	}
+	return err
 }
 
 func (e *Exam) SaveExamMarks(examStudents []map[string]interface{}) error {

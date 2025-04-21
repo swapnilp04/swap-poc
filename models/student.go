@@ -391,13 +391,13 @@ func (s *Student) GetUpcommingBirthdays() ([]Student, error) {
 
 func (s *Student) GetStudentAllExams() ([]ExamStudent, error) {
 	var examStudents []ExamStudent
-	err := db.Driver.Preload("Exam.Subject").Where("student_id = ?", s.ID).Omit("Student").Order("id desc").Find(&examStudents).Error
+	err := db.Driver.Preload("Exam.Subject").Preload("Exam.Batch").Where("student_id = ?", s.ID).Omit("Student").Order("id desc").Find(&examStudents).Error
 	return examStudents, err
 }
 
 func (s *Student) GetStudentExams(page int) ([]ExamStudent, error) {
 	var examStudents []ExamStudent
-	err := db.Driver.Limit(10).Preload("Exam.Subject").Offset((page - 1) * 10).Where("student_id = ?", s.ID).Omit("Student").Order("id desc").Find(&examStudents).Error
+	err := db.Driver.Limit(10).Preload("Exam.Subject").Preload("Exam.Standard").Preload("Exam.Batch").Offset((page - 1) * 10).Where("student_id = ?", s.ID).Omit("Student").Order("id desc").Find(&examStudents).Error
 	return examStudents, err
 }
 

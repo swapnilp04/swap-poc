@@ -90,6 +90,8 @@ func main() {
 	e.PUT("/batchs/:id", handlers.UpdateBatch, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.DELETE("/batchs/:id", handlers.DeleteBatch, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/batchs/get_default_batch_standards", handlers.GetDefaultBatchStandards, handlers.IsLoggedIn)
+	e.GET("/batchs/get_active_batch_standards", handlers.GetActiveBatchStandards, handlers.IsLoggedIn)
+	
 	
 	e.GET("/batchs/:batch_id/standards", handlers.GetBatchStandards, handlers.IsLoggedIn)
 	e.GET("/batchs/:batch_id/unassigned_standards", handlers.GetBatchUnassignedStandards, handlers.IsLoggedIn)

@@ -123,6 +123,13 @@ func (bs *BatchStandard) Activate() error {
 	return err
 }
 
+func (bs *BatchStandard) GetActiveBatchStandards() ([]BatchStandard, error) {
+	var batchStandards []BatchStandard
+	err := db.Driver.Where("is_active = ?", true).Preload("Standard").Preload("Batch").Find(&batchStandards).Error
+	return batchStandards, err
+}
+
+
 func (bs *BatchStandard) GetTransactionCategory() (*TransactionCategory, error) {
 	tc := &TransactionCategory{}
 	err := db.Driver.Where("name like ? and batch_id = ? and batch_standard_id = ?", "BatchStandard", bs.BatchId, bs.ID).First(tc).Error

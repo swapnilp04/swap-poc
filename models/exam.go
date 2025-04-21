@@ -80,7 +80,7 @@ func (e *Exam) Assign(examData map[string]interface{}) {
 
 func (e *Exam) All(page int) ([]Exam, error) {
 	var exams []Exam
-	err := db.Driver.Limit(10).Preload("Standard").Preload("Subject").Offset((page-1) * 10).Order("id desc").Find(&exams).Error
+	err := db.Driver.Limit(10).Preload("Standard").Preload("Subject").Preload("Batch").Offset((page-1) * 10).Order("id desc").Find(&exams).Error
 	return exams, err
 }
 
@@ -92,7 +92,7 @@ func (e *Exam) AllCount() (int64, error) {
 }
 
 func (e *Exam) Find() error {
-	err := db.Driver.Preload("Standard").Preload("Subject").First(e, "ID = ?", e.ID).Error
+	err := db.Driver.Preload("Standard").Preload("Subject").Preload("Batch").First(e, "ID = ?", e.ID).Error
 	return err
 }
 

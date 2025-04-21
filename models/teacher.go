@@ -133,7 +133,7 @@ func (t *Teacher) CreateUser() error {
 func (t *Teacher) GetTeachersLogs(page int, searchBatchStandard string, searchSubject string, searchDate string) ([]TeacherLog, error) {
 	var teachersLogs []TeacherLog
 
-	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
+	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("BatchStandard.Batch").Preload("Subject").Preload("Teacher").
 	Preload("LogCategory").Where("teacher_id = ?", t.ID)
 
 

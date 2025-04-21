@@ -299,6 +299,20 @@ func GetDefaultBatchStandards(c echo.Context) error {
 	return c.JSON(http.StatusOK, batchStandards)
 }
 
+func GetActiveBatchStandards(c echo.Context) error {
+	
+	batchStandard := &models.BatchStandard{}
+	
+	batchStandards, err := batchStandard.GetActiveBatchStandards()
+
+	if err != nil {
+		fmt.Println("s.ALL(GetActiveBatchStandards)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, batchStandards)
+}
+
 func GetBatchStandardStudents(c echo.Context) error {
 	
 	batchStandardId := c.Param("id")

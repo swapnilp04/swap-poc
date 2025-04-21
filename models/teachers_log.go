@@ -132,7 +132,7 @@ func (tl *TeacherLog) AssignUpdate(teachersLogData map[string]interface{}) {
 
 func (tl *TeacherLog) All(page int, searchBatchStandard string, searchSubject string, searchTeacher string, searchDate string) ([]TeacherLog, error) {
 	var teachersLogs []TeacherLog
-	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").
+	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("BatchStandard.Batch").Preload("Subject").Preload("Teacher").
 	Preload("LogCategory")
 	if searchTeacher != "" {
 		query = query.Where("teacher_id = ?", searchTeacher)

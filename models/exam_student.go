@@ -86,3 +86,9 @@ func (es *ExamStudent) Delete() error {
 	err := db.Driver.Delete(es).Error
 	return err
 }
+
+func (c *ExamStudent) AllByStudentCount(studentId uint) (int64, error) {
+	var count int64
+	err := db.Driver.Model(&ExamStudent{}).Where("student_id = ?", studentId).Count(&count).Error
+	return count, err
+}

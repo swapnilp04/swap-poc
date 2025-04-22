@@ -399,7 +399,7 @@ func GetStudentExamsGraphData(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}	
 
-	subjectID := c.QueryParam("subject_id")
+	subjectID := c.Param("subject_id")
 	newsubjectID, err := strconv.Atoi(subjectID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})

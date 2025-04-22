@@ -207,7 +207,7 @@ func GetExamStudents(c echo.Context) error {
 	}
 	
 	examStudents, err := e.GetExamStudents()
-	if err := e.Find(); err != nil {
+	if err != nil {
 		fmt.Println("e.Find(GetExam)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
@@ -244,7 +244,6 @@ func SaveExamMarks(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": swapErr.ErrBadData.Error()})
 	}
-
 	return c.JSON(http.StatusOK, nil)
 }
 

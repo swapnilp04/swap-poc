@@ -401,6 +401,26 @@ func (s *Student) GetStudentExams(page int) ([]ExamStudent, error) {
 	return examStudents, err
 }
 
+func (s *Student) GetExamsGraphData(subjectID uint) ([]map[string]interface{}, error) {
+	var graphData []map[string]interface{}
+	rows, err := db.Driver.Model(&ExamStudent{}).Select("exam_students.percentage, exams.exam_date").
+	Joins("left join exams on exam_students.exam_id = exams.id").
+	Where("exams.subject_id = ? and exam_students.student_id = ?", subjectID, s.ID).Rows()
+	if err != nil {
+		return graphData, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		result := map[string]interface{}{}
+		db.Driver.ScanRows(rows, &result)			
+		graphData = append(graphData, result)
+	}
+	
+	return graphData, nil	
+}
+
+
 func (s *Student) GetStudentExamsCount() (int64, error) {
 	examStudent := ExamStudent{}
 	var count int64
@@ -445,6 +465,10 @@ func (s *Student) LeftAcademy() error {
 	return err
 }
 
-
-
-
+func (s *Student) ReJoinAcademy() error {
+	// Update Balance 
+	s.LeftAt = nil
+	s.HasLeft = false
+	err := s.Update()		
+	return err
+}

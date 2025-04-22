@@ -120,7 +120,7 @@ func(e *Exam) GetBatchStandard() (BatchStandard, error) {
 }
 
 func (e * Exam) ChangeStatus(status string) error {
-	err := db.Driver.Model(e).Updates(Exam{ExamStatus: status}).Error
+	err := db.Driver.Model(e).Omit("Batch, Subject, Standard").Updates(Exam{ExamStatus: status}).Error
 	return err
 }
 

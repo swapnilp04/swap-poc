@@ -35,7 +35,9 @@ func main() {
 	e.DELETE("/students/:id", handlers.DeleteStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/students/:id/get_exams", handlers.GetStudentExams, handlers.IsLoggedIn)
 	e.GET("/students/:id/get_all_exams", handlers.GetStudentAllExams, handlers.IsLoggedIn)
+	e.GET("/students/:id/exams/subject/:subject_id/get_graph_data", handlers.GetStudentExamsGraphData, handlers.IsLoggedIn)
 	e.POST("/students/:id/left_academy", handlers.LeftAcademy, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.POST("/students/:id/rejoin_academy", handlers.ReJoinAcademy, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/students/:id/hostel", handlers.GetStudentHostel, handlers.IsLoggedIn)
 	e.POST("/students/:id/assign_hostel", handlers.AssignStudentHostel, handlers.IsLoggedIn, handlers.OnlyAdmin)

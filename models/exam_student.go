@@ -83,6 +83,10 @@ func (es *ExamStudent) UpdateMarks() error {
 	return err
 }
 
+func (es *ExamStudent) GetPercentageTime() (float64, int) {
+	return es.Percentage, es.Exam.ExamTime
+}
+
 func (es *ExamStudent) Delete() error {
 	err := db.Driver.Delete(es).Error
 	return err

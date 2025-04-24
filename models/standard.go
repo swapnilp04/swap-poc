@@ -93,8 +93,8 @@ func (s *Standard) GetSubjects() ([]Subject, error) {
 	return subjects, err
 }
 
-func (s *Standard) GetSubject(subjectID uint) ([]Subject, error) {
-	var subject []Subject
+func (s *Standard) GetSubject(subjectID uint) (Subject, error) {
+	var subject Subject
 	err := db.Driver.Where("standard_id = ? and id = ?", s.ID, subjectID).Find(&subject).Error
 	return subject, err
 }

@@ -26,6 +26,7 @@ func init() {
 	migrateSubject()
 	migrateTeacher()
 	migrateLogCategory()
-	migrateLogCategoryData() // data load
+	//migrateLogCategoryData() // data load
 	migrateTeacherLog()
+	migrateChapter()
 }

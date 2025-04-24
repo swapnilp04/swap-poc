@@ -12,6 +12,7 @@ type Subject struct {
 	ID           	uint    `json:"id"`
 	Name     			string `json:"name" validate:"nonzero"`
 	StandardID    uint `json:"standard_id" validate:"nonzero"`
+	Standard 			Standard `validate:"-"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
   DeletedAt 		gorm.DeletedAt `gorm:"index"`
@@ -52,7 +53,7 @@ func (s *Subject) All() ([]Subject, error) {
 }
 
 func (s *Subject) Find() error {
-	err := db.Driver.First(s, "ID = ?", s.ID).Error
+	err := db.Driver.Preload("Standard").First(s, "ID = ?", s.ID).Error
 	return err
 }
 
@@ -75,4 +76,10 @@ func (s *Subject) GetTeachersLogs() ([]TeacherLog, error) {
 	var teacherLogs []TeacherLog
 	err := db.Driver.Where("subject_id = ?", s.ID).Find(&teacherLogs).Error
 	return teacherLogs, err
+}
+
+func (s * Subject) GetChapters() ([]Chapter, error) {
+	var chapters []Chapter
+	err := db.Driver.Where("subject_id = ?", s.ID).Find(&chapters).Error
+	return chapters, err
 }

@@ -19,6 +19,8 @@ type TeacherLog struct {
 	Teacher 				Teacher `validate:"-"`
 	SubjectID  			uint `json:"subject_id" validate:"nonzero"`
 	Subject 				Subject `validate:"-"`
+	ChapterID  			uint `json:"chapter_id" validate:"nonzero"`
+	Chapter 				Chapter `validate:"-"`
 	BatchStandardID uint `json:"batch_standard_id" validate:"nonzero"`
 	BatchStandard 	BatchStandard `validate:"-"`
 	Comment 				string `json:"comment"`

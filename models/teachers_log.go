@@ -96,8 +96,6 @@ func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 		tl.LogCategoryID = uint(logCategoryID.(float64))
 	}
 
-	tl.ChapterID = 1
-
 	if comment, ok := teachersLogData["comment"]; ok {
 		tl.Comment = comment.(string)
 	}

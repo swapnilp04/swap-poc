@@ -111,6 +111,7 @@ func main() {
 	e.PUT("/batchs/:batch_id/batch-standards/:id/activate", handlers.ActivateBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/batchs/:batch_id/batch-standards/:id/deactivate", handlers.DeactivateBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/batch-standards/:id/subjects", handlers.GetBatchStandardSubjects, handlers.IsLoggedIn)
+	e.GET("/batch-standards/:id/subjects/:subject_id/chapters", handlers.GetBatchStandardSubjectChapters, handlers.IsLoggedIn)
 	e.GET("/batch_standards/:id/get_logs", handlers.GetBatchStandardLogs, handlers.IsLoggedIn)
 	e.GET("/batch_standards/:id/get_report_logs", handlers.GetBatchStandardReportLogs, handlers.IsLoggedIn)
 	e.GET("/batch_standards/:id/get_monthly_report_logs", handlers.GetBatchStandardMonthlyReportLogs, handlers.IsLoggedIn, handlers.OnlyAdmin)

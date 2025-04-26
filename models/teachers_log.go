@@ -84,6 +84,10 @@ func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 		tl.SubjectID = uint(subjectID.(float64))
 	}
 
+	if chapterID, ok := teachersLogData["chapter_id"]; ok {
+		tl.ChapterID = uint(chapterID.(float64))
+	}
+
 	if batchStandardID, ok := teachersLogData["batch_standard_id"]; ok {
 		tl.BatchStandardID = uint(batchStandardID.(float64))
 	}
@@ -92,7 +96,7 @@ func (tl *TeacherLog) Assign(teachersLogData map[string]interface{}) {
 		tl.LogCategoryID = uint(logCategoryID.(float64))
 	}
 
-	tl.ChapterID = 1;
+	tl.ChapterID = 1
 
 	if comment, ok := teachersLogData["comment"]; ok {
 		tl.Comment = comment.(string)
@@ -119,6 +123,10 @@ func (tl *TeacherLog) AssignUpdate(teachersLogData map[string]interface{}) {
 
 	if subjectID, ok := teachersLogData["subject_id"]; ok {
 		tl.SubjectID = uint(subjectID.(float64))
+	}
+
+	if chapterID, ok := teachersLogData["chapter_id"]; ok {
+		tl.ChapterID = uint(chapterID.(float64))
 	}
 
 	if batchStandardID, ok := teachersLogData["batch_standard_id"]; ok {

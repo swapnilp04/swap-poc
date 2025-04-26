@@ -12,6 +12,7 @@ type Standard struct {
 	ID           	uint    `json:"id"`
 	Name     			string `json:"name" gorm:"unique" validate:"nonzero"`
 	Std       		int `json:"std" validate:"nonzero"`
+	Subjects 			[]Subject `validate:"-"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
   DeletedAt 		gorm.DeletedAt `gorm:"index"`

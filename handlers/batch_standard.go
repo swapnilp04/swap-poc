@@ -364,6 +364,38 @@ func GetBatchStandardSubjects(c echo.Context) error {
 	return c.JSON(http.StatusOK, batchStandardSubjects)
 }
 
+func GetBatchStandardSubjectChapters(c echo.Context) error {
+	batchStandardId := c.Param("id")
+	newBatchStandardId, err := strconv.Atoi(batchStandardId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	batchStandard := &models.BatchStandard{ID: uint(newBatchStandardId)}
+	
+	err = batchStandard.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandard)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	subjectId := c.Param("subject_id")
+	newSubjectId, err := strconv.Atoi(subjectId)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+	
+	subjectChapters, err := batchStandard.GetChapters(uint(newSubjectId))
+	if err != nil {
+		fmt.Println("s.Find(GetBatchStandard)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, subjectChapters)
+}
+
 
 func GetBatchStandardLogs(c echo.Context) error {
 	

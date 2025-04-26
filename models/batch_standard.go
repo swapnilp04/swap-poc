@@ -125,7 +125,7 @@ func (bs *BatchStandard) Activate() error {
 
 func (bs *BatchStandard) GetActiveBatchStandards() ([]BatchStandard, error) {
 	var batchStandards []BatchStandard
-	err := db.Driver.Where("is_active = ?", true).Preload("Standard").Preload("Batch").Find(&batchStandards).Error
+	err := db.Driver.Where("is_active = ?", true).Preload("Standard.Subjects").Preload("Batch").Find(&batchStandards).Error
 	return batchStandards, err
 }
 
@@ -146,6 +146,12 @@ func (bs *BatchStandard) GetSubjects() ([]Subject, error) {
 	subjects := []Subject{}
 	err := db.Driver.Where("standard_id = ?", bs.StandardId).Find(&subjects).Error	
 	return subjects, err
+}
+
+func (bs *BatchStandard) GetChapters(subjectID uint) ([]Chapter, error) {
+	chapters := []Chapter{}
+	err := db.Driver.Where("subject_id = ?", subjectID).Find(&chapters).Error	
+	return chapters, err
 }
 
 func (bs *BatchStandard) GetTeachersLogs() ([]TeacherLog, error) {

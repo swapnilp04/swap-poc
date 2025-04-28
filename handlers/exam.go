@@ -124,6 +124,12 @@ func UpdateExam(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}
 
+	examChapters := examData["exam_chapters"].([]interface {})
+	err = e.AssignExamChapters(examChapters)
+	if err != nil {	
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
+	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "exam updated", "exam": e})
 }
 

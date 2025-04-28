@@ -21,7 +21,6 @@ type ExamChapter struct {
 	BatchStandard 	BatchStandard `validate:"-"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
-  DeletedAt 			gorm.DeletedAt `gorm:"index"`
 }
 
 func migrateExamChapter() {

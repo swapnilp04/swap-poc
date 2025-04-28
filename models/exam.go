@@ -80,6 +80,10 @@ func (e *Exam) Assign(examData map[string]interface{}) {
 }
 
 func (e *Exam) AssignExamChapters(examChapterData []interface{}) error {
+	err := e.DeleteExamChapters()
+	if(err != nil) {
+			return err
+		}
 	for _, examChapter := range examChapterData {
 		examChapterObj := examChapter.(map[string]interface{})
 		examChapter := &ExamChapter{}
@@ -95,6 +99,11 @@ func (e *Exam) AssignExamChapters(examChapterData []interface{}) error {
 	return nil
 }
 
+func (e *Exam) DeleteExamChapters() error {
+	var examChapters []ExamChapter
+	err := db.Driver.Unscoped().Where("exam_id = ?", e.ID).Delete(&examChapters).Error
+	return err
+}
 
 func (e *Exam) All(page int) ([]Exam, error) {
 	var exams []Exam
@@ -121,7 +130,7 @@ func (e *Exam) Create() error {
 
 func (e *Exam) Update() error {
 	//err := db.Driver.Updates(e).Error
-	err := db.Driver.Omit("Subject, Standard").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
+	err := db.Driver.Omit("Subject, Standard, ExamChapters, Batch").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
 	return err
 }
 

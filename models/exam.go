@@ -25,6 +25,7 @@ type Exam struct {
 	ExamStatus 			string `json:"exam_status" validate:"nonzero" gorm:"default:'Created'"` // Created, Conducted, Published
 	SubjectID 			uint `json:"subject_id" validate:"nonzero"`
 	Subject 				Subject `validate:"-"`
+	ExamChapters 		[]ExamChapter `json:"exam_chapters" validate:"-"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -78,6 +79,23 @@ func (e *Exam) Assign(examData map[string]interface{}) {
 	}
 }
 
+func (e *Exam) AssignExamChapters(examChapterData []interface{}) error {
+	for _, examChapter := range examChapterData {
+		examChapterObj := examChapter.(map[string]interface{})
+		examChapter := &ExamChapter{}
+		examChapter.ExamID = e.ID
+		examChapter.ChapterID = uint(examChapterObj["chapter_id"].(float64))
+		examChapter.SubjectID = e.SubjectID
+		examChapter.BatchStandardID = e.BatchStandardID
+		err := examChapter.Create()
+		if(err != nil) {
+			return err
+		}
+	}
+	return nil
+}
+
+
 func (e *Exam) All(page int) ([]Exam, error) {
 	var exams []Exam
 	err := db.Driver.Limit(10).Preload("Standard").Preload("Subject").Preload("Batch").Offset((page-1) * 10).Order("id desc").Find(&exams).Error
@@ -92,7 +110,7 @@ func (e *Exam) AllCount() (int64, error) {
 }
 
 func (e *Exam) Find() error {
-	err := db.Driver.Preload("Standard").Preload("Subject").Preload("Batch").First(e, "ID = ?", e.ID).Error
+	err := db.Driver.Preload("Standard").Preload("Subject").Preload("Batch").Preload("ExamChapters.Chapter").First(e, "ID = ?", e.ID).Error
 	return err
 }
 

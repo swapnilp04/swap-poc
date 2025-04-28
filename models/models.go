@@ -23,6 +23,7 @@ func init() {
 	migrateCommentCategoryData() //Data load
 	migrateExam()
 	migrateExamStudent()
+	migrateExamChapter()
 	migrateSubject()
 	migrateTeacher()
 	migrateLogCategory()

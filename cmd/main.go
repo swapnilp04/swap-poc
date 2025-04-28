@@ -81,6 +81,7 @@ func main() {
 	e.DELETE("/standards/:standard_id/subjects/:id", handlers.DeleteSubject, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/standards/:standard_id/subjects/:subject_id/chapters", handlers.GetChapters, handlers.IsLoggedIn)
+	e.GET("/subjects/:id/chapters", handlers.GetSubjectChapters, handlers.IsLoggedIn)
 	e.GET("/standards/:standard_id/subjects/:subejct_id/chapters/:id", handlers.GetChapter, handlers.IsLoggedIn)
 	e.POST("/standards/:standard_id/subjects/:subject_id/chapters", handlers.CreateChapter, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/standards/:standard_id/subjects/:subject_id/chapters/:id", handlers.UpdateChapter, handlers.IsLoggedIn, handlers.OnlyAdmin)

@@ -139,3 +139,27 @@ func findStandard(id string) (models.Standard, error){
 	err = s.Find()
 	return s, err
 }
+
+func GetSubjectChapters(c echo.Context) error {
+	// Get a single user by ID
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	s := &models.Subject{ID: uint(newId)}
+	err = s.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetSubject)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	chapters, err := s.GetChapters()
+	if err != nil {
+		fmt.Println("s.Find(GetSubject)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, chapters)
+}

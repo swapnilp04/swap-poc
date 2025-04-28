@@ -130,7 +130,7 @@ func (e *Exam) Create() error {
 
 func (e *Exam) Update() error {
 	//err := db.Driver.Updates(e).Error
-	err := db.Driver.Omit("Subject, Standard, ExamChapters, Batch").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
+	err := db.Driver.Omit("Subject, Standard, ExamChapters, Batch, ExamChapters.Chapter").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
 	return err
 }
 
@@ -147,7 +147,7 @@ func(e *Exam) GetBatchStandard() (BatchStandard, error) {
 }
 
 func (e * Exam) ChangeStatus(status string) error {
-	err := db.Driver.Model(e).Omit("Batch, Subject, Standard").Updates(Exam{ExamStatus: status}).Error
+	err := db.Driver.Model(e).Omit("Batch, Subject, Standard, ExamChapters, ExamChapters.Chapter").Updates(Exam{ExamStatus: status}).Error
 	return err
 }
 

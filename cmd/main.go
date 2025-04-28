@@ -154,7 +154,7 @@ func main() {
 	e.GET("/exams", handlers.GetExams, handlers.IsLoggedIn)
 	e.GET("/exams/:id", handlers.GetExam, handlers.IsLoggedIn)
 	e.POST("/exams", handlers.CreateExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
-	e.PUT("/exams/:id", handlers.UpdateExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
+	e.PUT("/exams/:id", handlers.UpdateExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
 	e.DELETE("/exams/:id", handlers.DeleteExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/exams/:id/conduct_exam", handlers.ConductExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
 	e.POST("/exams/:id/publish_exam", handlers.PublishExam, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)

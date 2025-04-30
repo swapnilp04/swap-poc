@@ -127,10 +127,6 @@ func (tl *TeacherLog) AssignUpdate(teachersLogData map[string]interface{}) {
 		tl.ChapterID = uint(chapterID.(float64))
 	}
 
-	if batchStandardID, ok := teachersLogData["batch_standard_id"]; ok {
-		tl.BatchStandardID = uint(batchStandardID.(float64))
-	}
-
 	if logCategoryID, ok := teachersLogData["log_category_id"]; ok {
 		tl.LogCategoryID = uint(logCategoryID.(float64))
 	}
@@ -194,12 +190,16 @@ func (tl *TeacherLog) AllCount(searchBatchStandard string, searchSubject string,
 }
 
 func (tl *TeacherLog) Find() error {
-	err := db.Driver.Preload("BatchStandard.Standard").Preload("Subject").Preload("Teacher").Preload("LogCategory").First(tl, "ID = ?", tl.ID).Error
+	err := db.Driver.Preload("BatchStandard.Standard").Preload("BatchStandard.Batch").Preload("Subject").
+					Preload("Teacher").Preload("LogCategory").Preload("Chapter").First(tl, "ID = ?", tl.ID).Error
 	return err
 }
 
 func (tl *TeacherLog) Create() error {
 	err := db.Driver.Omit("BatchStandard, Subject, Teacher, LogCategory").Create(tl).Error
+	if err == nil {
+		err = tl.PlotLogAttendance()
+	}
 	return err
 }
 
@@ -209,8 +209,45 @@ func (tl *TeacherLog) Update() error {
 }
 
 func (tl *TeacherLog) Delete() error {
-	err := db.Driver.Delete(tl).Error
+	err := tl.DeleteLogAttendance()
+	if(err != nil) {
+		err = db.Driver.Unscoped().Delete(tl).Error
+	}
 	return err
+}
+
+func(tl *TeacherLog) GetBatchStandard() (BatchStandard, error) {
+	batchStandard := BatchStandard{}
+	
+	err := db.Driver.First(&batchStandard, "ID = ?", tl.BatchStandardID).Error
+	return batchStandard, err
+}
+
+func (tl *TeacherLog) PlotLogAttendance() error {
+	batchStandard, err := tl.GetBatchStandard()
+	if(err != nil) {
+		return err
+	}
+
+	batchStandardStudents, err := batchStandard.GetStudents()
+	for _, batchStandardStudent := range batchStandardStudents {
+			logAttendance := &LogAttendance{StudentID: batchStandardStudent.StudentId, TeacherLogID: tl.ID, 
+												BatchStandardStudentID: batchStandardStudent.ID}
+			logAttendance.Create()
+		}
+	return  err
+}
+
+func (tl *TeacherLog) DeleteLogAttendance() error {
+	var logAttendances []LogAttendance
+	err := db.Driver.Unscoped().Where("teacher_log_id = ?", tl.ID).Delete(&logAttendances).Error
+	return err
+}
+
+func (tl *TeacherLog) GetLogAttendances() ([]LogAttendance, error) {
+	var logAttendances []LogAttendance
+	err := db.Driver.Preload("Student").Where("teacher_log_id = ?", tl.ID).Find(&logAttendances).Error
+	return logAttendances, err
 }
 
 func (tl *TeacherLog) CreateCombinedClasses(combinedClasses []interface {}) error {

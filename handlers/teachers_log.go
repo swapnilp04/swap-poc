@@ -149,6 +149,49 @@ func GetLogCategories(c echo.Context) error {
 		fmt.Println("s.ALL(GetTeacherLogs)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
-
 	return c.JSON(http.StatusOK, logCategories)
+}
+
+func GetLogAttendances(c echo.Context) error {
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	tl := &models.TeacherLog{ID: uint(newId)}
+	if err := tl.Find(); err != nil {
+		fmt.Println("s.Find(GetTeacherLog)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	logAttendances, err := tl.GetLogAttendances()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, logAttendances)
+}
+
+func ToggleLogAttendance(c echo.Context) error {
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	logAttendance := &models.LogAttendance{ID: uint(newId)}
+	if err := logAttendance.Find(); err != nil {
+		fmt.Println("s.Find(GetTeacherLog)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	err = logAttendance.ToggleAttendance()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Toggle Attendance"})
 }

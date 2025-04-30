@@ -71,6 +71,8 @@ func main() {
 	e.POST("/logs", handlers.CreateTeacherLog, handlers.IsLoggedIn, handlers.OnlyTeacher)
 	e.PUT("/logs/:id", handlers.UpdateTeacherLog, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
 	e.DELETE("/logs/:id", handlers.DeleteTeacherLog, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
+	e.GET("/logs/:id/get_attendances", handlers.GetLogAttendances, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
+	e.PUT("/logs/:log_id/log_attendances/:id/toggle", handlers.ToggleLogAttendance, handlers.IsLoggedIn)
 
 	e.GET("/log_categories", handlers.GetLogCategories, handlers.IsLoggedIn)
 	

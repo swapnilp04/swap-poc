@@ -30,4 +30,5 @@ func init() {
 	//migrateLogCategoryData() // data load
 	migrateTeacherLog()
 	migrateChapter()
+	migrateLogAttendance()
 }

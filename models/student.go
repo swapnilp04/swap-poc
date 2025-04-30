@@ -405,7 +405,7 @@ func (s *Student) GetExamsGraphData(subjectID uint) ([]map[string]interface{}, e
 	var graphData []map[string]interface{}
 	rows, err := db.Driver.Model(&ExamStudent{}).Select("exam_students.percentage, exams.exam_date").
 	Joins("left join exams on exam_students.exam_id = exams.id").
-	Where("exams.subject_id = ? and exam_students.student_id = ?", subjectID, s.ID).Order("exams.exam_date asc").Rows()
+	Where("exams.subject_id = ? and exam_students.student_id = ? and exams.exam_status = ?", subjectID, s.ID, "Published").Order("exams.exam_date asc").Rows()
 	if err != nil {
 		return graphData, err
 	}

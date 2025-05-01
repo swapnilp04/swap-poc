@@ -190,7 +190,18 @@ func (s *Student) GetStudentCommentsCount() (int64, error) {
 	return count, err
 }
 
+func (s *Student) GetStudentLogAttendances(page int) ([]LogAttendance, error) {
+	logAttendance := LogAttendance{}
+	logAttendances, err := logAttendance.AllByStudent(s.ID, page)
+	return logAttendances, err
+}
 
+func (s *Student) GetStudentLogAttendanceCount() (int64, error) {
+	logAttendance := LogAttendance{}
+	var count int64
+	count, err := logAttendance.AllByStudentCount(s.ID)
+	return count, err
+}
 
 func (s *Student) GetBatchStandardStudents() ([]BatchStandardStudent, error) {
 	var batchStandardStudents []BatchStandardStudent
@@ -387,6 +398,12 @@ func (s *Student) GetUpcommingBirthdays() ([]Student, error) {
 	query = query.Where("DAY(birth_date) >= (DAY(NOW()) - 1) and MONTH(birth_date) = MONTH(NOW())").Order("DAY(birth_date) asc")
 	err := query.Find(&students).Error
 	return students, err	
+}
+
+func (s *Student) GetStudentLogAttendancesCount(page int) ([]LogAttendance, error) {
+	var logAttendances []LogAttendance
+	err := db.Driver.Limit(10).Preload("Subject").Offset((page - 1) * 10).Where("student_id = ?", s.ID).Order("id desc").Find(&logAttendances).Error
+	return logAttendances, err
 }
 
 func (s *Student) GetStudentAllExams() ([]ExamStudent, error) {

@@ -30,6 +30,8 @@ type TeacherLog struct {
 	ApprovedBy			uint `json:"approved_by"`
 	UserID  				uint `json:"user_id" validate:"nonzero"`
 	HasCombinedClass bool `json:"has_combined_class" gorm:"default:false"`
+	StudentsCount 	int64 `json:"students_count"`
+	AbsentCount 		int64 `json:"absent_count"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -199,6 +201,9 @@ func (tl *TeacherLog) Create() error {
 	err := db.Driver.Omit("BatchStandard, Subject, Teacher, LogCategory").Create(tl).Error
 	if err == nil {
 		err = tl.PlotLogAttendance()
+		if err == nil {
+			tl.updateStudentsCount()
+		}
 	}
 	return err
 }
@@ -248,6 +253,19 @@ func (tl *TeacherLog) GetLogAttendances() ([]LogAttendance, error) {
 	var logAttendances []LogAttendance
 	err := db.Driver.Preload("Student").Where("teacher_log_id = ?", tl.ID).Find(&logAttendances).Error
 	return logAttendances, err
+}
+
+func (tl *TeacherLog) updateStudentsCount() {
+	var count int64
+	db.Driver.Model(&LogAttendance{}).Where("teacher_log_id = ?", tl.ID).Count(&count)
+	db.Driver.Model(&TeacherLog{}).Where("id = ?", tl.ID).Update("students_count", count)
+}
+
+func (tl *TeacherLog) UpdateAbsentsCount() error{
+	var count int64
+	db.Driver.Model(&LogAttendance{}).Where("teacher_log_id = ? && is_present = ?", tl.ID, false).Count(&count)
+	err := db.Driver.Model(&TeacherLog{}).Where("id = ?", tl.ID).Update("absent_count", count).Error
+	return err
 }
 
 func (tl *TeacherLog) CreateCombinedClasses(combinedClasses []interface {}) error {

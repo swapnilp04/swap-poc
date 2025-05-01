@@ -193,5 +193,10 @@ func ToggleLogAttendance(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
+	 err = logAttendance.TeacherLog.UpdateAbsentsCount()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Toggle Attendance"})
 }

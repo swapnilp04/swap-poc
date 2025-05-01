@@ -14,6 +14,7 @@ type LogAttendance struct {
 	TeacherLogID						uint `json:"teacher_log_id" validate:"nonzero"`
 	StudentID 							uint `json:"student_id" validate:"nonzero"`
 	Student 								Student `validate:"-"`
+	TeacherLog 							TeacherLog	`validate:"-"`
 	BatchStandardStudentID 	uint `json:"batch_standard_student_id" validate:"nonzero"`
 	CreatedAt 							time.Time
 	UpdatedAt 							time.Time
@@ -64,26 +65,40 @@ func (la *LogAttendance) All() ([]LogAttendance, error) {
 }
 
 func (la *LogAttendance) Find() error {
-	err := db.Driver.First(la, "ID = ?", la.ID).Error
+	err := db.Driver.Preload("TeacherLog").First(la, "ID = ?", la.ID).Error
 	return err
 }
 
 func (la *LogAttendance) Create() error {
-	err := db.Driver.Omit("Student").Create(la).Error
+	err := db.Driver.Omit("Student").Omit("TeacherLog").Create(la).Error
 	return err
 }
 
 func (la *LogAttendance) Update() error {
-	err := db.Driver.Omit("Student").Save(la).Error
+	err := db.Driver.Omit("Student").Omit("TeacherLog").Save(la).Error
 	return err
 }
 
 func (la *LogAttendance) Delete() error {
-	err := db.Driver.Omit("Student").Delete(la).Error
+	err := db.Driver.Omit("Student").Omit("TeacherLog").Delete(la).Error
 	return err
 }
 
 func (la *LogAttendance) ToggleAttendance() error {
-	err := db.Driver.Omit("Student").Model(&la).Update("is_present", !la.IsPresent).Error
+	err := db.Driver.Omit("Student").Omit("TeacherLog").Model(&la).Update("is_present", !la.IsPresent).Error
 	return err
+}
+
+func (la *LogAttendance) AllByStudent(studentId uint, page int) ([]LogAttendance, error) {
+	var logAttendances []LogAttendance
+	err := db.Driver.Limit(10).Preload("TeacherLog").Preload("TeacherLog.BatchStandard.Standard").Preload("TeacherLog.BatchStandard.Batch").
+				Preload("TeacherLog.Subject").Preload("TeacherLog.Teacher").Preload("TeacherLog.LogCategory").Preload("TeacherLog.Chapter").Offset((page-1) * 10).
+				Where("student_id = ?", studentId).Order("id desc").Find(&logAttendances).Error
+	return logAttendances, err
+}
+
+func (la *LogAttendance) AllByStudentCount(studentId uint) (int64, error) {
+	var count int64
+	err := db.Driver.Model(&LogAttendance{}).Where("student_id = ?", studentId).Count(&count).Error
+	return count, err
 }

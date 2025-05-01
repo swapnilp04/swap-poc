@@ -117,6 +117,7 @@ func (t *Teacher) CreateUser() error {
 
 	var user User
 	user.Username = t.Mobile
+	user.DisplayName = t.Name
 	user.Password = hex.EncodeToString(hash)
 	user.ConfirmPassword = hex.EncodeToString(confirmHash)
 	user.Role = "Teacher"

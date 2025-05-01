@@ -16,6 +16,7 @@ import (
 type User struct {
 	ID              int    `json:"id"` 
 	Username        string `json:"username" validate:"nonzero"`
+	DisplayName			string `json:"display_name"`
 	Salt            string `json:"-"`
 	Password        string `json:"-"`
 	ConfirmPassword string `json:"-" gorm:"-"`

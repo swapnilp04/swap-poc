@@ -23,8 +23,12 @@ type Exam struct {
 	ExamTime				int `json:"exam_time" validate:"nonzero"`
 	ExamDate				time.Time `json:"exam_date"`
 	ExamStatus 			string `json:"exam_status" validate:"nonzero" gorm:"default:'Created'"` // Created, Conducted, Published
+	Topper					float32 `json:"topper"`
+	AverageMarks		float32 `json:"average_marks"`
 	SubjectID 			uint `json:"subject_id" validate:"nonzero"`
 	Subject 				Subject `validate:"-"`
+	TeacherID 			uint `json:"teacher_id" validate:"nonzero"`
+	Teacher 				Teacher `validate:"-"`
 	ExamChapters 		[]ExamChapter `json:"exam_chapters" validate:"-"`
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
@@ -77,6 +81,9 @@ func (e *Exam) Assign(examData map[string]interface{}) {
 	if examTime, ok := examData["exam_time"]; ok {
 		e.ExamTime = int(examTime.(float64))
 	}
+	if teacherID, ok := examData["teacher_id"]; ok {
+		e.TeacherID = uint(teacherID.(float64))
+	}
 }
 
 func (e *Exam) AssignExamChapters(examChapterData []interface{}) error {
@@ -119,7 +126,7 @@ func (e *Exam) AllCount() (int64, error) {
 }
 
 func (e *Exam) Find() error {
-	err := db.Driver.Preload("Standard").Preload("Subject").Preload("Batch").Preload("ExamChapters.Chapter").First(e, "ID = ?", e.ID).Error
+	err := db.Driver.Preload("Standard").Preload("Subject").Preload("Batch").Preload("ExamChapters.Chapter").Preload("Teacher").First(e, "ID = ?", e.ID).Error
 	return err
 }
 
@@ -130,7 +137,7 @@ func (e *Exam) Create() error {
 
 func (e *Exam) Update() error {
 	//err := db.Driver.Updates(e).Error
-	err := db.Driver.Omit("Subject, Standard, ExamChapters, Batch, ExamChapters.Chapter").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
+	err := db.Driver.Omit("Subject, Standard, ExamChapters, Batch, ExamChapters.Chapter, Teacher").Session(&gorm.Session{FullSaveAssociations: false}).Updates(&e).Error
 	return err
 }
 
@@ -147,7 +154,7 @@ func(e *Exam) GetBatchStandard() (BatchStandard, error) {
 }
 
 func (e * Exam) ChangeStatus(status string) error {
-	err := db.Driver.Model(e).Omit("Batch, Subject, Standard, ExamChapters, ExamChapters.Chapter").Updates(Exam{ExamStatus: status}).Error
+	err := db.Driver.Model(e).Omit("Batch, Subject, Standard, ExamChapters, ExamChapters.Chapter, Teacher").Updates(Exam{ExamStatus: status}).Error
 	return err
 }
 
@@ -178,7 +185,8 @@ func (e *Exam) PlotExamStudents() error {
 
 func (e *Exam) PublishExam() error {
 	e.UpdatePercentage() //Update Percentage
-	err := db.Driver.Model(&e).Omit("Subject, Standard, Batch").Updates(Exam{ExamStatus: "Published"}).Error
+	e.UpdateTopper() // Update Topper and average marks
+	err := db.Driver.Model(&e).Omit("Subject, Standard, Batch, Teacher").Updates(Exam{ExamStatus: "Published"}).Error
 	return err
 }
 
@@ -195,6 +203,21 @@ func (e *Exam) UpdatePercentage() error {
 		for _, examStudent := range examStudents {
 			examStudent.UpdatePercentage(e.ExamMarks)
 		}
+	}
+	return err
+}
+
+func (e *Exam) UpdateTopper() error {
+	var topper float32
+	var average float32
+	row := db.Driver.Table("exam_students").Where("exam_id = ?", e.ID).Select("max(marks)").Row()
+	err := row.Scan(&topper)
+
+	row = db.Driver.Table("exam_students").Where("exam_id = ? && is_present = ?", e.ID, true).Select("avg(marks)").Row()
+	err = row.Scan(&average)
+
+	if err == nil {
+		err = db.Driver.Model(&e).Omit("Subject, Standard, Batch, Teacher").Updates(Exam{Topper: topper, AverageMarks: average}).Error
 	}
 	return err
 }

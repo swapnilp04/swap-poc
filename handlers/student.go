@@ -35,6 +35,20 @@ func GetStudents(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"students": students, "total": count})
 }
 
+func GetReportStudents(c echo.Context) error {
+	// Get all users
+	s := &models.Student{}
+
+	students, err := s.AllForReport()
+	if err != nil {
+		fmt.Println("s.ALL(GetStudents)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	
+	return c.JSON(http.StatusOK, students)
+}
+
 func GetStudent(c echo.Context) error {
 	// Get a single user by ID
 	id := c.Param("id")

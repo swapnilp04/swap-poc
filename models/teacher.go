@@ -180,3 +180,24 @@ func (t *Teacher) AllTeachersLogsCount(searchBatchStandard string, searchSubject
 	return count, err
 }
 
+func (t *Teacher) GetMonthlyTeacherLogReport(month int, year int)([]TeacherLog, error) {
+	var teachersLogs []TeacherLog
+	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+	endDate := startDate.AddDate(0,1,0)
+	err := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("BatchStandard.Batch").Preload("Subject").
+				Preload("Teacher").Preload("LogCategory").Preload("Chapter").Where("teacher_id = ?", t.ID).
+				Where("log_date >= ? and log_date < ?", startDate, endDate).Order("log_date desc").
+				Find(&teachersLogs).Error
+
+	return teachersLogs, err
+}
+
+func (t *Teacher) GetMonthlyExamReport(month int, year int)([]Exam, error) {
+	var exams []Exam
+	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+	endDate := startDate.AddDate(0,1,0)
+	err := db.Driver.Preload("Standard").Preload("Subject").Preload("Batch").Preload("ExamChapters.Chapter").Where("teacher_id = ?", t.ID).
+				Where("exam_date >= ? and exam_date < ?", startDate, endDate).Order("exam_date desc").Find(&exams).Error
+
+	return exams, err
+}

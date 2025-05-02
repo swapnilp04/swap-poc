@@ -137,6 +137,13 @@ func (s *Student) Count(search string) (int64, error) {
 	return count, err
 }
 
+func (s *Student) AllForReport() ([]Student, error) {
+	var students []Student
+	err := db.Driver.Select("id,first_name,middle_name, last_name ").Where("has_left = ?", false).Order("id desc").Find(&students).Error
+	return students, err
+}
+
+
 func (s *Student) SearchIds(search string) (error, []uint){
 	var ids []uint
 	query := db.Driver.Model(&Student{})

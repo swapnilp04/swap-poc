@@ -29,6 +29,7 @@ func main() {
 	
 	e.GET("/students", handlers.GetStudents, handlers.IsLoggedIn)
 	e.GET("/students/:id", handlers.GetStudent, handlers.IsLoggedIn)
+	e.GET("/report-students", handlers.GetReportStudents, handlers.IsLoggedIn)
 	e.GET("/students/get-upcomming-birthdays", handlers.GetUpcommingBirthdays, handlers.IsLoggedIn)
 	e.POST("/students", handlers.CreateStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.PUT("/students/:id", handlers.UpdateStudent, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
@@ -96,6 +97,8 @@ func main() {
 	e.POST("/teachers", handlers.CreateTeacher, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/teachers/:id", handlers.UpdateTeacher, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/teachers/:id/get_logs", handlers.GetTeachersLog, handlers.IsLoggedIn)
+	e.GET("/teachers/:id/get_monthly_logs_report", handlers.GetTeacherMonthlyLogsReport, handlers.IsLoggedIn)
+	e.GET("/teachers/:id/get_monthly_exams_report", handlers.GetTeacherMonthlyExamReport, handlers.IsLoggedIn)
 
 	e.GET("/batchs", handlers.GetBatchs, handlers.IsLoggedIn)
 	e.GET("/batchs/:id", handlers.GetBatch, handlers.IsLoggedIn)

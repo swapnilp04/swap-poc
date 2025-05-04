@@ -27,6 +27,7 @@ type Teacher struct {
 type TeacherDuration struct {
     Duration int32 `json:"duration"`
     LogDate string `json:"log_date"`
+    Count string `json:"count"`
  }
 
 func migrateTeacher() {
@@ -211,8 +212,9 @@ func (t *Teacher) GetMonthlyTeacherLogDurations(month int, year int)([]TeacherDu
 	var teacherDurations []TeacherDuration
 	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 	endDate := startDate.AddDate(0,1,0)
-	rows, err := db.Driver.Model(&TeacherLog{}).Select("sum(duration) as duration, DATE_FORMAT(log_date, '%Y-%m-%d') as log_date").
-		Where("teacher_id = ?", t.ID).Where("log_date >= ? and log_date < ?", startDate, endDate).
+	rows, err := db.Driver.Model(&TeacherLog{}).
+		Select("sum(duration) as duration, DATE_FORMAT(log_date, '%Y-%m-%d') as log_date, Count(id) as count").
+		Where("teacher_id = ?", t.ID).Where("log_date >= ? and log_date < ?", startDate, endDate).Order("log_date desc").
 		Group("DATE_FORMAT(log_date, '%Y-%m-%d')").Rows()
 		defer rows.Close()
 		for rows.Next() {

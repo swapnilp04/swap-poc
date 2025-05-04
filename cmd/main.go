@@ -97,8 +97,9 @@ func main() {
 	e.POST("/teachers", handlers.CreateTeacher, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/teachers/:id", handlers.UpdateTeacher, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/teachers/:id/get_logs", handlers.GetTeachersLog, handlers.IsLoggedIn)
-	e.GET("/teachers/:id/get_monthly_logs_report", handlers.GetTeacherMonthlyLogsReport, handlers.IsLoggedIn)
-	e.GET("/teachers/:id/get_monthly_exams_report", handlers.GetTeacherMonthlyExamReport, handlers.IsLoggedIn)
+	e.GET("/teachers/:id/get_monthly_logs_report", handlers.GetTeacherMonthlyLogsReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.GET("/teachers/:id/get_monthly_exams_report", handlers.GetTeacherMonthlyExamReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.GET("/teachers/:id/get_monthly_logs_durations", handlers.GetTeacherMonthlyLogDurations, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/batchs", handlers.GetBatchs, handlers.IsLoggedIn)
 	e.GET("/batchs/:id", handlers.GetBatch, handlers.IsLoggedIn)

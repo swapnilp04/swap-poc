@@ -24,6 +24,11 @@ type Teacher struct {
   DeletedAt 		gorm.DeletedAt `gorm:"index"`
 }
 
+type TeacherDuration struct {
+    Duration int32 `json:"duration"`
+    LogDate string `json:"log_date"`
+ }
+
 func migrateTeacher() {
 	fmt.Println("migrating Teacher..")
 	err := db.Driver.AutoMigrate(&Teacher{})
@@ -184,7 +189,7 @@ func (t *Teacher) GetMonthlyTeacherLogReport(month int, year int)([]TeacherLog, 
 	var teachersLogs []TeacherLog
 	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 	endDate := startDate.AddDate(0,1,0)
-	err := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("BatchStandard.Batch").Preload("Subject").
+	err := db.Driver.Preload("BatchStandard.Standard").Preload("BatchStandard.Batch").Preload("Subject").
 				Preload("Teacher").Preload("LogCategory").Preload("Chapter").Where("teacher_id = ?", t.ID).
 				Where("log_date >= ? and log_date < ?", startDate, endDate).Order("log_date desc").
 				Find(&teachersLogs).Error
@@ -200,4 +205,20 @@ func (t *Teacher) GetMonthlyExamReport(month int, year int)([]Exam, error) {
 				Where("exam_date >= ? and exam_date < ?", startDate, endDate).Order("exam_date desc").Find(&exams).Error
 
 	return exams, err
+}
+
+func (t *Teacher) GetMonthlyTeacherLogDurations(month int, year int)([]TeacherDuration, error) {
+	var teacherDurations []TeacherDuration
+	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+	endDate := startDate.AddDate(0,1,0)
+	rows, err := db.Driver.Model(&TeacherLog{}).Select("sum(duration) as duration, DATE_FORMAT(log_date, '%Y-%m-%d') as log_date").
+		Where("teacher_id = ?", t.ID).Where("log_date >= ? and log_date < ?", startDate, endDate).
+		Group("DATE_FORMAT(log_date, '%Y-%m-%d')").Rows()
+		defer rows.Close()
+		for rows.Next() {
+			var teacherDuration TeacherDuration
+		  db.Driver.ScanRows(rows, &teacherDuration)
+		  teacherDurations = append(teacherDurations, teacherDuration)
+		}
+		return teacherDurations, err
 }

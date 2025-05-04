@@ -15,6 +15,7 @@ type TeacherLog struct {
 	StartMinuit   	int `json:"start_minuit" validate:"max=60,min=0"`
 	EndHour       	int `json:"end_hour" validate:"max=24,min=0"`
 	EndMinuit     	int `json:"end_minuit" validate:"max=60,min=0"`
+	Duration       	int `json:"duration"`
 	TeacherID     	uint `json:"teacher_id" validate:"nonzero"`
 	Teacher 				Teacher `validate:"-"`
 	SubjectID  			uint `json:"subject_id" validate:"nonzero"`
@@ -204,6 +205,7 @@ func (tl *TeacherLog) Create() error {
 		if err == nil {
 			tl.updateStudentsCount()
 		}
+		err = tl.CalculateDuration()
 	}
 	return err
 }
@@ -288,5 +290,18 @@ func (tl *TeacherLog) CreateCombinedClasses(combinedClasses []interface {}) erro
 	return nil
 }
 
+func (tl *TeacherLog) CalculateDuration() error { 
+	duration := 0
+	hours := tl.EndHour - tl.StartHour
+	hoursMin := hours * 60 // Convert into minuit 
 
-
+	if(hours >= 1 && tl.StartMinuit > tl.EndMinuit) {
+		duration = hoursMin - (tl.StartMinuit - tl.EndMinuit)
+	} else if (hours >= 1 && tl.EndMinuit > tl.StartMinuit){
+		duration = hoursMin + (tl.EndMinuit - tl.StartMinuit)
+	} else {
+		duration = hoursMin + (tl.EndMinuit - tl.StartMinuit)
+	}
+	err := db.Driver.Model(&TeacherLog{}).Where("id = ?", tl.ID).Update("duration", duration).Error
+	return err
+}

@@ -226,3 +226,38 @@ func GetTeacherMonthlyExamReport(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, exams)
 }
+
+func GetTeacherMonthlyLogDurations(c echo.Context) error {
+	// Get a single user by ID
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	teacher := &models.Teacher{ID: uint(newId)}
+	err = teacher.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	month := c.QueryParam("month")
+	newMonth, err := strconv.Atoi(month)
+	if err != nil {
+		newMonth = 1
+	}
+
+	year := c.QueryParam("year")
+	newYear, err := strconv.Atoi(year)
+	if err != nil {
+		newYear = 2025
+	}
+	durations, err := teacher.GetMonthlyTeacherLogDurations(newMonth, newYear)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, durations)
+}
+

@@ -466,3 +466,105 @@ func GetStudentLogAttendances(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"log_attendances": logAttendances, "total": count})
 }
 
+func GetStudentMonthlyExamReport(c echo.Context) error {
+	// Get a single user by ID
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	student := &models.Student{ID: uint(newId)}
+	err = student.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	month := c.QueryParam("month")
+	newMonth, err := strconv.Atoi(month)
+	if err != nil {
+		newMonth = 1
+	}
+
+	year := c.QueryParam("year")
+	newYear, err := strconv.Atoi(year)
+	if err != nil {
+		newYear = 2025
+	}
+	exams, err := student.GetMonthlyStudentExamReport(newMonth, newYear)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, exams)
+}
+
+func GetStudentMonthlyLogsReport(c echo.Context) error {
+	// Get a single user by ID
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	student := &models.Student{ID: uint(newId)}
+	err = student.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetBatch)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	month := c.QueryParam("month")
+	newMonth, err := strconv.Atoi(month)
+	if err != nil {
+		newMonth = 1
+	}
+
+	year := c.QueryParam("year")
+	newYear, err := strconv.Atoi(year)
+	if err != nil {
+		newYear = 2025
+	}
+	logs, err := student.GetMonthlyStudentLogReport(newMonth, newYear)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	return c.JSON(http.StatusOK, logs)
+}
+
+// func GetStudentMonthlyLogDurations(c echo.Context) error {
+// 	// Get a single user by ID
+// 	id := c.Param("id")
+// 	newId, err := strconv.Atoi(id)
+// 	if err != nil {
+// 		fmt.Println("strconv.Atoi failed", err)
+// 		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+// 	}
+
+// 	student := &models.Student{ID: uint(newId)}
+// 	err = student.Find()
+// 	if err != nil {
+// 		fmt.Println("s.Find(GetBatch)", err)
+// 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+// 	}
+
+// 	month := c.QueryParam("month")
+// 	newMonth, err := strconv.Atoi(month)
+// 	if err != nil {
+// 		newMonth = 1
+// 	}
+
+// 	year := c.QueryParam("year")
+// 	newYear, err := strconv.Atoi(year)
+// 	if err != nil {
+// 		newYear = 2025
+// 	}
+// 	durations, err := student.GetMonthlyStudentLogDurations(newMonth, newYear)
+// 	if err != nil {
+// 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+// 	}
+// 	return c.JSON(http.StatusOK, durations)
+// }
+

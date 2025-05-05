@@ -61,6 +61,9 @@ func main() {
 	e.GET("/students/:student_id/comments", handlers.GetStudentComments, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
 	e.POST("/students/:student_id/comments", handlers.CreateComment, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
 	e.GET("/students/:student_id/get_log_attendances", handlers.GetStudentLogAttendances, handlers.IsLoggedIn, handlers.OnlyAdminAccountantClerkTeacher)
+	e.GET("/students/:id/get_monthly_exams_report", handlers.GetStudentMonthlyExamReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.GET("/students/:id/get_monthly_logs_report", handlers.GetStudentMonthlyLogsReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	// e.GET("/students/:id/get_monthly_logs_durations", handlers.GetStudentMonthlyLogDurations, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)
@@ -100,6 +103,7 @@ func main() {
 	e.GET("/teachers/:id/get_monthly_logs_report", handlers.GetTeacherMonthlyLogsReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/teachers/:id/get_monthly_exams_report", handlers.GetTeacherMonthlyExamReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/teachers/:id/get_monthly_logs_durations", handlers.GetTeacherMonthlyLogDurations, handlers.IsLoggedIn, handlers.OnlyAdmin)
+
 
 	e.GET("/batchs", handlers.GetBatchs, handlers.IsLoggedIn)
 	e.GET("/batchs/:id", handlers.GetBatch, handlers.IsLoggedIn)

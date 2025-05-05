@@ -498,3 +498,45 @@ func (s *Student) ReJoinAcademy() error {
 	err := s.Update()		
 	return err
 }
+
+func (s *Student) GetMonthlyStudentLogReport(month int, year int)([]LogAttendance, error) {
+	var logAttendances []LogAttendance
+	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+	endDate := startDate.AddDate(0,1,0)
+	err := db.Driver.Preload("TeacherLog.BatchStandard.Standard").Preload("TeacherLog.BatchStandard.Batch").
+				Preload("TeacherLog.Subject").Preload("TeacherLog.Teacher").Preload("TeacherLog.LogCategory").
+				Preload("TeacherLog.Chapter").Joins("left join teacher_logs on teacher_logs.id = log_attendances.teacher_log_id").
+				Where("student_id = ?", s.ID).Where("teacher_logs.log_date >= ? and teacher_logs.log_date < ?", startDate, endDate).
+				Order("teacher_logs.log_date desc").Find(&logAttendances).Error
+
+	return logAttendances, err
+}
+
+func (s *Student) GetMonthlyStudentExamReport(month int, year int)([]ExamStudent, error) {
+	var examStudents []ExamStudent
+	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+	endDate := startDate.AddDate(0,1,0)
+	err := db.Driver.Preload("Exam.Standard").Preload("Exam.Subject").Preload("Exam.Batch").Preload("Exam.Teacher").
+				Preload("Exam.ExamChapters.Chapter").Joins("left join exams on exam_students.exam_id = exams.id").
+				Where("exam_students.student_id = ?", s.ID).Where("exams.exam_date >= ? and exams.exam_date < ?", startDate, endDate).
+				Order("exams.exam_date desc").Find(&examStudents).Error
+	return examStudents, err
+}
+
+// func (s *Student) GetMonthlyStudentLogDurations(month int, year int)([]TeacherDuration, error) {
+// 	var teacherDurations []TeacherDuration
+// 	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+// 	endDate := startDate.AddDate(0,1,0)
+// 	rows, err := db.Driver.Model(&LogAttendance{}).
+// 		Select("sum(teacher_logs.duration) as duration, DATE_FORMAT(teacher_logs.log_date, '%Y-%m-%d') as log_date, Count(teacher_logs.id) as count").
+// 		Joins("left join teacher_logs on teacher_logs.id = log_attendances.teacher_log_id").
+// 		Where("log_attendances.student_id = ?", s.ID).Where("teacher_logs.log_date >= ? and teacher_logs.log_date < ?", startDate, endDate).
+// 		Group("DATE_FORMAT(teacher_logs.log_date, '%Y-%m-%d')").Rows()
+// 		defer rows.Close()
+// 		for rows.Next() {
+// 			var teacherDuration TeacherDuration
+// 		  db.Driver.ScanRows(rows, &teacherDuration)
+// 		  teacherDurations = append(teacherDurations, teacherDuration)
+// 		}
+// 		return teacherDurations, err
+// }

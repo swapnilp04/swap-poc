@@ -173,6 +173,35 @@ func DeleteHostelRoom(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "HostelRoom deleted successfully"})
 }
 
+func RemoveStudentFromHostel(c echo.Context) error {
+	id := c.Param("hostel_room_id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	hr := &models.HostelRoom{ID: uint(newId)}
+	if err := hr.Find(); err != nil {
+		fmt.Println("hr.Find(GetHostelRoom)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	hostelStudentID := c.Param("id")
+	newHostelStudentID, err := strconv.Atoi(hostelStudentID)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	err = hr.RemoveHostelRoomStudents(uint(newHostelStudentID))
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Hostel Student deleted successfully", "id": hostelStudentID})
+}
 
 func GetHostelForRoom(c echo.Context) (*models.Hostel, error){
 	id := c.Param("hostel_id")
@@ -186,3 +215,4 @@ func GetHostelForRoom(c echo.Context) (*models.Hostel, error){
 	err = hostel.Find()
 	return hostel, err
 }
+

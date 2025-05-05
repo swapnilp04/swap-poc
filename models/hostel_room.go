@@ -96,3 +96,38 @@ func (hr *HostelRoom) GetHostelRoomStudents() ([]HostelStudent, error) {
 	Preload("Hostel").Find(&hostelStudents).Error
 	return hostelStudents, err	
 }
+
+func (hr *HostelRoom) updateStudentCount() {
+	var count int64
+	db.Driver.Model(&HostelStudent{}).Where("hostel_id = ?", hr.HostelID).Count(&count)
+	db.Driver.Model(&Hostel{}).Where("id = ?", hr.HostelID).Update("hostel_students_count", count)
+
+	db.Driver.Model(&HostelStudent{}).Where("hostel_room_id = ?", hr.ID).Count(&count)
+	db.Driver.Model(&HostelRoom{}).Where("id = ?", hr.ID).Update("hostel_students_count", count)
+}
+
+func (hr *HostelRoom) RemoveHostelRoomStudents(studentID uint) error {
+	hostelStudent := &HostelStudent{ID: studentID}
+	err := hostelStudent.Find()
+	if err != nil {
+		return err
+	}
+	student := &Student{ID: hostelStudent.StudentId}
+	err = student.Find()
+	if err != nil {
+		return err
+	}
+	student.HasHostel = false
+	student.HostelRoomId = 0
+	err = student.Update()
+	if err != nil {
+		return err
+	}
+	err = db.Driver.Unscoped().Delete(&hostelStudent).Error
+	if err != nil {
+		return err
+	}
+	hr.updateStudentCount()
+	return err
+}
+

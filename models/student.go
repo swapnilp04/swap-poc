@@ -167,7 +167,7 @@ func (s *Student) Create() error {
 }
 
 func (s *Student) Update() error {
-	err := db.Driver.Omit("Standard").Save(s).Error
+	err := db.Driver.Omit("BatchStandardStudents").Save(s).Error
 	return err
 }
 

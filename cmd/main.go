@@ -143,6 +143,7 @@ func main() {
 	e.GET("/hostels/:hostel_id/hostel_rooms/:id", handlers.GetHostelRoom, handlers.IsLoggedIn)
 	e.PUT("/hostels/:hostel_id/hostel_rooms/:id", handlers.UpdateHostelRoom, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/hostels/:hostel_id/hostel_rooms/:id/students", handlers.GetHostelRoomStudents, handlers.IsLoggedIn)
+	e.DELETE("/hostels/:hostel_id/hostel_rooms/:hostel_room_id/students/:id", handlers.RemoveStudentFromHostel, handlers.IsLoggedIn)
 
 	e.GET("/accounts/transactions", handlers.GetTransactions, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/accounts/students/:student_id/transactions/:id", handlers.GetStudentTransaction, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)

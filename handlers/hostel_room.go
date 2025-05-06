@@ -158,19 +158,23 @@ func DeleteHostelRoom(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
 	}
 
-	b := &models.HostelRoom{ID: uint(newId)}
-	if err := b.Find(); err != nil {
+	hr := &models.HostelRoom{ID: uint(newId)}
+	if err := hr.Find(); err != nil {
 		fmt.Println("b.Find(GetHostelRoom)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
-	if err := b.Delete(); err != nil {
+	if hr.HostelStudentsCount > 0 {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrRemoveHosteStudents.Error()})
+	}
+
+	if err := hr.Delete(); err != nil {
 		fmt.Println("b.Delete(GetHostelRoom)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 
 	// Delete a user by ID
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "HostelRoom deleted successfully"})
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "HostelRoom deleted successfully", "id": newId})
 }
 
 func RemoveStudentFromHostel(c echo.Context) error {

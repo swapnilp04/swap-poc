@@ -298,6 +298,12 @@ func (s *Student) GetStudentHostel() (HostelStudent, error) {
 	return hostelStudent, err
 }
 
+func (s *Student) GetStudentHostelRoommate() ([]HostelStudent, error) {
+	hostelStudents := []HostelStudent{}
+	err := db.Driver.Where("hostel_room_id = ?", s.HostelRoomId).Preload("Hostel").Preload("HostelRoom").Preload("Student").Find(&hostelStudents).Error
+	return hostelStudents, err
+}
+
 func (s *Student) GetTransactions() ([]Transaction, error) {
 	transactions := []Transaction{}
 	err := db.Driver.Where("student_id = ?", s.ID).Find(&transactions).Error

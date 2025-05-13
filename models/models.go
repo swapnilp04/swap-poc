@@ -31,4 +31,6 @@ func init() {
 	migrateTeacherLog()
 	migrateChapter()
 	migrateLogAttendance()
+	migrateParent()
+	migrateParentStudent()
 }

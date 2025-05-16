@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 	"gopkg.in/validator.v2"
 	"strings"
+	//"github.com/showa-93/go-mask"
 )
 
 type Student struct {
@@ -21,8 +22,8 @@ type Student struct {
 	AdharCard									string 	`json:"adhar_card" gorm:"adhar_card" validate:"nonzero,min=12,max=12"`
 	ParentName								string 	`json:"parent_name" validate:"nonzero"`
 	ParentOccupation					string 	`json:"parent_occupation" validate:"nonzero"`
-	ContactNumber 						string  `json:"contact_number" gorm:"contact_number" validate:"nonzero,min=10,max=12"`
-	WhNumber									string  `json:"wh_number" validate:"nonzero,min=10,max=12"`
+	ContactNumber 						string  `json:"contact_number" gorm:"contact_number" validate:"nonzero,min=10,max=12" mask:"filled"`
+	WhNumber									string  `json:"wh_number" validate:"nonzero,min=10,max=12" mask:"filled"`
 	Status 										string 	`json:"status"`
 	Town 											string 	`json:"town" validate:"nonzero"`
 	HasHostel									bool 		`json:"has_hostel" gorm:"default:false"`

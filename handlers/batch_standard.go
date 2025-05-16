@@ -8,6 +8,7 @@ import (
 	"swapnil-ex/swapErr"
 
 	"github.com/labstack/echo/v4"
+	"github.com/showa-93/go-mask"
 )
 
 func GetBatchStandard(c echo.Context) error {
@@ -334,6 +335,13 @@ func GetBatchStandardStudents(c echo.Context) error {
 	if err != nil {
 		fmt.Println("s.Find(GetBatchStandard)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	cc := c.(CustomContext)
+	if( !(cc.session.Role == "Admin" || cc.session.Role == "Accountant")) {
+		masker := mask.NewMasker()
+		masker.SetMaskChar("+")
+		batchStandardStudents, _ = mask.Mask(batchStandardStudents)
 	}
 
 	return c.JSON(http.StatusOK, batchStandardStudents)

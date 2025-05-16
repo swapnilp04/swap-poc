@@ -8,6 +8,7 @@ import (
 	"swapnil-ex/swapErr"
 
 	"github.com/labstack/echo/v4"
+	"github.com/showa-93/go-mask"
 )
 
 func GetExams(c echo.Context) error {
@@ -223,6 +224,13 @@ func GetExamStudents(c echo.Context) error {
 	if err != nil {
 		fmt.Println("e.Find(GetExam)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	cc := c.(CustomContext)
+	if( !(cc.session.Role == "Admin" || cc.session.Role == "Accountant")) {
+		masker := mask.NewMasker()
+		masker.SetMaskChar("+")
+		examStudents, _ = mask.Mask(examStudents)
 	}
 
 	return c.JSON(http.StatusOK, examStudents)

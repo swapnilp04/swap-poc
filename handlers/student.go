@@ -7,6 +7,7 @@ import (
 	"swapnil-ex/models"
 	"swapnil-ex/swapErr"
 	"github.com/labstack/echo/v4"
+	"github.com/showa-93/go-mask"
 )
 
 func GetStudents(c echo.Context) error {
@@ -25,6 +26,13 @@ func GetStudents(c echo.Context) error {
 	if err != nil {
 		fmt.Println("s.ALL(GetStudents)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	cc := c.(CustomContext)
+	if( !(cc.session.Role == "Admin" || cc.session.Role == "Accountant")) {
+		masker := mask.NewMasker()
+		masker.SetMaskChar("+")
+		students, _ = mask.Mask(students)
 	}
 
 	count, err := s.Count(search)
@@ -63,6 +71,13 @@ func GetStudent(c echo.Context) error {
 	if err != nil {
 		fmt.Println("s.Find(GetStudent)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	cc := c.(CustomContext)
+	if( !(cc.session.Role == "Admin" || cc.session.Role == "Accountant")) {
+		masker := mask.NewMasker()
+		masker.SetMaskChar("+")
+		s, _ = mask.Mask(s)
 	}
 
 	return c.JSON(http.StatusOK, s)
@@ -156,6 +171,14 @@ func GetUpcommingBirthdays(c echo.Context) error {
 		fmt.Println("s.ALL(GetStudents)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
+
+	cc := c.(CustomContext)
+	if( !(cc.session.Role == "Admin" || cc.session.Role == "Accountant")) {
+		masker := mask.NewMasker()
+		masker.SetMaskChar("+")
+		students, _ = mask.Mask(students)
+	}
+	
 	return c.JSON(http.StatusOK, students)
 }
 

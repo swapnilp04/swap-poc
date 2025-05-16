@@ -8,6 +8,7 @@ import (
 	"swapnil-ex/swapErr"
 
 	"github.com/labstack/echo/v4"
+	"github.com/showa-93/go-mask"
 )
 
 func GetComments(c echo.Context) error {
@@ -125,6 +126,13 @@ func GetUpcommingComments(c echo.Context) error {
 	if err != nil {
 		fmt.Println("s.ALLUpcommingComments(GetComments)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	cc := c.(CustomContext)
+	if( !(cc.session.Role == "Admin" || cc.session.Role == "Accountant")) {
+		masker := mask.NewMasker()
+		masker.SetMaskChar("+")
+		comments, _ = mask.Mask(comments)
 	}
 	
 	return c.JSON(http.StatusOK, comments)

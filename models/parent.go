@@ -14,15 +14,16 @@ import (
 
 type Parent struct {
 	ID              uint    `json:"id"` 
-	ParentName      string `json:"parent_name" validate:"nonzero"`
-	DisplayName			string `json:"display_name" validate:"nonzero"`
-	Salt            string `json:"-"`
-	Password        string `json:"-"`
-	ConfirmPassword string `json:"-" gorm:"-"`
-	DeviceID				string `json:"device_id"`
-	Mobile 					string  `json:"mobile" gorm:"mobile" validate:"nonzero,min=10,max=12"`
-	Mpin   					string `json:"-"`
-	Active					bool `json:"active" gorm:"default:true"` 
+	ParentName      string 	`json:"parent_name" validate:"nonzero"`
+	DisplayName			string 	`json:"display_name" validate:"nonzero"`
+	Salt            string 	`json:"-"`
+	Password        string 	`json:"-"`
+	ConfirmPassword string 	`json:"-" gorm:"-"`
+	DeviceID				string 	`json:"device_id"`
+	Mobile 					string 	`json:"mobile" gorm:"mobile" validate:"nonzero,min=10,max=12"`
+	Mpin   					string 	`json:"-"`
+	StudentCount 		int64  	`json:"student_count"`
+	Active					bool 		`json:"active" gorm:"default:true"` 
 	CreatedAt 			time.Time
 	UpdatedAt 			time.Time
   DeletedAt 			gorm.DeletedAt `gorm:"index"`
@@ -146,5 +147,12 @@ func (p *Parent) Delete() error {
 
 func (p *Parent) Load() error {
 	err := db.Driver.Find(p, "id = ?", p.ID).Error
+	return err
+}
+
+func (p *Parent) UpdateStudentCount() error {
+	var count int64
+	db.Driver.Model(&ParentStudent{}).Where("parent_id = ?", p.ID).Count(&count)
+	err := db.Driver.Model(&Parent{}).Where("id = ?", p.ID).Update("student_count", count).Error
 	return err
 }

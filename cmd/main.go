@@ -178,7 +178,7 @@ func main() {
 	e.GET("/parents", handlers.GetParents, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/parents/:id", handlers.GetParent, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.POST("/parents", handlers.CreateParent, handlers.IsLoggedIn, handlers.OnlyAdmin)
-
+	e.PUT("/parents/:id", handlers.UpdateParent, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

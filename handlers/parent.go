@@ -97,7 +97,8 @@ func UpdateParent(c echo.Context) error {
 
 	s.Assign(parentData)
 	if err := s.Validate(); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": err.Error()})
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
 	}
 	if err := s.Update(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})

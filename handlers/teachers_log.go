@@ -113,6 +113,10 @@ func UpdateTeacherLog(c echo.Context) error {
 	}
 
 	tl.AssignUpdate(teacherLogData)
+	if err := tl.Validate(); err != nil {
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
+	}
 	if err := tl.Update(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}

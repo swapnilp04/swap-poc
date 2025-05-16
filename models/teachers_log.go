@@ -212,6 +212,9 @@ func (tl *TeacherLog) Create() error {
 
 func (tl *TeacherLog) Update() error {
 	err := db.Driver.Omit("BatchStandard, Subject, Teacher, LogCategory").Save(tl).Error
+	if err == nil {
+		err = tl.CalculateDuration()
+	}
 	return err
 }
 

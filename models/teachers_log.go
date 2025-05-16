@@ -220,7 +220,7 @@ func (tl *TeacherLog) Update() error {
 
 func (tl *TeacherLog) Delete() error {
 	err := tl.DeleteLogAttendance()
-	if(err != nil) {
+	if err == nil {
 		err = db.Driver.Unscoped().Delete(tl).Error
 	}
 	return err

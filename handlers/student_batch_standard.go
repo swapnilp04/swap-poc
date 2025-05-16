@@ -170,6 +170,11 @@ func UpdateStudentBatchStandard(c echo.Context) error {
 	}
 
 	bs.Assign(batchStandardData)
+	if err := bs.Validate(); err != nil {
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
+	}
+
 	if err := bs.Update(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}

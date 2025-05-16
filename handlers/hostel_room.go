@@ -143,7 +143,10 @@ func UpdateHostelRoom(c echo.Context) error {
 
 	s.Assign(hostelRoomData)
 	s.HostelID = hostel.ID
-
+	if err := s.Validate(); err != nil {
+		formErr := MarshalFormError(err)	
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": formErr})
+	}
 	if err := s.Update(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": swapErr.ErrInternalServer.Error()})
 	}

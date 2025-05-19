@@ -51,6 +51,23 @@ func migrateStudent() {
 	}
 }
 
+func migrationForSaveStandardID() error {
+	var students []Student
+ 	err := db.Driver.Preload("BatchStandardStudents").Find(&students).Error
+	if err != nil {
+		return err
+	}
+	for _, student := range students {
+		batchStandardStudents := student.BatchStandardStudents
+		if len(batchStandardStudents) > 0 {
+			batchStandardStudent := BatchStandardStudent{}
+			db.Driver.Where("student_id = ?", student.ID).Last(&batchStandardStudent)
+			db.Driver.Model(&student).Omit("BatchStandardStudents").Update("standard_id", batchStandardStudent.StandardId)
+		}
+	}
+	return nil
+}
+
 
 func NewStudent(studentData map[string]interface{}) *Student {
 	student := &Student{}
@@ -168,7 +185,7 @@ func (s *Student) Create() error {
 }
 
 func (s *Student) Update() error {
-	err := db.Driver.Omit("BatchStandardStudents").Save(s).Error
+	err := db.Driver.Omit("BatchStandardStudent").Omit("Standard").Save(s).Error
 	return err
 }
 
@@ -254,8 +271,12 @@ func (s *Student) AssignBatchStandard(batchStandard *BatchStandard) error {
 		batchStandardStudent.StudentId = s.ID
 		batchStandardStudent.BatchStandardId = batchStandard.ID
 		batchStandardStudent.Fee = batchStandard.Fee
+		
 		s.StandardId = batchStandard.StandardId
-		s.Update()
+		err := s.Update()
+		if err != nil {
+			return err
+		}
 		return batchStandardStudent.Create()
 	}
 	

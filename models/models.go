@@ -33,4 +33,5 @@ func init() {
 	migrateLogAttendance()
 	migrateParent()
 	migrateParentStudent()
+	migrationForSaveStandardID()
 }

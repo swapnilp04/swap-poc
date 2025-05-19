@@ -64,6 +64,7 @@ func main() {
 	e.GET("/students/:id/get_monthly_exams_report", handlers.GetStudentMonthlyExamReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/students/:id/get_monthly_logs_report", handlers.GetStudentMonthlyLogsReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	// e.GET("/students/:id/get_monthly_logs_durations", handlers.GetStudentMonthlyLogDurations, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.GET("/search-students", handlers.SearchStudents, handlers.IsLoggedIn)
 
 	e.GET("/standards", handlers.GetStandards, handlers.IsLoggedIn)
 	e.GET("/standards/:id", handlers.GetStandard, handlers.IsLoggedIn)
@@ -179,6 +180,8 @@ func main() {
 	e.GET("/parents/:id", handlers.GetParent, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.POST("/parents", handlers.CreateParent, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.PUT("/parents/:id", handlers.UpdateParent, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.GET("/parents/:parent_id/parent-students", handlers.GetParentsStudents, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.POST("/parents/:parent_id/students/:id/assign", handlers.CreatParentsStudent, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

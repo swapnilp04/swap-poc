@@ -43,6 +43,8 @@ func GetStudents(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"students": students, "total": count})
 }
 
+
+
 func GetReportStudents(c echo.Context) error {
 	// Get all users
 	s := &models.Student{}
@@ -556,6 +558,27 @@ func GetStudentMonthlyLogsReport(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
 	return c.JSON(http.StatusOK, logs)
+}
+
+func SearchStudents(c echo.Context) error {
+	// Get all users
+	s := &models.Student{}	
+	search := c.QueryParam("search")
+
+	students, err := s.SearchStudents(search)
+	if err != nil {
+		fmt.Println("s.ALL(SearchStudents)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	cc := c.(CustomContext)
+	if( !(cc.session.Role == "Admin" || cc.session.Role == "Accountant")) {
+		masker := mask.NewMasker()
+		masker.SetMaskChar("+")
+		students, _ = mask.Mask(students)
+	}
+
+	return c.JSON(http.StatusOK, students)
 }
 
 // func GetStudentMonthlyLogDurations(c echo.Context) error {

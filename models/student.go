@@ -143,6 +143,18 @@ func (s *Student) All(page int, search string) ([]Student, error) {
 	return students, err
 }
 
+func (s *Student) SearchStudents(search string) ([]Student, error) {
+	var students []Student
+	query := db.Driver.Preload("Standard").Order("id desc").Where("has_left = ?", false)
+	search = strings.Trim(search, " ")
+	if len([]rune(search)) > 0 {
+		search = "%" + search + "%"
+		query = query.Where("first_name like ? or middle_name like ? or last_name like ? OR contact_number like ?", search, search, search, search)
+	}
+	err := query.Find(&students).Error
+	return students, err
+}
+
 func (s *Student) Count(search string) (int64, error) {
 	var count int64
 	query := db.Driver.Model(&Student{})

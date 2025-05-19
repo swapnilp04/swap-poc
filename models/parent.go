@@ -159,7 +159,7 @@ func (p *Parent) UpdateStudentCount() error {
 
 func (p *Parent) GetParentStudents() ([]ParentStudent, error) {
 	var parentStudents []ParentStudent
-	err := db.Driver.Where("parent_id = ?", p.ID).Find(&parentStudents).Error
+	err := db.Driver.Preload("Student.Standard").Where("parent_id = ?", p.ID).Find(&parentStudents).Error
 	return parentStudents, err
 }
 
@@ -167,4 +167,13 @@ func (p *Parent) GetParentStudent(studentID uint) (ParentStudent, error) {
 	parentStudent := ParentStudent{ID: studentID}
 	err := db.Driver.First(&parentStudent, "id = ? and parent_id = ?" , studentID, p.ID).Error
 	return parentStudent, err
+}
+
+func (p *Parent) AssignStudentToParent(student *Student) (ParentStudent, error) {
+	parentStudent := ParentStudent{}
+	err := db.Driver.Where(ParentStudent{ParentID: p.ID, StudentID: student.ID}).FirstOrCreate(&parentStudent).Error
+	if err == nil {
+		err = p.UpdateStudentCount()
+	}
+	return parentStudent, err	
 }

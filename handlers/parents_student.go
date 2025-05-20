@@ -141,6 +141,10 @@ func DeleteParentsStudent(c echo.Context) error {
 		fmt.Println("s.Delete(GetTeacherLog)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
 	}
+
+	if err := parent.UpdateStudentCount(); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
 	
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Parent Student has been deleted successfully", "id": newId})
 }

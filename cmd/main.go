@@ -182,6 +182,7 @@ func main() {
 	e.PUT("/parents/:id", handlers.UpdateParent, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/parents/:parent_id/parent-students", handlers.GetParentsStudents, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.POST("/parents/:parent_id/students/:id/assign", handlers.CreatParentsStudent, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.DELETE("/parents/:parent_id/parent-students/:id", handlers.DeleteParentsStudent, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }

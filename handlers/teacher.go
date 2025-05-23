@@ -14,7 +14,9 @@ func GetTeachers(c echo.Context) error {
 	// Get all users
 
 	teacher := &models.Teacher{}
-	teachers, err := teacher.All()
+	cc := c.(CustomContext)
+	teachers, err := teacher.All(cc.session.Role)	
+
 	if err != nil {
 		fmt.Println("s.ALL(GetTeachers)", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
@@ -261,4 +263,52 @@ func GetTeacherMonthlyLogDurations(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, durations)
 }
+
+func DeactivateTeacher(c echo.Context) error { 
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	teacher := &models.Teacher{ID: uint(newId)}
+	err = teacher.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetTeacher)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	err = teacher.DeactiveTeacher()
+	if err != nil {
+		fmt.Println("s.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, teacher)
+} 
+
+func ActivateTeacher(c echo.Context) error { 
+	id := c.Param("id")
+	newId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("strconv.Atoi failed", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": swapErr.ErrBadData.Error()})
+	}
+
+	teacher := &models.Teacher{ID: uint(newId)}
+	err = teacher.Find()
+	if err != nil {
+		fmt.Println("s.Find(GetUser)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+	
+	err = teacher.ActiveTeacher()
+	if err != nil {
+		fmt.Println("s.Find(GetTeacher)", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": swapErr.ErrInternalServer.Error()})
+	}
+
+	return c.JSON(http.StatusOK, teacher)
+} 
 

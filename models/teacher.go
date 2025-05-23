@@ -13,15 +13,16 @@ import (
 
 type Teacher struct {
 	ID           	uint    `json:"id"`
-	Name     			string `json:"name" validate:"nonzero"`
-	Mobile				string `json:"mobile" validate:"nonzero,min=10,max=12"`
-	AdharCard			string 	`json:"adhar_card" gorm:"adhar_card" validate:"nonzero,min=12,max=12"`
+	Name     		string `json:"name" validate:"nonzero"`
+	Mobile			string `json:"mobile" validate:"nonzero,min=10,max=12"`
+	AdharCard		string 	`json:"adhar_card" gorm:"adhar_card" validate:"nonzero,min=12,max=12"`
 	JoiningDate		*time.Time `json:"joining_date"`
-	LastDate			*time.Time `json:"last_date"`
-	UserID 				uint `json:"user_id"`
+	LastDate		*time.Time `json:"last_date"`
+	UserID 			uint `json:"user_id"`
+	Active			bool `json:"active" gorm:"default:true"` 
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
-  DeletedAt 		gorm.DeletedAt `gorm:"index"`
+  	DeletedAt 		gorm.DeletedAt `gorm:"index"`
 }
 
 type TeacherDuration struct {
@@ -71,9 +72,14 @@ func (t *Teacher) Assign(teacherData map[string]interface{}) {
 	}	
 }
 
-func (t *Teacher) All() ([]Teacher, error) {
+func (t *Teacher) All(role string) ([]Teacher, error) {
 	var teachers []Teacher
-	err := db.Driver.Find(&teachers).Error
+	var err error
+	if(role == "Admin" || role == "Accountant") {
+		err = db.Driver.Find(&teachers).Error
+	} else {
+		err = db.Driver.Where("active = ?", true).Find(&teachers).Error	
+	}
 	return teachers, err
 }
 
@@ -99,6 +105,16 @@ func (t *Teacher) Update() error {
 
 func (t *Teacher) Delete() error {
 	err := db.Driver.Delete(t).Error
+	return err
+}
+
+func (t *Teacher) DeactiveTeacher() error {
+	err := db.Driver.Model(t).Updates(map[string]interface{}{"active": false}).Error
+	return err
+}
+
+func (t *Teacher) ActiveTeacher() error {
+	err := db.Driver.Model(t).Updates(map[string]interface{}{"active": true}).Error
 	return err
 }
 
@@ -139,19 +155,14 @@ func (t *Teacher) CreateUser() error {
 
 func (t *Teacher) GetTeachersLogs(page int, searchBatchStandard string, searchSubject string, searchDate string) ([]TeacherLog, error) {
 	var teachersLogs []TeacherLog
-
-	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("BatchStandard.Batch").Preload("Subject").Preload("Teacher").
-	Preload("LogCategory").Where("teacher_id = ?", t.ID)
-
-
+	query := db.Driver.Limit(10).Preload("BatchStandard.Standard").Preload("BatchStandard.Batch").
+		Preload("Subject").Preload("Teacher").Preload("LogCategory").Where("teacher_id = ?", t.ID)
 	if searchBatchStandard != "" {
 		query = query.Where("batch_standard_id = ?", searchBatchStandard)
 	}
-
 	if searchSubject != "" {
 		query = query.Where("subject_id = ?", searchSubject)
 	}
-
 	if searchDate != "" {
 		startDate, _ := time.Parse("2/1/2006", searchDate)
 		year, month, day := startDate.Date()
@@ -166,22 +177,18 @@ func (t *Teacher) GetTeachersLogs(page int, searchBatchStandard string, searchSu
 func (t *Teacher) AllTeachersLogsCount(searchBatchStandard string, searchSubject string, searchDate string) (int64, error) {
 	var count int64
 	query := db.Driver.Model(&TeacherLog{}).Where("teacher_id = ?", t.ID)
-	
 	if searchBatchStandard != "" {
 		query = query.Where("batch_standard_id = ?", searchBatchStandard)
 	}
-
 	if searchSubject != "" {
 		query = query.Where("subject_id = ?", searchSubject)
 	}
-
 	if searchDate != "" {
 		startDate, _ := time.Parse("2/1/2006", searchDate)
 		year, month, day := startDate.Date()
 		endDate := time.Date(year, month, day, 23, 59, 59, 0, time.UTC)
 		query = query.Where("log_date >= ? and log_date <= ?", startDate, endDate)
 	}
-
 	err := query.Count(&count).Error
 	return count, err
 }
@@ -202,8 +209,9 @@ func (t *Teacher) GetMonthlyExamReport(month int, year int)([]Exam, error) {
 	var exams []Exam
 	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 	endDate := startDate.AddDate(0,1,0)
-	err := db.Driver.Preload("Standard").Preload("Subject").Preload("Batch").Preload("ExamChapters.Chapter").Where("teacher_id = ?", t.ID).
-				Where("exam_date >= ? and exam_date < ?", startDate, endDate).Order("exam_date desc").Find(&exams).Error
+	err := db.Driver.Preload("Standard").Preload("Subject").Preload("Batch").Preload("ExamChapters.Chapter").
+		Where("teacher_id = ?", t.ID).Where("exam_date >= ? and exam_date < ?", startDate, endDate).
+		Order("exam_date desc").Find(&exams).Error
 
 	return exams, err
 }

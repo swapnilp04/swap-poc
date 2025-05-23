@@ -104,6 +104,8 @@ func main() {
 	e.GET("/teachers/:id/get_monthly_logs_report", handlers.GetTeacherMonthlyLogsReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/teachers/:id/get_monthly_exams_report", handlers.GetTeacherMonthlyExamReport, handlers.IsLoggedIn, handlers.OnlyAdmin)
 	e.GET("/teachers/:id/get_monthly_logs_durations", handlers.GetTeacherMonthlyLogDurations, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.POST("/teachers/:id/deactive_teacher", handlers.DeactivateTeacher, handlers.IsLoggedIn, handlers.OnlyAdmin)
+	e.POST("/teachers/:id/active_teacher", handlers.ActivateTeacher, handlers.IsLoggedIn, handlers.OnlyAdmin)
 
 
 	e.GET("/batchs", handlers.GetBatchs, handlers.IsLoggedIn)

@@ -27,7 +27,7 @@ type Student struct {
 	Status 										string 	`json:"status"`
 	Town 											string 	`json:"town" validate:"nonzero"`
 	HasHostel									bool 		`json:"has_hostel" gorm:"default:false"`
-	Balance 									float64 `json:"balance" gorm:"default:0.0"`
+	Balance 									float64 `json:"balance" gorm:"default:0.0" mask:"random0.0"`
 	StudentAccountBalance 		float64 `json:"student_account_balance" gorm:"default:0.0"`
 	HostelRoomId    					uint 		`json:"hostel_room_id" validate:"-"`
 	StandardId      					uint 		`json:"standard_id"`

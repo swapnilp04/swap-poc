@@ -110,11 +110,19 @@ func (t *Teacher) Delete() error {
 
 func (t *Teacher) DeactiveTeacher() error {
 	err := db.Driver.Model(t).Updates(map[string]interface{}{"active": false}).Error
+	if err != nil {
+		return err	
+	}
+	err = db.Driver.Model(&User{}).Where("id = ?", t.UserID).Update("active", false).Error
 	return err
 }
 
 func (t *Teacher) ActiveTeacher() error {
 	err := db.Driver.Model(t).Updates(map[string]interface{}{"active": true}).Error
+	if err != nil {
+		return err	
+	}
+	err = db.Driver.Model(&User{}).Where("id = ?", t.UserID).Update("active", true).Error
 	return err
 }
 

@@ -19,6 +19,7 @@ type BatchStandardStudent struct {
 	BatchStandard     BatchStandard
 	Student 					Student
 	Fee 							float64 `json:"fee" validate:"nonzero"`
+	AverageMarks			float64 `json:"average_marks" gorm:"default:0.0"`
 	CreatedAt 				time.Time
 	UpdatedAt 				time.Time
   DeletedAt 				gorm.DeletedAt `gorm:"index"`

@@ -47,11 +47,11 @@ func main() {
 	e.GET("/students/:student_id/batch_standards", handlers.GetStudentStandards, handlers.IsLoggedIn)
 	e.POST("/students/:student_id/batch_standards", handlers.CreateStudentBatchStandard, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
-	e.GET("/students/:student_id/transactions", handlers.GetStudentTransactions, handlers.IsLoggedIn)
+	e.GET("/students/:student_id/transactions", handlers.GetStudentTransactions, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.GET("/students/:student_id/transactions/:id", handlers.GetStudentTransaction, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/students/:student_id/transactions", handlers.PayStudentFee, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 	e.POST("/students/:student_id/transactions/dues/new", handlers.AddStudentDues, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
-	e.GET("/students/:student_id/transactions/balance", handlers.GetStudentBalance, handlers.IsLoggedIn)
+	e.GET("/students/:student_id/transactions/balance", handlers.GetStudentBalance, handlers.IsLoggedIn, handlers.OnlyAdminAccountant)
 
 	e.POST("/students/:student_id/discounts", handlers.AddDiscount, handlers.IsLoggedIn, handlers.OnlyAdmin)
 

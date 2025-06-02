@@ -13,6 +13,7 @@ type Subject struct {
 	Name     			string `json:"name" validate:"nonzero"`
 	StandardID    uint `json:"standard_id" validate:"nonzero"`
 	Standard 			Standard `validate:"-"`
+	ChaptersCount int64 `json:"chapters_count" gorm:"default:0"`
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
   DeletedAt 		gorm.DeletedAt `gorm:"index"`
